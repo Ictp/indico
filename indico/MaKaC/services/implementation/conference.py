@@ -159,6 +159,16 @@ class ConferenceTitleModification(ConferenceTextModificationBase):
     def _handleGet(self):
         return self._target.getTitle()
 
+# Ictp
+class ConferenceRolesModification(ConferenceTextModificationBase):
+    """
+    Conference roles modification
+    """
+    def _handleSet(self):
+        self._target.setRoles(self._value)
+
+    def _handleGet(self):
+        return self._target.getRoles()
 
 class ConferenceDescriptionModification(ConferenceHTMLModificationBase):
     """
@@ -1712,6 +1722,9 @@ methodMap = {
     "main.changeKeywords": ConferenceKeywordsModification,
     "main.changeTimezone": ConferenceTimezoneModification,
     "main.addExistingChairPerson": ConferenceAddExistingChairPerson,
+    # Ictp
+    "main.changeRoles": ConferenceRolesModification,
+    
     "main.addNewChairPerson": ConferenceAddNewChairPerson,
     "main.removeChairPerson": ConferenceRemoveChairPerson,
     "main.editChairPerson": ConferenceEditChairPerson,
