@@ -527,3 +527,11 @@ ul.programme li .description {
     float: left;
     padding-right: 0.5em;
 }
+
+
+.info_line.roles {
+    padding: 10px;
+    width: 100%;
+    font-family: verdana,arial,sans-serif;  
+}
+
