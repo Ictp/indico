@@ -1116,6 +1116,10 @@ class WConferenceCreation( wcomponents.WTemplated ):
 
         vars["useRoomBookingModule"] = minfo.getRoomBookingModuleActive()
 
+        # Ictp
+        dconf = conference.CategoryManager().getDefaultConference()  
+        vars["rolesData"] = dconf.getRoles()
+        
         return vars
 
 #---------------------------------------------------------------------------
