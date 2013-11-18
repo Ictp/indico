@@ -1044,11 +1044,38 @@ class WPUsersAndGroupsCommon(WPAdminsBase):
                 urlHandlers.UHUsers.getURL())
         self._subTabGroups = self._tabCtrl.newTab("groups", _("Manage Groups"), \
                 urlHandlers.UHGroups.getURL())
-
+        # ICTP added      
+        self._subTabRoles = self._tabCtrl.newTab("roles", _("Manage Roles"), \
+                urlHandlers.UHRoles.getURL())
+                
     def _getPageContent(self, params):
         return wcomponents.WTabControl(self._tabCtrl, self._getAW()).getHTML(self._getTabContent(params))
 
+# Ictp
+class WRoleManagement(wcomponents.WTemplated):
 
+    def getVars(self):
+        vars = wcomponents.WTemplated.getVars(self)        
+        dconf = conference.CategoryManager().getDefaultConference()        
+        vars["rolesData"] = dconf.getRoles()
+        return vars
+        
+# Ictp
+class WPRoleManagement(WPUsersAndGroupsCommon):
+    pageURL = "roleManagement.py"
+
+    def __init__(self, rh, params):
+        WPUsersAndGroupsCommon.__init__(self, rh)
+        self._params = params
+
+    def _getTabContent(self, params):
+        wp = WRoleManagement()
+        pars = {"postURL": urlHandlers.UHRoles.getURL(), }
+        return wp.getHTML(pars)
+
+    def _setActiveTab(self):
+        self._subTabRoles.setActive()        
+        
 class WUserManagement(wcomponents.WTemplated):
 
     def getVars(self):
