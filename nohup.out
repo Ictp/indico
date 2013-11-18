@@ -1,0 +1,4 @@
+/opt/indico-1.2dev/src/MaKaC/common/__init__.py:30: DeprecationWarning: MaKaC.common.Configuration is deprecated; use indico.core.config instead
+  from .Configuration import Config
+/opt/indico-1.2dev/src/indico/ext/search/base/implementation.py:20: DeprecationWarning: the md5 module is deprecated; use hashlib instead
+  import urllib2, re, urllib, md5
