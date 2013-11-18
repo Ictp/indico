@@ -207,6 +207,10 @@ class IConferenceMetadataFossil(_IncludeMaterialFossil, IFossil):
         """ Location (CERN/...) """
     getLocation.convert = lambda l: l and l.getName()
 
+    # ICTP
+    def getRoles(self):
+        pass
+    
     def getLocator(self):
         pass
     getLocator.convert = Conversion.url(urlHandlers.UHConferenceDisplay)
