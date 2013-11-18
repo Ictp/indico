@@ -177,7 +177,11 @@ def setSSLPort(url):
     regexp = ':\d{2,5}'   # Examples:   :8080   :80   :65535
     return re.sub(regexp, sslPort, url)
 
-
+# ICTP added
+class UHCollaborationDisplay(URLHandler):
+    _endpoint = 'collaboration.collaborationDisplay'
+    
+    
 class UHWelcome(URLHandler):
     _endpoint = 'misc.index'
 
@@ -234,6 +238,9 @@ class UHSignOut(URLHandler):
 class UHOAuthRequestToken(URLHandler):
     _endpoint = 'oauth.oauth-request_token'
 
+# ICTP added
+class UHRoles(URLHandler):
+    _endpoint = 'admin.rolesManagement'
 
 class UHOAuthAuthorization(URLHandler):
     _endpoint = 'oauth.oauth-authorize'
