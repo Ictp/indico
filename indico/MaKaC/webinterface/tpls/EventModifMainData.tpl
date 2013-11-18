@@ -38,6 +38,7 @@ favoriteRooms = confObj.getFavoriteRooms()
 
 additionalInfo = confObj.getContactInfo()
 
+roles = confObj.getRoles()
 %>
 <div class="groupTitle">${ _("General Settings")}</div>
 
@@ -99,6 +100,14 @@ additionalInfo = confObj.getContactInfo()
     </td>
     <td class="blacktext">
         <span id="inPlaceEditAdditionalInfo">${contactInfo}</span>
+    </td>
+</tr>
+<tr>
+    <td class="dataCaptionTD">
+        <span class="dataCaptionFormat">${ _("Roles")}</span>
+    </td>
+    <td class="blacktext">
+        <div id="inPlaceEditRoles"></div>
     </td>
 </tr>
 % endif
@@ -246,6 +255,9 @@ var userCaption = "speaker";
 % if evtType == 'conference':
     $E('inPlaceEditAdditionalInfo').set(new RichTextInlineEditWidget('event.main.changeAdditionalInfo', ${ jsonEncode(dict(conference="%s"%conferenceId)) }, ${ jsonEncode(additionalInfo) }, 600, 45, "${_('No additional info')}").draw());
     userCaption = "chairperson";
+    // Ictp    
+    $E('inPlaceEditRoles').set(new GroupingWidget('event.main.changeRoles', {'conference':'${ conferenceId }'}, ${ jsonEncode(confObj.getRoles()) }, true, null, null, null).draw());
+    
 % endif
 
 $E('inPlaceEditShortURL').set(new URLPathEditWidget('event.main.changeShortURL',
