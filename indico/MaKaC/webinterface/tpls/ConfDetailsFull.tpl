@@ -69,6 +69,15 @@
       <div class="text ${'nohtml' if not moreInfo_html else ''}">${ moreInfo }</div>
   </div>
   % endif
+  
+  % if str(rolesData) != '[]':
+  <div class="info_line roles">   
+      <span title="${_("Roles")}" class="icon icon-list" aria-hidden="true"></span>
+      <div class="rolesContainer"></div>
+      </div>
+  </div>
+  % endif  
+  
   </div>
 
 </div>
@@ -77,6 +86,12 @@ ${ actions }
 
 
 <script type="text/javascript">
+
+      var fg = $('div.rolesContainer').fieldgrouping();
+      fg.fieldgrouping("setInfo", ${conf.getRoles()});
+      fg.fieldgrouping("getStructuredInfo");     
+
+
       $('.chair_list .nomail').qtip({
              content: {
                  text: $T("Login to see email address"),
