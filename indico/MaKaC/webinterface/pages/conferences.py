@@ -665,7 +665,10 @@ class WConfDetailsBase( wcomponents.WTemplated ):
         vars["chairs"] = self._conf.getChairList()
         vars["material"] = self._getMaterialHTML()
         vars["conf"] = self._conf
-
+        
+        # Ictp       
+        vars["rolesData"] = self._conf.getRoles()
+        
         info = self._conf.getContactInfo()
         vars["moreInfo_html"] = isStringHTML(info)
         vars["moreInfo"] = info
@@ -1693,7 +1696,10 @@ class WConfModifMainData(wcomponents.WTemplated):
         vars["timezoneList"] = TimezoneRegistry.getList()
         vars["chairpersons"] = self._getChairPersonsList()
 
+        # Ictp
+        vars["rolesData"] = self._conf.getRoles()
         loc = self._conf.getLocation()
+        
         room = self._conf.getRoom()
         vars["currentLocation"] = { 'location': loc.getName() if loc else "",
                                     'room': room.name if room else "",
