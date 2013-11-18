@@ -111,3 +111,142 @@
         }
     }
 }
+
+.field-grouping {
+    $height: 2em;
+    $height: auto;
+    
+    
+    $width: 350px;
+    $input-width: 260px;
+
+    margin: 0 2px;
+    #max-height: 150px;
+        
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    .field-area {
+        li {
+            clear: left;
+        }
+    }
+    .noEdit:hover {
+        box-shadow: none !important;
+        border:none !important;
+    }
+    
+    .inareaContainer {
+        clear: left;
+        padding: 3px 0 0 20px;
+    }
+
+    .handle {
+        @include before-icon("\e001");
+        @include border-left-radius();
+        @include border-left();
+        @include border-vert();
+        @include box-sizing(border-box);
+        @include single-transition(background);
+        @include single-transition(color);
+        @include user-select(none);
+
+        background: $light-gray;
+        color: $gray;
+        cursor: move;
+        display: inline-block;
+        height: $height;
+        line-height: $height;
+        width: 1.1em;
+        float: left;
+    }
+
+    .ui-sortable-placeholder {
+        height: $height;
+    }
+
+    .ui-sortable-helper {
+        input,
+        .handle {
+            box-shadow: 2px 2px 3px $gray;
+        }
+    }
+
+    input {
+        display: inline-block;
+        float: left;
+        margin: 0;
+        max-width: $input-width
+
+        &.width-scrolling {
+            width: ($input-width - 10);
+        }
+        
+    }
+
+    .fieldgrouping-caption {
+        border: none;
+        font-size: 1.5em;
+        #font-weight: bold;
+    }
+    
+    a.i-button-remove {
+        @include i-button-custom($height);
+
+        display: inline-block;
+        float: left;
+        visibility: hidden;
+    }
+
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    li {
+        height: $height;
+        width: $width;
+        padding: 3px 0 2em;
+
+        &:hover a.i-button-remove {
+            visibility: visible;
+        }
+
+        &:last-of-type {
+            margin: 3px 0;
+            .handle {
+                cursor: default;
+                background: white;
+                color: white;
+            }
+
+            a.i-button-remove {
+                visibility: hidden;
+            }
+        }
+
+        &.ui-sortable-helper a.i-button-remove {
+            visibility: hidden;
+        }
+    }
+    
+    dl { margin-top: 0; }
+    
+    dt {    
+        font-size: 1.1em;
+
+        margin-bottom: 5px;
+        color: #777;
+        float: left; clear: both; 
+        padding-right: 10px;
+    }
+    
+    dd {
+        font-size: 1.1em;
+        color: #444;
+        float: left;
+        margin-left: 5px;
+    }
+    
+}
