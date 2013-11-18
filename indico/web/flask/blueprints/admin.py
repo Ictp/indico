@@ -92,6 +92,9 @@ admin.add_url_rule('/users/groups/<groupId>/modify', 'groupModification-update',
 admin.add_url_rule('/users/groups/create', 'groupRegistration', groups.RHGroupCreation)
 admin.add_url_rule('/users/groups/create', 'groupRegistration-update', groups.RHGroupPerformCreation, methods=('POST',))
 
+# Ictp - Roles
+admin.add_url_rule('/users/roles/', 'rolesManagement', users.RHRolesManagement)
+
 # Layout
 admin.add_url_rule('/layout/', 'adminLayout', admins.RHAdminLayoutGeneral, methods=('GET', 'POST'))
 admin.add_url_rule('/layout/social', 'adminLayout-saveSocial', admins.RHAdminLayoutSaveSocial, methods=('POST',))
