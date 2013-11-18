@@ -391,6 +391,11 @@ class UtilsConference:
         c.setComments(confData.get("comments",""))
         c.setKeywords( confData["keywords"] )
         c.setChairmanText( confData.get("chairText", "") )
+        
+        # Ictp
+        if confData.has_key('roles'):
+            c.setRoles( confData["roles"] )
+            
         if "shortURLTag" in confData.keys():
             tag = confData["shortURLTag"].strip()
             if tag:
