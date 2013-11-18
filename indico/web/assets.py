@@ -161,6 +161,8 @@ indico_jquery = Bundle(
                'multiselect.js',
                'realtimefilter.js',
                'scrollblocker.js'),
+               'fieldarea.js',
+               'fieldgrouping.js'),
     filters='rjsmin', output='js/indico_jquery_%(version)s.min.js')
 
 indico_jquery_authors = Bundle('js/indico/jquery/authors.js',
