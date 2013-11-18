@@ -71,6 +71,26 @@ class RHUserManagement( admins.RHAdminBase ):
         p = adminPages.WPUserManagement( self, self._params )
         return p.display()
 
+# Ictp        
+class RHRolesManagement( admins.RHAdminBase ):
+
+    def _checkParams( self, params ):
+        admins.RHAdminBase._checkParams( self, params )
+        #print "SONO in users.checkParams",params
+        self._params = params
+
+    def _process( self ):
+        import MaKaC.conference as conference
+        #print "users.processing....", self._params
+        if 'roles' in self._params:
+            # save Roles in default Conference
+            dconf = conference.CategoryManager().getDefaultConference()   
+            dconf.setRoles(self._params['roles']) 
+            minfo = info.HelperMaKaCInfo.getMaKaCInfoInstance()    
+            minfo.setDefaultConference(dconf)
+        p = adminPages.WPRoleManagement( self, self._params )
+        return p.display()   
+        
 class RHUsers( admins.RHAdminBase ):
 
     def _checkParams( self, params ):
