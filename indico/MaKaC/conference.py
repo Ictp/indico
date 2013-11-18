@@ -2032,6 +2032,9 @@ class Conference(CommonObjectBase, Locatable):
         self.sessions = {}
         self.__sessionGenerator = Counter() # Provides session unique
                                             #   identifiers for this conference
+        # Ictp
+        self._roles = "[]"
+
         self.contributions = {}
         self.__contribGenerator = Counter() # Provides contribution unique
                                             #   identifiers for this conference
@@ -3161,6 +3164,18 @@ class Conference(CommonObjectBase, Locatable):
 
     def setChairmanText( self, newText ):
         self.chairmanText = newText.strip()
+
+    # Ictp
+    def getRoles( self ):
+        """ return roles as string """
+        if hasattr(self, '_roles'):
+            return self._roles
+        else:
+            return "[]"
+    # Ictp            
+    def setRoles( self, roles ):
+        """ save roles as string """
+        self._roles = roles
 
     def appendChairmanText( self, newText ):
         self.setChairmanText( "%s, %s"%(self.getChairmanText(), newText.strip()) )
