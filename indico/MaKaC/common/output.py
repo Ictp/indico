@@ -310,6 +310,9 @@ class outputGenerator(Observable):
         if conf.getOrgText() != "":
             out.writeTag("organiser", conf.getOrgText())
 
+        # ICTP
+        out.writeTag("roles", conf.getRoles())
+        
         out.openTag("announcer")
         chair = conf.getCreator()
         if chair != None:
@@ -501,6 +504,10 @@ class outputGenerator(Observable):
             out.writeTag("ID","live webcast")
             out.writeTag("title","live webcast")
             out.writeTag("description","")
+
+            # ICTP
+            out.writeTag("roles", conf.getRoles())
+            
             out.writeTag("type","")
             out.writeTag("displayURL",url)
             out.closeTag("material")
@@ -508,6 +515,10 @@ class outputGenerator(Observable):
             out.openTag("material")
             out.writeTag("ID","forthcoming webcast")
             out.writeTag("title","forthcoming webcast")
+
+            # ICTP
+            out.writeTag("roles", conf.getRoles())
+            
             out.writeTag("description","")
             out.writeTag("type","")
             out.writeTag("displayURL", wm.getWebcastServiceURL(wc))
