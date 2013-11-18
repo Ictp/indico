@@ -1853,3 +1853,68 @@ type('AutocheckTextBox', ['RealtimeTextBox'],
 				this.functionToHide = functionToHide;
 		     }
 	);
+
+
+// Ictp
+// Grouping Widget
+type("GroupingWidget", ["InputEditWidget"],
+        {
+            _handleEditMode: function(value) {
+                var content = '';
+                if(str(value)!=""){
+                    var fg = $('<div></div>').fieldgrouping();
+                    fg.fieldgrouping("setInfo", JSON.parse(this.value));
+                    content = fg.get(0);
+                    this.fg = fg;
+                }
+                else{
+                    content = Html.em({}, "No text");
+                }
+                return content;
+            },
+            
+            _handleDisplayMode: function(value) {
+                var content = '';
+                if(str(value)!=""){
+                    var fg = $('<div></div>').fieldgrouping();
+                    fg.fieldgrouping("setInfo", JSON.parse(this.value));
+                    fg.fieldgrouping("getStructuredInfo");
+                    content = fg.get(0);
+                }
+                else{
+                    content = Html.em({}, "No text");
+                }
+                return content;
+            },
+       
+            _getNewValue: function() {            
+                // fix id numbers and remove new empty children
+                var raw = this.fg.fieldgrouping("getInfo");
+                var fix = [];
+                for (var i=0;i<raw.length;i++) {
+                    var child = [];
+                    for (var j=0;j<raw[i].child.length;j++) {
+                        if (raw[i].child[j].value != "") {
+                            raw[i].child[j].id = j;
+                            child.push(raw[i].child[j]);
+                        }
+                    }    
+                    raw[i].id = i;
+                    raw[i].child = child;
+                    fix.push(raw[i]);
+                }                        
+                return JSON.stringify(fix);
+            },
+
+        },
+        
+        function(method, attributes, initValue, allowEmpty, successHandler, validation, errorMsg, helpMsg, beforeEdit) {
+            this.attributes = attributes;
+            this.allowEmpty = allowEmpty;
+            this.successHandler = successHandler;
+            this.validation = validation;
+            this.errorMsg = errorMsg;
+            this.helpMsg = helpMsg;
+            this.InputEditWidget(method, attributes, initValue, true, null, null, null);
+        }        
+    );
