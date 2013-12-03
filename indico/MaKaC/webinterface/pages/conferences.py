@@ -193,7 +193,9 @@ class WPConferenceDefaultDisplayBase( WPConferenceBase):
                     self._conf.getRegistrationForm().getETicket().isShownInConferenceMenu():
                 self._eTicketOpt.setVisible(awUser.isRegisteredInConf(self._conf))
             else:
-                self._eTicketOpt.setVisible(False)
+                try:
+                    self._eTicketOpt.setVisible(False)
+                except: pass
             self._newRegFormOpt.setVisible(not awUser.isRegisteredInConf(self._conf))
         else:
             self._viewRegFormOpt.setVisible(False)
