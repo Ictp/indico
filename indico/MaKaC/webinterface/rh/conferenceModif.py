@@ -45,7 +45,7 @@ from MaKaC.webinterface.rh.base import RH   # Strange conflict was here: this li
 from MaKaC.webinterface.pages import admins
 from MaKaC.webinterface.rh.conferenceBase import RHConferenceBase, RHAlarmBase, RHSubmitMaterialBase
 from MaKaC.webinterface.rh.categoryDisplay import UtilsConference
-from MaKaC.common import Config
+from indico.core.config import Config
 from MaKaC.errors import MaKaCError, FormValuesError,ModificationError,\
     ConferenceClosedError, NoReportError, NotFoundError
 from MaKaC.PDFinterface.conference import ConfManagerAbstractsToPDF, ConfManagerContribsToPDF, RegistrantsListToBadgesPDF, LectureToPosterPDF
@@ -160,15 +160,17 @@ class RHConfScreenDatesEdit(RHConferenceModifBase):
             self._target.setScreenEndDate(self._eDate)
             self._redirect(url)
             return
-        p=conferences.WPScreenDatesEdit(self,self._target)
+        p = conferences.WPScreenDatesEdit(self, self._target)
         return p.display()
 
-class RHConferenceModifKey( RHConferenceModifBase ):
 
-    def _checkParams( self, params ):
-        RHConferenceBase._checkParams(self, params )
-        self._modifkey = params.get( "modifKey", "" ).strip()
-        self._redirectURL = params.get("redirectURL","")
+class RHConferenceModifKey(RHConferenceModifBase):
+
+    def _checkParams(self, params):
+        RHConferenceBase._checkParams(self, params)
+        self._modifkey = params.get("modifKey", "").strip()
+        self._doNotSanitizeFields.append("modifKey")
+        self._redirectURL = params.get("redirectURL", "")
 
     def _checkProtection(self):
         modif_keys = session.setdefault('modifKeys', {})
@@ -231,6 +233,7 @@ class RHConferenceCloseModifKey(RHConferenceBase):
     def _checkParams(self, params):
         RHConferenceBase._checkParams(self, params)
         self._modifkey = params.get("modifKey", "").strip()
+        self._doNotSanitizeFields.append("modifKey")
         self._redirectURL = params.get("redirectURL", "")
 
     def _process(self):
@@ -1088,31 +1091,30 @@ class RHCreateAlarm( RoomBookingDBMixin, RHConferenceModifBase ):
         self._hour = int(params["hour"])
         self._minute = int(params["minute"])
         self._timeBefore = int(params.get("timeBefore", 0))
-        if self._dateType == "2" and  self._timeBefore <= 0:
+        if self._dateType == "2" and self._timeBefore <= 0:
             raise FormValuesError(_("Time before the beginning of the event should be bigger than zero"))
         self._timeTypeBefore = params["timeTypeBefore"]
-        self._note = params.get("note","")
-        self._includeConf = params.get("includeConf",None)
-        self._alarmId = params.get("alarmId",None)
+        self._note = params.get("note", "")
+        self._includeConf = params.get("includeConf", None)
+        self._alarmId = params.get("alarmId", None)
         self._testAlarm = False
 
-    def _initializeAlarm(self, dryRun = False):
-        if dryRun: # sending now
+    def _initializeAlarm(self, dryRun=False):
+        if dryRun:  # sending now
             dtStart = timezoneUtils.nowutc()
             relative = None
         else:
-            if self._dateType == "1": # given date
-                dtStart = timezone(self._conf.getTimezone()).localize(
-                    datetime(self._year,
-                             self._month,
-                             self._day,
-                             self._hour,
-                             self._minute)).astimezone(timezone('UTC'))
+            if self._dateType == "1":  # given date
+                dtStart = timezone(self._conf.getTimezone()).localize(datetime(self._year,
+                                                                              self._month,
+                                                                              self._day,
+                                                                              self._hour,
+                                                                              self._minute)).astimezone(timezone('UTC'))
                 relative = None
-            elif self._dateType == "2": # N days/hours before the event
-                if self._timeTypeBefore=="days":
+            elif self._dateType == "2":  # N days/hours before the event
+                if self._timeTypeBefore == "days":
                     delta = timedelta(days=self._timeBefore)
-                elif self._timeTypeBefore=="hours":
+                elif self._timeTypeBefore == "hours":
                     delta = timedelta(0, self._timeBefore * 3600)
                 dtStart = self._target.getStartDate() - delta
                 relative = delta
@@ -2302,17 +2304,45 @@ class RHConfModifDisplayDownLink( RHConferenceModifBase ):
         self._redirect(urlHandlers.UHConfModifDisplayMenu.getURL(link))
 
 
-class RHConfModifDisplayModifyData( RHConferenceModifBase ):
+class RHConfModifDisplayToggleTimetableView(RHConferenceModifBase):
+    _uh = urlHandlers.UHConfModifDisplayToggleTimetableView
+
+    def _checkParams(self, params):
+        RHConferenceModifBase._checkParams(self, params)
+        self._linkId = params.get("linkId", "")
+
+    def _process(self):
+        menu = displayMgr.ConfDisplayMgrRegistery().getDisplayMgr(self._conf).getMenu()
+        link = menu.getLinkById(self._linkId)
+        menu.set_timetable_detailed_view(not menu.is_timetable_detailed_view())
+        self._redirect(urlHandlers.UHConfModifDisplayMenu.getURL(link))
+
+
+class RHConfModifDisplayToggleTTDefaultLayout(RHConferenceModifBase):
+    _uh = urlHandlers.UHConfModifDisplayToggleTTDefaultLayout
+
+    def _checkParams(self, params):
+        RHConferenceModifBase._checkParams(self, params)
+        self._linkId = params.get("linkId", "")
+
+    def _process(self):
+        menu = displayMgr.ConfDisplayMgrRegistery().getDisplayMgr(self._conf).getMenu()
+        link = menu.getLinkById(self._linkId)
+        menu.toggle_timetable_layout()
+        self._redirect(urlHandlers.UHConfModifDisplayMenu.getURL(link))
+
+
+class RHConfModifDisplayModifyData(RHConferenceModifBase):
     _uh = urlHandlers.UHConfModifDisplayRemoveLink
 
-    def _checkParams( self, params ):
-        RHConferenceModifBase._checkParams( self, params )
+    def _checkParams(self, params):
+        RHConferenceModifBase._checkParams(self, params)
         self._linkId = params.get("linkId", "")
         self._cancel = params.get("cancel", "")
         self._confirm = params.get("confirm", "")
         self._params = params
 
-    def _process( self ):
+    def _process(self):
 
         if self._cancel:
             menu = displayMgr.ConfDisplayMgrRegistery().getDisplayMgr(self._conf).getMenu()

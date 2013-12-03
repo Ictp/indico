@@ -19,7 +19,7 @@
 from flask import session, request
 
 import os
-from MaKaC.common import Configuration, Config
+from indico.core.config import Config
 from MaKaC.common.cache import GenericCache
 import MaKaC.webinterface.rh.base as base
 import MaKaC.webinterface.rh.conferenceBase as conferenceBase
@@ -45,6 +45,7 @@ class RHSignInBase( base.RH ):
         self._signIn = params.get("signIn", "").strip()
         self._login = params.get("login", "").strip()
         self._password = params.get("password", "")
+        self._doNotSanitizeFields.append("password")
         self._returnURL = params.get("returnURL", "").strip()
         if self._returnURL:
             session['loginReturnURL'] = self._returnURL

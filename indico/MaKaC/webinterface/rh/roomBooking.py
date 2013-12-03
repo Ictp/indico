@@ -27,7 +27,7 @@ from collections import defaultdict
 
 import MaKaC.webinterface.urlHandlers as urlHandlers
 import MaKaC.webinterface.locators as locators
-from MaKaC.common.Configuration import Config
+from indico.core.config import Config
 from MaKaC.webinterface.rh.base import RoomBookingDBMixin, RHRoomBookingProtected
 from datetime import datetime, timedelta, date
 from MaKaC.common.utils import validMail, setValidEmailSeparators, parseDate
@@ -49,8 +49,8 @@ from MaKaC import plugins
 from MaKaC.plugins.RoomBooking.default.reservation import ResvHistoryEntry
 from MaKaC.plugins.RoomBooking.default.room import Room
 from MaKaC.plugins.RoomBooking.rb_roomblocking import RoomBlockingBase
-from MaKaC.plugins.RoomBooking.default.roomblocking import RoomBlockingPrincipal,\
-    BlockedRoom
+from MaKaC.plugins.RoomBooking.default.roomblocking import (RoomBlockingPrincipal,
+                                                            BlockedRoom)
 from MaKaC.plugins.RoomBooking.common import getRoomBookingOption
 from MaKaC.common.mail import GenericMailer
 from MaKaC.common.cache import GenericCache
@@ -451,42 +451,42 @@ class RHRoomBookingBase( RoomBookingAvailabilityParamsMixin, RoomBookingDBMixin,
             "useVC": getattr(c, 'useVC', False)
         }
 
-    def _getErrorsOfResvCandidate( self, c ):
+    def _getErrorsOfResvCandidate(self, c):
         errors = []
         self._thereAreConflicts = False
         if not c.bookedForName and not c.bookedForUser:
-            errors.append( "Booked for can not be blank" )
+            errors.append(_("Booked for can not be blank"))
         if not c.reason:
-            errors.append( "Purpose can not be blank" )
+            errors.append(_("Purpose can not be blank"))
         if not c.isRejected and not c.isCancelled:
-            collisions = c.getCollisions( sansID = self._candResv.id )
-            if len( collisions ) > 0:
+            collisions = c.getCollisions(sansID = self._candResv.id)
+            if len(collisions) > 0:
                 if self._skipConflicting and c.startDT.date() != c.endDT.date():
                     for collision in collisions:
-                        c.excludeDay( collision.startDT.date() )
+                        c.excludeDay(collision.startDT.date())
                 else:
                     self._thereAreConflicts = True
-                    errors.append( "There are conflicts with other bookings" )
+                    errors.append(_("There are conflicts with other bookings"))
             blockedDates = c.getBlockedDates(c.createdByUser())
-            if len( blockedDates ):
+            if len(blockedDates):
                 if self._skipConflicting and c.startDT.date() != c.endDT.date():
                     for blockedDate in blockedDates:
-                        c.excludeDay( blockedDate )
+                        c.excludeDay(blockedDate)
                 else:
                     self._thereAreConflicts = True
-                    errors.append( "There are conflicts with blockings" )
-
+                    errors.append(_("You cannot book this room on this date because the reservations during this \
+                                    period have been blocked by somebody else. Please try with another room or date"))
         return errors
 
-    def _loadResvCandidateFromSession( self, candResv, params ):
+    def _loadResvCandidateFromSession(self, candResv, params):
         # After successful searching or failed save
         roomID = params['roomID']
-        if isinstance( roomID, list ):
-            roomID = int( roomID[0] )
+        if isinstance(roomID, list):
+            roomID = int(roomID[0])
         else:
-            roomID = int( roomID )
-        roomLocation = params.get( "roomLocation" )
-        if isinstance( roomLocation, list ):
+            roomID = int(roomID)
+        roomLocation = params.get("roomLocation")
+        if isinstance(roomLocation, list):
             roomLocation = roomLocation[0]
         if not roomLocation:
             roomLocation = session.get('rbRoomLocation')
@@ -1331,12 +1331,13 @@ class RHRoomBookingRoomStats( RHRoomBookingBase ):
         p = roomBooking_wp.WPRoomBookingRoomStats( self )
         return p.display()
 
-class RHRoomBookingBookingDetails( RHRoomBookingBase ):
 
-    def _checkParams( self, params ):
+class RHRoomBookingBookingDetails(RHRoomBookingBase):
+
+    def _checkParams(self, params):
 
         locator = locators.WebLocator()
-        locator.setRoomBooking( params )
+        locator.setRoomBooking(params)
         self._resv = self._target = locator.getObject()
         if not self._resv:
             raise NoReportError("""The specified booking with id "%s" does not exist or has been deleted""" % params["resvID"])
@@ -1355,12 +1356,12 @@ class RHRoomBookingBookingDetails( RHRoomBookingBase ):
         self._clearSessionState()
         self._isAssistenceEmailSetup = getRoomBookingOption('assistanceNotificationEmails')
 
-    def _businessLogic( self ):
+    def _businessLogic(self):
         pass
 
-    def _process( self ):
+    def _process(self):
         self._businessLogic()
-        p = roomBooking_wp.WPRoomBookingBookingDetails( self )
+        p = roomBooking_wp.WPRoomBookingBookingDetails(self)
         return p.display()
 
 # 4. New
@@ -2448,7 +2449,18 @@ class RHRoomBookingBlockingList(RHRoomBookingBase):
         p = roomBooking_wp.WPRoomBookingBlockingList(self, blocks)
         return p.display()
 
+
 class RHRoomBookingBlockingForm(RHRoomBookingBase):
+
+    def _isOverlapping(self):
+        # date overlapping
+        for block in RoomBlockingBase.getByDateSpan(self._startDate, self._endDate):
+            # check for itself
+            if self._block.id != block.id:
+                # room overlapping
+                if any(block.getBlockedRoom(room) for room in self._blockedRooms):
+                    return True
+        return False
 
     def _checkParams(self, params):
 
@@ -2463,7 +2475,7 @@ class RHRoomBookingBlockingForm(RHRoomBookingBase):
             self._block.startDate = date.today()
             self._block.endDate = date.today()
 
-        self._hasErrors = False
+        self._errorMessage = ''
         if self._action == 'save':
             from MaKaC.services.interface.rpc import json
             self._reason = params.get('reason', '').strip()
@@ -2481,9 +2493,11 @@ class RHRoomBookingBlockingForm(RHRoomBookingBase):
             self._allowedUsers = [RoomBlockingPrincipal.getByTypeId(fossil['_type'], fossil['id']) for fossil in allowedUsers]
 
             if not self._reason or not self._blockedRooms:
-                self._hasErrors = True
+                self._errorMessage = _('Please check blocked rooms and reason for blocking.')
             elif self._createNew and (not self._startDate or not self._endDate or self._startDate > self._endDate):
-                self._hasErrors = True
+                self._errorMessage = _('Please check your blocking dates.')
+            elif self._isOverlapping():
+                self._errorMessage = _('Your blocking is overlapping with other blockings.')
 
     def _checkProtection(self):
         RHRoomBookingBase._checkProtection(self)
@@ -2497,7 +2511,7 @@ class RHRoomBookingBlockingForm(RHRoomBookingBase):
                 raise MaKaCError("Only users who own at least one room are allowed to create blockings.")
 
     def _process(self):
-        if self._action == 'save' and not self._hasErrors:
+        if self._action == 'save' and not self._errorMessage:
             self._block.message = self._reason
             if self._createNew:
                 self._block.createdByUser = self._getUser()
@@ -2524,7 +2538,7 @@ class RHRoomBookingBlockingForm(RHRoomBookingBase):
                 self._block.update()
             self._redirect(urlHandlers.UHRoomBookingBlockingsBlockingDetails.getURL(self._block))
 
-        elif self._action == 'save' and self._createNew and self._hasErrors:
+        elif self._action == 'save' and self._createNew and self._errorMessage:
             # If we are creating a new blocking and there are errors, populate the block object anyway to preserve the entered values
             self._block.message = self._reason
             self._block.startDate = self._startDate
@@ -2533,7 +2547,7 @@ class RHRoomBookingBlockingForm(RHRoomBookingBase):
             for room in self._blockedRooms:
                 self._block.addBlockedRoom(BlockedRoom(room))
 
-        p = roomBooking_wp.WPRoomBookingBlockingForm(self, self._block, self._hasErrors)
+        p = roomBooking_wp.WPRoomBookingBlockingForm(self, self._block, self._errorMessage)
         return p.display()
 
     @property

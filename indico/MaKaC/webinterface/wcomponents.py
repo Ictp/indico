@@ -45,11 +45,11 @@ from MaKaC import schedule
 from MaKaC.common import info
 from MaKaC import domain
 from MaKaC.webinterface import urlHandlers
-from MaKaC.common import Configuration
+from indico.core import config as Configuration
 from MaKaC import webcast
 from MaKaC.accessControl import AdminList
 from MaKaC.common.url import URL
-from MaKaC.common import Config
+from indico.core.config import Config
 from MaKaC.webinterface.common.person_titles import TitlesRegistry
 from MaKaC.conference import Conference, Category
 from MaKaC.webinterface.common.timezones import TimezoneRegistry, DisplayTimezoneRegistry
@@ -284,13 +284,12 @@ class WHeader(WTemplated):
         Returns an array with the status (Public, Protected, Restricted) and extra info(domain list)
     """
     def _getProtection(self, target):
-        if not target.hasAnyProtection():
-            return ["Public", _("Public")]
-        if target.isItselfProtected():
+        if target.isProtected():
             return ["Restricted", _("Restricted")]
-        if target.getDomainList() != []:
-            return ["DomainProtected", _("%s domain only")%(", ".join(map(lambda x: x.getName(), target.getDomainList())))]
-        return self._getProtection(target.getOwner())
+        domain_list = target.getAccessController().getAnyDomainProtection()
+        if domain_list:
+            return ["DomainProtected", _("%s domain only")%(", ".join(map(lambda x: x.getName(), domain_list)))]
+        return ["Public", _("Public")]
 
     def getVars( self ):
         vars = WTemplated.getVars( self )
@@ -3839,15 +3838,16 @@ class Bar( Fossilizable ):
     Keeps data necessary for graphical bar on calendar.
     """
     fossilizes(IBarFossil)
-    PREBOOKED, PRECONCURRENT, UNAVAILABLE, CANDIDATE, PRECONFLICT, CONFLICT = xrange( 0, 6 )
+    BLOCKED, PREBOOKED, PRECONCURRENT, UNAVAILABLE, CANDIDATE, PRECONFLICT, CONFLICT = xrange(0, 7)
     # I know this names are not wisely choosed; it's due to unexpected additions
     # without refactoring
-    # UNAVAILABLE :   represents confirmed reservation (bright-red)
+    # BLOCKED:        room is blocked (dark-gray)
     # CANDIDATE:      represents new reservation (green)
     # CONFLICT:       overlap between candidate and confirmed resv. (dark red)
     # PREBOOKED:      represents pre-reservation (yellow)
     # PRECONFLICT:    represents conflict with pre-reservation (orange)
     # PRECONCURRENT:  conflicting pre-reservations
+    # UNAVAILABLE :   represents confirmed reservation (bright-red)
 
     def __init__( self, c, barType ):
         self.startDT = c.startDT
@@ -3970,9 +3970,11 @@ class WRoomBookingBookRoom( WTemplated ):
 
     def getVars( self ):
         vars = WTemplated.getVars( self )
+        rooms = self._rh._rooms
 
         vars["today"] = datetime.now()
-        vars["rooms"] = self._rh._rooms
+        vars["rooms"] = fossilize(rooms)
+        vars["maxRoomCapacity"] = max(room.capacity for room in rooms) if rooms else 0
         vars["roomBookingBookingListURL"] = urlHandlers.UHRoomBookingBookingListForBooking.getURL(newBooking = 'True')
 
         return vars
@@ -4077,14 +4079,17 @@ class WRoomBookingList( WTemplated ):
 
         return vars
 
-class WRoomBookingBookingList( WTemplated ): # Standalone version
 
-    def __init__( self, rh ):
+class WRoomBookingBookingList(WTemplated):  # Standalone version
+
+    def __init__(self, rh):
         self._rh = rh
         self._candResvs = rh._candResvs
         self._title = None
-        try: self._title = self._rh._title;
-        except: pass
+        try:
+            self._title = self._rh._title
+        except:
+            pass
 
     def _isOn(self, boolVal):
         if boolVal:
@@ -4092,8 +4097,8 @@ class WRoomBookingBookingList( WTemplated ): # Standalone version
         else:
             return ""
 
-    def getVars( self ):
-        vars = WTemplated.getVars( self )
+    def getVars(self):
+        vars = WTemplated.getVars(self)
         rh = self._rh
         candResvs = self._candResvs
 
@@ -4106,8 +4111,8 @@ class WRoomBookingBookingList( WTemplated ): # Standalone version
         vars["prebookingsRejected"] = rh._prebookingsRejected
         vars["subtitle"] = rh._subtitle
         vars["description"] = rh._description
-        yesterday = datetime.now() - timedelta( 1 )
-        vars["yesterday"] = yesterday #datetime( dm.year, dm.month, dm.day, 0, 0, 1 )
+        yesterday = datetime.now() - timedelta(1)
+        vars["yesterday"] = yesterday  # datetime( dm.year, dm.month, dm.day, 0, 0, 1 )
         ed = None
         sd = rh._resvEx.startDT.date()
         if rh._resvEx.endDT:
@@ -4131,12 +4136,12 @@ class WRoomBookingBookingList( WTemplated ): # Standalone version
                 ed = sd + timedelta(7)
 
         # set the calendar dates as calculated
-        calendarStartDT = datetime( sd.year, sd.month, sd.day, 0, 0 )
-        calendarEndDT = datetime( ed.year, ed.month, ed.day, 23, 59 )
+        calendarStartDT = datetime(sd.year, sd.month, sd.day, 0, 0)
+        calendarEndDT = datetime(ed.year, ed.month, ed.day, 23, 59)
 
         from MaKaC.common.utils import formatDate
 
-        if  calendarStartDT.date() == calendarEndDT.date():
+        if calendarStartDT.date() == calendarEndDT.date():
             vars["periodName"] = "day"
         else:
             vars["periodName"] = "period"
@@ -4146,13 +4151,12 @@ class WRoomBookingBookingList( WTemplated ): # Standalone version
         # Data for previous/next URLs (it's about periods, not paging)
         newParams4Previous = rh._reqParams.copy()
         newParams4Next = rh._reqParams.copy()
-        if rh._reqParams.has_key( 'autoCriteria' ):
+        if rh._reqParams.has_key('autoCriteria'):
             del newParams4Previous['autoCriteria']
             del newParams4Next['autoCriteria']
-        if rh._reqParams.has_key( 'day' ):
+        if rh._reqParams.has_key('day'):
             del newParams4Previous['day']
             del newParams4Next['day']
-
 
         startD = calendarStartDT.date()
         endD = calendarEndDT.date()
@@ -4183,10 +4187,10 @@ class WRoomBookingBookingList( WTemplated ): # Standalone version
         newParams4Next['eMonth'] = nextEndD.month
         newParams4Next['eYear'] = nextEndD.year
 
-        vars["attributes"] = { }
+        vars["attributes"] = {}
         vars["withPrevNext"] = True
-        vars["prevURL"] = urlHandlers.UHRoomBookingBookingList.getURL( newParams = newParams4Previous )
-        vars["nextURL"] = urlHandlers.UHRoomBookingBookingList.getURL( newParams = newParams4Next )
+        vars["prevURL"] = urlHandlers.UHRoomBookingBookingList.getURL(newParams=newParams4Previous)
+        vars["nextURL"] = urlHandlers.UHRoomBookingBookingList.getURL(newParams=newParams4Next)
 
         vars['overload'] = self._rh._overload
         vars['dayLimit'] = self._rh._dayLimit
@@ -4207,14 +4211,18 @@ class WRoomBookingBookingList( WTemplated ): # Standalone version
         collisionsOfResvs = []
 
         # Bars: Candidate reservation
-        collisions = [] # only with confirmed resvs
+        collisions = []  # only with confirmed resvs
         for candResv in candResvs:
             periodsOfCandResv = candResv.splitToPeriods()
+            for b in candResv.getBlockedDates():
+                bStartDT = datetime.combine(b, datetime.min.time())
+                bEndDT = datetime.combine(b, datetime.max.time())
+                bars.append(Bar(Collision((bStartDT, bEndDT), candResv), Bar.BLOCKED))
             for p in periodsOfCandResv:
-                bars.append( Bar( Collision( (p.startDT, p.endDT), candResv ), Bar.CANDIDATE  ) )
+                bars.append(Bar(Collision((p.startDT, p.endDT), candResv), Bar.CANDIDATE))
 
             # Bars: Conflicts all vs candidate
-            candResvIsConfirmed = candResv.isConfirmed;
+            candResvIsConfirmed = candResv.isConfirmed
             candResv.isConfirmed = None
 
             candResv.startDT, calendarStartDT = calendarStartDT, candResv.startDT
@@ -4228,30 +4236,30 @@ class WRoomBookingBookingList( WTemplated ): # Standalone version
             candResv.isConfirmed = candResvIsConfirmed
             if candResv.id:
                 # Exclude candidate vs self pseudo-conflicts (Booking modification)
-                allCollisions = filter( lambda c: c.withReservation.id != candResv.id, allCollisions )
+                allCollisions = filter(lambda c: c.withReservation.id != candResv.id, allCollisions)
             for c in allCollisions:
                 if c.withReservation.isConfirmed:
-                    bars.append( Bar( c, Bar.UNAVAILABLE ) )
+                    bars.append(Bar(c, Bar.UNAVAILABLE))
                 else:
-                    bars.append( Bar( c, Bar.PREBOOKED ) )
+                    bars.append(Bar(c, Bar.PREBOOKED))
 
             allCollisions = candResv.getCollisions()
 
             for c in allCollisions:
                 if c.withReservation.isConfirmed:
-                    bars.append( Bar( c, Bar.CONFLICT ) )
-                    collisions.append( c )
+                    bars.append(Bar(c, Bar.CONFLICT))
+                    collisions.append(c)
                 else:
-                    bars.append( Bar( c, Bar.PRECONFLICT ) )
+                    bars.append(Bar(c, Bar.PRECONFLICT))
 
             if not candResv.isRejected and not candResv.isCancelled:
-                vars["thereAreConflicts"] = len( collisions ) > 0
+                vars["thereAreConflicts"] = len(collisions) > 0
             else:
                 vars["thereAreConflicts"] = False
-            vars["conflictsNumber"] = len( collisions )
+            vars["conflictsNumber"] = len(collisions)
 
         # there's at least one reservation
-        if len( rh._resvs ) > 0:
+        if len(rh._resvs) > 0:
 
             # Prepare the list of Collisions
             # (collision is just a helper object, it's not the best notion here)
@@ -4259,18 +4267,18 @@ class WRoomBookingBookingList( WTemplated ): # Standalone version
             for r in rh._resvs:
                 for p in r.splitToPeriods(endDT=calendarEndDT, startDT=calendarStartDT):
                     if p.startDT >= calendarStartDT and p.endDT <= calendarEndDT:
-                        collisionsOfResvs.append( Collision( ( p.startDT, p.endDT ), r ) )
+                        collisionsOfResvs.append(Collision((p.startDT, p.endDT), r))
 
             # Translate collisions to Bars
             for c in collisionsOfResvs:
                 if c.withReservation.isConfirmed:
-                    bars.append( Bar( c, Bar.UNAVAILABLE ) )
+                    bars.append(Bar(c, Bar.UNAVAILABLE))
                 else:
-                    bars.append( Bar( c, Bar.PREBOOKED ) )
+                    bars.append(Bar(c, Bar.PREBOOKED))
 
-            bars = barsList2Dictionary( bars )
-            bars = addOverlappingPrebookings( bars )
-            bars = sortBarsByImportance( bars, calendarStartDT, calendarEndDT )
+            bars = barsList2Dictionary(bars)
+            bars = addOverlappingPrebookings(bars)
+            bars = sortBarsByImportance(bars, calendarStartDT, calendarEndDT)
 
             rooms = set(r.room for r in rh._resvs)
 
@@ -4278,7 +4286,7 @@ class WRoomBookingBookingList( WTemplated ): # Standalone version
             if not self._rh._onlyMy:
                 rooms = self._rh._rooms
 
-            bars = introduceRooms( rooms, bars, calendarStartDT, calendarEndDT, showEmptyDays = showEmptyDays, showEmptyRooms = showEmptyRooms, user = rh._aw.getUser() )
+            bars = introduceRooms(rooms, bars, calendarStartDT, calendarEndDT, showEmptyDays=showEmptyDays, showEmptyRooms=showEmptyRooms, user=rh._aw.getUser())
 
             vars["Bar"] = Bar
 
@@ -4287,8 +4295,8 @@ class WRoomBookingBookingList( WTemplated ): # Standalone version
         # we want to display every room, with or without reservation
         else:
             # initialize collision bars
-            bars = barsList2Dictionary( bars )
-            bars = sortBarsByImportance( bars, calendarStartDT, calendarEndDT )
+            bars = barsList2Dictionary(bars)
+            bars = sortBarsByImportance(bars, calendarStartDT, calendarEndDT)
 
             # insert rooms
             if not self._rh._onlyMy:
@@ -4296,8 +4304,7 @@ class WRoomBookingBookingList( WTemplated ): # Standalone version
             else:
                     rooms = []
 
-            bars = introduceRooms( rooms, bars, calendarStartDT, calendarEndDT, showEmptyDays = showEmptyDays, showEmptyRooms = showEmptyRooms, user = rh._aw.getUser() )
-
+            bars = introduceRooms(rooms, bars, calendarStartDT, calendarEndDT, showEmptyDays=showEmptyDays, showEmptyRooms=showEmptyRooms, user=rh._aw.getUser())
 
         fossilizedBars = {}
         for key in bars:
@@ -4321,18 +4328,18 @@ class WRoomBookingBookingList( WTemplated ): # Standalone version
         vars["manyRooms"] = not self._rh._rooms or len(self._rh._rooms) > 1
         vars["calendarParams"] = {}
         if self._title and rh._ofMyRooms:
-            vars["calendarParams"]["ofMyRooms"] ="on"
+            vars["calendarParams"]["ofMyRooms"] = "on"
         elif rh._onlyMy:
             vars["calendarParams"]["onlyMy"] = "on"
         elif rh._allRooms:
             vars["calendarParams"]["roomGUID"] = "allRooms"
         else:
             for room in rh._roomGUIDs:
-                vars["calendarParams"]["roomGUID"]= room
+                vars["calendarParams"]["roomGUID"] = room
         if rh._onlyPrebookings:
             vars["calendarParams"]["onlyPrebookings"] = "on"
         if rh._onlyBookings:
-            vars["calendarParams"]["onlyBookings"] ="on"
+            vars["calendarParams"]["onlyBookings"] = "on"
         vars["repeatability"] = rh._repeatability
         vars["flexibleDatesRange"] = rh._flexibleDatesRange
         vars["calendarFormUrl"] = urlHandlers.UHRoomBookingBookingList.getURL()
@@ -4341,12 +4348,11 @@ class WRoomBookingBookingList( WTemplated ): # Standalone version
 
         return vars
 
-
     def __sortUsingCriterion(self, order, uresvs):
 
-        if order == "" or order =="room":
+        if order == "" or order == "room":
             # standard sorting order (by room, and then date)
-            uresvs.sort(lambda r1,r2: cmp(r1.withReservation.room.name,r2.withReservation.room.name))
+            uresvs.sort(lambda r1, r2: cmp(r1.withReservation.room.name, r2.withReservation.room.name))
         else:
             if order == 'date':
                 uresvs.sort(lambda r1, r2: cmp(r1.startDT, r2.startDT))
@@ -4360,7 +4366,7 @@ class WRoomBookingBookingList( WTemplated ): # Standalone version
 
 # 3. Details of...
 
-def barsList2Dictionary( bars ):
+def barsList2Dictionary(bars):
     """
     Converts:
     list of bars => dictionary of bars, key = datetime, value = list of bars
@@ -4368,13 +4374,14 @@ def barsList2Dictionary( bars ):
     h = {}
     for bar in bars:
         d = bar.startDT.date()
-        if h.has_key( d ):
-            h[d].append( bar )
+        if h.has_key(d):
+            h[d].append(bar)
         else:
             h[d] = [bar]
     return h
 
-def addOverlappingPrebookings( bars ):
+
+def addOverlappingPrebookings(bars):
     """
     Adds bars representing overlapping pre-bookings.
     Returns new bars dictionary.
@@ -4385,26 +4392,27 @@ def addOverlappingPrebookings( bars ):
         dayBars = bars[dt]
 
         # For each (prebooked) bar i
-        for i in xrange( 0, len( dayBars ) ):
+        for i in xrange(0, len(dayBars)):
             bar = dayBars[i]
             if bar.type == Bar.PREBOOKED:
 
                 # For each (prebooked) bar j
-                for j in xrange( i+1, len( dayBars ) ):
+                for j in xrange(i+1, len(dayBars)):
                     collCand = dayBars[j]
                     if collCand.type == Bar.PREBOOKED:
 
                         # If there is an overlap, add PRECONCURRENT bar
-                        over = overlap( bar.startDT, bar.endDT, collCand.startDT, collCand.endDT )
+                        over = overlap(bar.startDT, bar.endDT, collCand.startDT, collCand.endDT)
                         if over and bar.forReservation.room == collCand.forReservation.room and collCand.forReservation != bar.forReservation:
-                            collision = Collision( over, collCand.forReservation )
-                            dayBars.append( Bar( collision, Bar.PRECONCURRENT ) )
+                            collision = Collision(over, collCand.forReservation)
+                            dayBars.append(Bar(collision, Bar.PRECONCURRENT))
 
         bars[dt] = dayBars # With added concurrent prebooking bars
 
     return bars
 
-def sortBarsByImportance( bars, calendarStartDT, calendarEndDT ):
+
+def sortBarsByImportance(bars, calendarStartDT, calendarEndDT):
     """
     Moves conflict bars to the end of the list,
     so they will be drawn last and therefore be visible.
@@ -4416,7 +4424,7 @@ def sortBarsByImportance( bars, calendarStartDT, calendarEndDT ):
         dayBars.sort()
         bars[dt] = dayBars
 
-    for day in iterdays( calendarStartDT, calendarEndDT ):
+    for day in iterdays(calendarStartDT, calendarEndDT):
         if not bars.has_key( day.date() ):
            bars[day.date()] = []
 
@@ -4619,31 +4627,30 @@ class WRoomBookingDetails(WTemplated):
         self._conf = conference
         self._standalone = (conference is None)
 
-    def getVars( self ):
-        vars=WTemplated.getVars( self )
-        vars["standalone"] = self._standalone
-        vars["reservation"] = self._resv
-        vars["collisions"] = self._rh._collisions
-        vars["config"] = Config.getInstance()
-        vars["actionSucceeded"] = self._rh._afterActionSucceeded
+    def getVars(self):
+        wvars = WTemplated.getVars( self )
+        wvars["standalone"] = self._standalone
+        wvars["reservation"] = self._resv
+        wvars["collisions"] = self._rh._collisions
+        wvars["config"] = Config.getInstance()
+        wvars["actionSucceeded"] = self._rh._afterActionSucceeded
         if self._rh._afterActionSucceeded:
-            vars["title"] = self._rh._title
-            vars["description"] = self._rh._description
+            wvars["title"] = self._rh._title
+            wvars["description"] = self._rh._description
 
         if self._standalone:
-            vars["roomDetailsUH"] = urlHandlers.UHRoomBookingRoomDetails
-            vars["modifyBookingUH"] = urlHandlers.UHRoomBookingModifyBookingForm
-            vars["cloneURL"] = urlHandlers.UHRoomBookingCloneBooking.getURL(self._resv)
+            wvars["roomDetailsUH"] = urlHandlers.UHRoomBookingRoomDetails
+            wvars["modifyBookingUH"] = urlHandlers.UHRoomBookingModifyBookingForm
+            wvars["cloneURL"] = urlHandlers.UHRoomBookingCloneBooking.getURL(self._resv)
         else:
-            vars["roomDetailsUH"] = urlHandlers.UHConfModifRoomBookingRoomDetails
-            vars["modifyBookingUH"] = urlHandlers.UHConfModifRoomBookingModifyBookingForm
-            vars["cloneURL"] = urlHandlers.UHConfModifRoomBookingCloneBooking.getURL(self._resv)
+            wvars["roomDetailsUH"] = urlHandlers.UHConfModifRoomBookingRoomDetails
+            wvars["modifyBookingUH"] = urlHandlers.UHConfModifRoomBookingModifyBookingForm
+            wvars["cloneURL"] = urlHandlers.UHConfModifRoomBookingCloneBooking.getURL(self._resv)
 
-        vars["bookMessage"] = "Book"
-        if not self._resv.isConfirmed:
-            vars["bookMessage"] = "PRE-Book"
+        wvars["isPreBooking"] = not self._resv.isConfirmed
+        wvars["bookMessage"] = _("PRE-Booking") if wvars["isPreBooking"] else _("Booking")
 
-        return vars
+        return wvars
 
 # 4. Booking Form
 
@@ -4992,17 +4999,19 @@ class WRoomBookingBlockingList(WTemplated):
         vars['blocks'] = self._blocks
         return vars
 
+
 class WRoomBookingBlockingForm(WTemplated):
 
-    def __init__(self, block, hasErrors):
+    def __init__(self, block, errorMessage):
         self._block = block
-        self._hasErrors = hasErrors
+        self._errorMessage = errorMessage
 
     def getVars(self):
-        vars = WTemplated.getVars(self)
-        vars['block'] = self._block
-        vars['hasErrors'] = self._hasErrors
-        return vars
+        wvars = WTemplated.getVars(self)
+        wvars['block'] = self._block
+        wvars['errorMessage'] = self._errorMessage
+        return wvars
+
 
 class WUtils:
     """A interface for creating easily some HTML elements..."""

@@ -17,13 +17,14 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Indico;if not, see <http://www.gnu.org/licenses/>.
 
+from flask import request
 import tempfile
 
 import MaKaC.webinterface.locators as locators
 import MaKaC.webinterface.urlHandlers as urlHandlers
 import MaKaC.webinterface.pages.category as category
 from MaKaC.webinterface.user import UserListModificationBase
-from MaKaC.common.Configuration import Config
+from indico.core.config import Config
 from MaKaC.common.utils import sortCategoryByTitle, validMail
 import MaKaC.user as user
 from MaKaC.webinterface.rh.base import RHModificationBaseProtected,\
@@ -110,7 +111,9 @@ class RHCategoryPerformModification( RHCategModifBase ):
             self._target.setDefaultStyle("meeting",params.get("defaultMeetingStyle", ""),subcat)
             if self._target.getVisibility() != int(params.get("visibility",999)):
                 self._target.setVisibility(params.get("visibility",999))
-            if  "delete" in params and self._target.getIcon() is not None:
+            if self._getUser().isAdmin():
+                self._target.setSuggestionsDisabled('disableSuggestions' in request.form)
+            if "delete" in params and self._target.getIcon() is not None:
                 self._target.removeIcon()
             if "icon" in params and type(params["icon"]) != str and \
                    params["icon"].filename.strip() != "":

@@ -25,7 +25,7 @@ from MaKaC.rb_room import RoomBase
 from MaKaC.rb_location import CrossLocationQueries, Location
 from MaKaC.plugins.RoomBooking.default.factory import Factory
 from MaKaC.rb_tools import qbeMatch
-from MaKaC.common.Configuration import Config
+from indico.core.config import Config
 from indico.core.db import DBMgr
 from MaKaC.webinterface import urlHandlers
 
@@ -499,14 +499,28 @@ class Room( Persistent, RoomBase, Fossilizable ):
     def getTipPhotoURL(self):
         """ URL of the tip photo of the room """
         from MaKaC.webinterface.urlHandlers import UHRoomPhoto
-        photoId = self._doGetPhotoId()
-        if not photoId:
-            photoId = "NoPhoto"
+        photoId = self._doGetPhotoId() or "NoPhoto"
         return str(UHRoomPhoto.getURL(photoId))
+
+    def getThumbnailPhotoURL(self):
+        """ URL of the tip photo of the room """
+        from MaKaC.webinterface.urlHandlers import UHRoomPhotoSmall
+        if self._doGetPhotoId():
+            photoId = self._doGetPhotoId()
+            return str(UHRoomPhotoSmall.getURL(photoId))
+        else:
+            photoId = "NoPhoto"
+            return str(UHRoomPhotoSmall.getURL(photoId, "png"))
+
+    def hasPhoto(self):
+        return self._doGetPhotoId() is not None
 
     def getIsAutoConfirm(self):
         """ Has the room auto-confirmation of schedule? """
         return not self.resvsNeedConfirmation
+
+    def isPublic(self):
+        return self.isReservable and not self.customAtts.get('Booking Simba List')
 
     locationName = property( getLocationName, setLocationName )
 

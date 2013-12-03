@@ -381,18 +381,19 @@ class WPRoomBookingRoomStats( WPRoomBookingBase ):
         wc = wcomponents.WRoomBookingRoomStats( self._rh, standalone = True )
         return wc.getHTML( params )
 
-class WPRoomBookingBookingDetails( WPRoomBookingBase ):
 
-    def __init__( self, rh ):
+class WPRoomBookingBookingDetails(WPRoomBookingBase):
+
+    def __init__(self, rh):
         self._rh = rh
-        WPRoomBookingBase.__init__( self, rh )
+        WPRoomBookingBase.__init__(self, rh)
 
-    def _setCurrentMenuItem( self ):
+    def _setCurrentMenuItem(self):
         self._bookRoomNewOpt.setActive(True)
 
-    def _getBody( self, params ):
-        wc = wcomponents.WRoomBookingDetails( self._rh )
-        return wc.getHTML( params )
+    def _getBody(self, params):
+        wc = wcomponents.WRoomBookingDetails(self._rh)
+        return wc.getHTML(params)
 
 # 4. New booking
 
@@ -470,16 +471,17 @@ class WPRoomBookingBlockingList(WPRoomBookingBase):
         wc = wcomponents.WRoomBookingBlockingList(self._blocks)
         return wc.getHTML(params)
 
+
 class WPRoomBookingBlockingForm(WPRoomBookingBase):
 
-    def __init__(self, rh, block, hasErrors):
+    def __init__(self, rh, block, errorMessage):
         WPRoomBookingBase.__init__(self, rh)
         self._block = block
-        self._hasErrors = hasErrors
+        self._errorMessage = errorMessage
 
-    def _setCurrentMenuItem( self ):
+    def _setCurrentMenuItem(self):
         self._blockRooms.setActive(True)
 
     def _getBody(self, params):
-        wc = wcomponents.WRoomBookingBlockingForm(self._block, self._hasErrors)
+        wc = wcomponents.WRoomBookingBlockingForm(self._block, self._errorMessage)
         return wc.getHTML(params)

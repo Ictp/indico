@@ -23,7 +23,7 @@ from MaKaC.webinterface import urlHandlers
 from MaKaC.webinterface.common.contribFilters import PosterFilterField
 from MaKaC.common.utils import formatDateTime, formatTwoDates, formatTime, formatDuration
 from MaKaC.common.timezoneUtils import getAdjustedDate, isSameDay, minDatetime
-from MaKaC.common.Configuration import Config
+from indico.core.config import Config
 from MaKaC.conference import Contribution, Conference
 from MaKaC.plugins.Collaboration.fossils import ICSBookingBaseIndexingFossil, \
     IQueryResultFossil, ICSBookingInstanceIndexingFossil
@@ -84,6 +84,10 @@ class CollaborationTools(object):
             optionName: a string with the name of the option
         """
         return cls.getCollaborationPluginType().getPlugin(pluginId).getOption(optionName).getRooms()
+
+    @classmethod
+    def hasOption(cls, pluginId, optionName):
+        return cls.getCollaborationPluginType().getPlugin(pluginId).hasOption(optionName)
 
     @classmethod
     def hasCollaborationOption(cls, optionName):

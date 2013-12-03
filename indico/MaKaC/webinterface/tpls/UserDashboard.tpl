@@ -56,6 +56,32 @@
                 % endif
                 </ol>
             </div>
+            % if suggested_categories:
+                <div id="suggestedCategories" class="dashboard-box suggestions">
+                    <h3>${_("You might be interested in the following categories...")}</h3>
+                    <ol>
+                        % for category in suggested_categories:
+                            <li class="suggestion" data-id="${ category["categ"].getId() }">
+                                <a href="${urlHandlers.UHCategoryDisplay.getURL(category["categ"])}" class="truncate">
+                                    <span class="category-name truncate-target">${category["categ"].getTitle()}</span>
+                                    <span class="item-legend">
+                                        <span title="You have favorited this category" class="icon-star contextHelp active"></span>
+                                    </span>
+                                    % if category["path"]:
+                                        <span class="category-path">${category["path"]}</span>
+                                    % endif
+                                </a>
+                                <div class="close-box">
+                                    <a href="#" title="${_('Click here to remove this suggestion. It will not be suggested again.')}" class="icon-close contextHelp active suggestion-remove"></a>
+                                </div>
+                                <div class="actions">
+                                    <a href="#" title="${_('Click here to add this category to your favorites.')}" class="icon-star contextHelp active suggestion-favorite"><span>${_('Add to favorites')}</span></a>
+                                </div>
+                            </li>
+                        % endfor
+                    </ol>
+                </div>
+            % endif
             <div id="happeningCategories" class="dashboard-box">
                 <h3>${_("Happening in your categories")}</h3>
                 <ol>
@@ -130,8 +156,6 @@ $(document).ready(function(){
         tz: "${timezone}"
     };
 
-    var TIMEZONE_OFFSET = "${offset}";
-
     // Your events
     % if redisEnabled:
         apiRequest("/user/linked_events", api_opts).done(function (resp) {
@@ -141,6 +165,17 @@ $(document).ready(function(){
                              <span class="event-title italic text-superfluous">' + $T("You have no events.") + '</span> \
                          </li>';
             } else {
+                var now = moment();
+                var past_events = _.filter(resp.results, function(e) {
+                    return momentDate(e.endDate) < now;
+                });
+                var current_events = _.filter(resp.results, function(e) {
+                    return momentDate(e.startDate) < now && now < momentDate(e.endDate);
+                });
+                var future_events = _.filter(resp.results, function(e){
+                    return now < momentDate(e.startDate);
+                });
+                resp.results = past_events.concat(current_events, future_events);
                 $.each(resp.results, function (i, item) {
                     html += '<li id="event-' + item.id + '" class="truncate"> \
                                  <a href="' + item.url + '" class="truncate"> \
@@ -185,12 +220,60 @@ $(document).ready(function(){
     });
     % endif
 
-    var getDate = function(startDate, endDate) {
-        var now = moment(),
-            start_date = moment(startDate.date + " " + startDate.time + " " + TIMEZONE_OFFSET),
-            end_date = moment(endDate.date + " " + endDate.time + " " + TIMEZONE_OFFSET);
+    var momentDate = function(date) {
+        var timezone_offset = "${offset}";
+        return moment(date.date + " " + date.time + " " + timezone_offset);
+    }
 
-        if (start_date < now && now < end_date) {
+    % if suggested_categories:
+        $('.suggestion-favorite').on('click', function(e) {
+            var container = $(this).closest('.suggestion');
+            var $this = $(this);
+            e.preventDefault();
+
+            indicoRequest('category.favorites.addCategory', {
+                categId: ''+container.data('id')
+            }, function(result, error) {
+                if (error) {
+                    $this.qtip({content: {text: $T('There has been an error. Please reload the page.')}});
+                    IndicoUtil.errorReport(error);
+                }
+                else {
+                    container.find('.actions, .close-box').remove();
+                    container.appendTo('#yourCategories ol');
+                    if(!$('#suggestedCategories ol > li').length) {
+                        $('#suggestedCategories').remove();
+                    }
+                }
+            });
+        });
+
+        $('.suggestion-remove').on('click', function(e) {
+            var container = $(this).closest('.suggestion');
+            var $this = $(this);
+            e.preventDefault();
+
+            indicoRequest('category.suggestions.delSuggestion', {
+                categId: ''+container.data('id')
+            }, function(result, error) {
+                if (error) {
+                    $this.qtip({content: {text: $T('There has been an error. Please reload the page.')}});
+                    IndicoUtil.errorReport(error);
+                }
+                else {
+                    container.remove();
+                    if (!$('#suggestedCategories ol > li').length) {
+                        $('#suggestedCategories').remove();
+                    }
+                }
+            });
+        });
+    % endif
+
+    var getDate = function(startDate, endDate) {
+        var now = moment();
+
+        if (momentDate(startDate) < now && now < momentDate(endDate)) {
             return $T("Now");
         } else {
             return moment(startDate.date).calendar();

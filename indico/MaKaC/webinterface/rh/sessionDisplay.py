@@ -24,9 +24,9 @@ from MaKaC.webinterface.rh.base import RHDisplayBaseProtected,\
     RoomBookingDBMixin
 from MaKaC.webinterface.rh.conferenceBase import RHSessionBase
 from MaKaC.webinterface.common.contribFilters import SortingCriteria
-from MaKaC.common import Config
+from indico.core.config import Config
 from indico.web.flask.util import send_file
-from indico.web.http_api.api import SessionHook
+from indico.web.http_api.hooks.event import SessionHook
 from indico.web.http_api.metadata.serializer import Serializer
 from MaKaC.webinterface.common.tools import cleanHTMLHeaderFilename
 

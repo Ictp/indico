@@ -1,11 +1,11 @@
     <div style="width:80%;">
-    <span class="groupTitleNoBorder">
+    <h2 class="page_title">
     % if rh._createNew:
          ${ _("New Blocking")}
     % else:
          ${ _("Modify Blocking")}
     % endif
-    </span><br />
+    </h2>
     % if rh._createNew:
         <em>When blocking rooms nobody but you, the rooms' managers and those users/groups you specify in the "Allowed users" list will be able to create bookings for the specified rooms in the given timeframe.
         You can also block rooms you do not own - however, those blockings have to be approved by the owners of those rooms.</em>
@@ -26,10 +26,9 @@
                 <table width="100%" cellpadding="0" cellspacing="0" class="htab" border="0">
                     <tr>
                         <td class="maincell">
-                            % if hasErrors:
-                                <span style="color: red; margin-left: 6px;"> ${ _("Saving failed.")}</span><br /><br />
+                            % if errorMessage:
+                                <p class="errorMessage">${ _("Saving failed.") }&nbsp;${ errorMessage }</p>
                             % endif
-                            <br />
                             <table width="100%" align="left" border="0">
                               <!-- WHEN -->
                               <tr>

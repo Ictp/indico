@@ -19,15 +19,27 @@
    along with Indico; if not, see <http://www.gnu.org/licenses/>.
 */
 
-@mixin before-icon($content) {
+%adjacent-icon {
+    font-family: 'icomoon-ultimate';
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    -webkit-font-smoothing: antialiased;
+}
+
+@mixin icon-after($icon-class) {
+    @extend .#{$icon-class}-after;
+    &:after {
+        @extend %adjacent-icon;
+        margin-left: 0.2em;
+    }
+}
+
+@mixin icon-before($icon-class) {
+    @extend .#{$icon-class};
     &:before {
-        font-family: 'icomoon-ultimate';
-        speak: none;
-        font-style: normal;
-        font-weight: normal;
-        font-variant: normal;
-        text-transform: none;
-        -webkit-font-smoothing: antialiased;
-        content: $content;
+        @extend %adjacent-icon;
     }
 }

@@ -23,7 +23,7 @@ var START_H = 6;
 // Width of the calendar
 var DAY_WIDTH_PX = 35 * 12 * 2;
 // Room types, used for selecting proper CSS classes
-var barClasses = ['barPreB', 'barPreC', 'barUnaval', 'barCand',  'barPreConc', 'barConf'];
+var barClasses = ['barBlocked', 'barPreB', 'barPreC', 'barUnaval', 'barCand', 'barPreConc', 'barConf'];
 
 
 // Compares two rooms. Mainly used for sorting.
@@ -40,11 +40,12 @@ function compareRooms(elem1, elem2){
 var calendarLegend = Html.div({style:{cssFloat: 'left', clear: 'both', padding: pixels(5), marginBottom: pixels(10), border: "1px solid #eaeaea", textAlign: "center", borderRadius: pixels(10)}},
         Html.div( {className:'barLegend', style:{color: 'black'}}, $T('Legend:')),
         Html.div( {className:'barLegend barCand'}, $T('Available')),
-        Html.div( {className:'barLegend barUnaval'}, $T('Booked')),
         Html.div( {className:'barLegend barConf'}, $T('Conflict')),
+        Html.div( {className:'barLegend barUnaval'}, $T('Booked')),
         Html.div( {className:'barLegend barPreB', style:{color: 'black'}}, $T('PRE-Booking')),
         Html.div( {className:'barLegend barPreC', style:{color: 'white'}}, $T('Conflict with PRE-Booking')),
-        Html.div( {className:'barLegend barPreConc', style:{color: 'white'}}, $T('Concurrent PRE-Bookings')));
+        Html.div( {className:'barLegend barPreConc', style:{color: 'white'}}, $T('Concurrent PRE-Bookings')),
+        Html.div( {className:'barLegend barBlocked'}, $T('Blocked')));
 
 /**
  * Represents a single room in the roombooking
@@ -68,7 +69,7 @@ type ("RoomBookingRoom", [],
                     urlParams.ignoreSession = 1;
                 }
                 else {
-                    urlParams.infoBookingMode = 'True'
+                    urlParams.infoBookingMode = 'True';
                 }
 
                 if (minutes) {
@@ -79,7 +80,7 @@ type ("RoomBookingRoom", [],
                 }
                 if (typeof repeatability != 'undefined' && repeatability != 'None' && flexibleDatesRange > 0) {
                     var repeatabilityDays;
-                    if (repeatability == 0)
+                    if (repeatability === 0)
                         repeatabilityDays = 1;
                     else if (repeatability < 4)
                         repeatabilityDays = 7 * repeatability;
@@ -91,7 +92,7 @@ type ("RoomBookingRoom", [],
                         roomStartDate.setDate(roomStartDate.getDate() - repeatabilityDays);
                     roomStartDate.setDate(roomStartDate.getDate() + repeatabilityDays);
                     urlParams.year = roomStartDate.getFullYear();
-                    urlParams.month = roomStartDate.getFullYear();
+                    urlParams.month = roomStartDate.getMonth() + 1;
                     urlParams.day = roomStartDate.getDate();
                     urlParams.yearEnd = endD.substr(0, 4);
                     urlParams.monthEnd = endD.substr(5, 2);
@@ -178,6 +179,7 @@ type ("RoomBookingCalendarBar", [],
             this.owner = barInfo["forReservation"]["bookedForName"];
             this.bookingUrl = barInfo["forReservation"]["bookingUrl"];
             this.inDB = barInfo.forReservation.id !== null;
+            this.blocking = barInfo["blocking"];
             this.type = barClasses[parseInt(barInfo["type"])];
         }
         );
@@ -304,61 +306,68 @@ type ("RoomBookingCalendarDrawer", [],
                 var left = ( startHour<0?0:startHour * 60 + bar.startDT.getMinutes() ) / (24*60) * DAY_WIDTH_PX;
                 var diff = ( bar.endDT.getHours() - bar.startDT.getHours() + (startHour<0?startHour:0) ) * 60 + ( bar.endDT.getMinutes() - bar.startDT.getMinutes() );
                 var width = diff / (24*60) * DAY_WIDTH_PX - 1;
+                var resvInfo;
+
+                // TODO: This shouldn't happen! See ticket #942
                 if (width < 0) {
-                    // TODO: This shouldn't happen! See ticket #942
                     return Html.div({});
                 }
-                var resvInfo = bar.startDT.print("%H:%M") + "  -  " +
-                               bar.endDT.print("%H:%M") + "<br />" + bar.owner +
-                               "<br />" + bar.reason;
-                var newResvInfo = "Click to book it <br />" + bar.startDT.print("%H:%M") + "  -  " + bar.endDT.print("%H:%M");
+
+                if (bar.type == "barCand") {
+                    resvInfo = "Click to book it <br/>" +
+                                  bar.startDT.print("%H:%M") + "  -  " + bar.endDT.print("%H:%M");
+                } else if (bar.type == "barBlocked") {
+                    resvInfo = $T("Room blocked by") + ":<br/>" +
+                                  bar.blocking["creator"] + "<br/>" +
+                                  $T('Reason') + ': ' + bar.blocking["message"];
+                } else {
+                    resvInfo = bar.startDT.print("%H:%M") + "  -  " +
+                               bar.endDT.print("%H:%M") + "<br />" +
+                               bar.owner + "<br />" +
+                               bar.reason;
+                }
+
                 var barDiv =  Html.div({
                     className: bar.type + " barDefault",
-                    style: {cursor: (bar.inDB || (bar.type == 'barCand' && showCandidateTip) ? 'pointer' : ''), width: pixels(parseInt(width)), left: pixels(parseInt(left))}});
+                    style: {
+                        cursor: (bar.inDB || (bar.type == 'barCand' && showCandidateTip) ? 'pointer' : ''),
+                        width: pixels(parseInt(width)),
+                        left: pixels(parseInt(left))
+                    }
+                });
+
                 if(bar.inDB) {
                     barDiv.observeClick(function(){
                         window.location = bar.bookingUrl;
                     });
                 }
-                if(bar.type == 'barCand' && showCandidateTip) {
+
+                if (bar.type == 'barCand' && showCandidateTip) {
                     $(barDiv.dom).click(function(){
                         var url = bar.room.getBookingFormUrl(bar.startDT.print("%Y/%m/%d %H:%M") + bar.endDT.print("%H:%M"), self.data.repeatability, self.data.flexibleDatesRange, true, self.data.finishDate, self.data.startD, self.data.endD);
                         self._ajaxClick(bar, url, $(this));
                     });
-                    $(barDiv.dom).qtip({
-                        content: {
-                            text: newResvInfo
-                        },
-                        style: {
-                            classes: "qtip-bold"
-                        },
-                        position: {
-                            target: 'mouse',
-                            adjust: { mouse: true, x: 11, y: 13 }
-                        },
-                        show: {
+                }
 
-                        },
-                        events: {
-                            show: function(event, api) {
-                                if ((navigator.platform.indexOf("iPad") != -1) || (navigator.platform.indexOf("iPhone") != -1)) {
-                                    event.preventDefault();
-                                }
+                $(barDiv.dom).qtip({
+                    content: {
+                        text: resvInfo
+                    },
+                    style: {
+                        classes: "bold"
+                    },
+                    position: {
+                        target: 'mouse',
+                        adjust: { mouse: true, x: 11, y: 13 }
+                    },
+                    events: {
+                        show: function(event, api) {
+                            if ((navigator.platform.indexOf("iPad") != -1) || (navigator.platform.indexOf("iPhone") != -1)) {
+                                event.preventDefault();
                             }
                         }
-                    });
-                }
-                else {
-                    $(barDiv.dom).qtip({
-                        content: {
-                            text: resvInfo
-                        },
-                        position: {
-                            target: 'mouse',
-                            adjust: { mouse: true, x: 11, y: 13 }
-                        }
-                    });
-                }
+                    }
+                });
 
                 return barDiv;
             },
@@ -371,41 +380,45 @@ type ("RoomBookingCalendarDrawer", [],
              */
             _ajaxClick: function(bar, url, element) {
                 // get conflicts per occurrence
-                var conflicts = $('.dayCalendarDivHover').closest('.dayCalendarDiv').map(function() {
-                    return $(this).find('.barDefault.barConf').length;
+                var conflicts = $('.barDefaultHover').closest('.dayCalendarDiv').map(function() {
+                    return $(this).find('.barConf').length;
+                });
+
+                var blocked = $('.barDefaultHover').closest('.dayCalendarDiv').map(function() {
+                    return _.any($(this).find('.barBlocked').length);
                 });
 
                 var any_conflict = _.any(conflicts);
                 var all_conflicts = conflicts.length && _.every(conflicts, function(e) { return !!e; });
 
-                if (all_conflicts) {
+                if (all_conflicts && !blocked) {
                     this._setDialog("search-again");
-                    $('#booking-dialog-content').html($T("This room cannot be booked at the time requested due a conflict with an existing reservation."));
+                    $('#booking-dialog-content').html($T("This room cannot be booked due to conflicts with existing reservations or room blockings."));
                     $('#booking-dialog').dialog("open");
-                } else if (any_conflict) {
+                } else if (any_conflict && !blocked) {
                     this._setDialog("skip-conflict", url);
-                    $('#booking-dialog-content').html($T("This booking conflicts with existing reservations on some of the days"));
+                    $('#booking-dialog-content').html($T("This booking contains conflicts with existing reservations or blockings."));
                     $('#booking-dialog').dialog("open");
                 } else {
-                    if (bar.room.type != "privateRoom") {
+                    if (bar.room.type != "privateRoom" && !blocked) {
                         window.location = url;
                     } else {
-                        this._handleProtected(element, bar.room.id, url);
+                        this._handleProtected(element, bar.room.id, bar.blocking.id, url);
                     }
                 }
             },
 
-            _handleProtected: function(element, room_id, url) {
+            _handleProtected: function(element, room_id, blocking_id, url) {
                 var self = this;
 
                 indicoRequest("roomBooking.room.bookingPermission", {
-                    room_id: room_id
+                    room_id: room_id,
+                    blocking_id: blocking_id
                 }, function(result, error) {
                     if (!error && !exists(result.error)) {
                         if (!result.can_book) {
-                            element.addClass("barProt");
                             self._setDialog("search-again");
-
+                            element.addClass("barProt");
                             if (result.group) {
                                 var protection = '<strong>' + result.group + '</strong>';
                                 $('#booking-dialog-content').html(format($T("Bookings of this room are limited to members of {0}."), [protection]));
@@ -413,7 +426,18 @@ type ("RoomBookingCalendarDrawer", [],
                                 $('#booking-dialog-content').html($T("You are not authorized to book this room"));
                             }
                             $('#booking-dialog').dialog("open");
-                        } else {
+                        }
+
+                        else if (result.blocked) {
+                            element.addClass("barConf");
+                            self._setDialog("search-again");
+                            $('#booking-dialog-content').html(
+                                $T("This room is blocked on this date and you don't have permissions to book it.")
+                            );
+                            $('#booking-dialog').dialog("open");
+                        }
+
+                        else {
                             window.location = url;
                         }
                     } else {
@@ -740,7 +764,7 @@ type ("RoomBookingCalendarSummaryDrawer", [],
                     this.bars.sort(sortFunc);
                 each(this.bars,
                         function(bar){
-                            barsDiv.push(self.drawReservation(bar))
+                            barsDiv.push(self.drawReservation(bar));
                 });
                 this.sortedBy = sortBy;
                 this.ascendingSort = ascending;
@@ -754,7 +778,7 @@ type ("RoomBookingCalendarSummaryDrawer", [],
             drawReservation: function(bar){
                 // Conflict, prebooking conflict and concurrent prebooking bars don't represent bookings.
                 // They're added to the calendar to highlight some events.
-                if( !(bar.type == 'barPreC' || bar.type == 'barConf' || bar.type == 'barPreConc') ) {
+                if(!(bar.type == 'barPreC' || bar.type == 'barConf' || bar.type == 'barPreConc')) {
                     var showBookingLink = Html.p({className:"fakeLink"}, $T("Show"));
                     showBookingLink.observeClick(function(){
                         window.open(bar.bookingUrl);
@@ -788,8 +812,9 @@ type ("RoomBookingCalendarSummaryDrawer", [],
                                     Html.p({style:{cssFloat:'left', width: pixels(90), height:pixels(40)}},bar.startDT.print("%d/%m/%Y")),
                                     Html.p({style:{cssFloat:'left', width: pixels(75), height:pixels(40)}},bar.startDT.print("%H:%M"), Html.br(), bar.endDT.print("%H:%M"))),
                                 Html.p({style:{cssFloat:'left', width: pixels(40), height:pixels(40)}},showBookingLink, rejectionLink));
-                } else
+                } else {
                     return null;
+                }
             },
 
             /**
@@ -1107,13 +1132,14 @@ type ("RoomBookingCalendar", [],
                     });
                 });
 
-                $('.barCand').each(function() {
+                $('.barCand, .barBlocked').each(function() {
+                    var id = $(this).hasClass("barCand")? $(this).attr("id") : $(this).prev(".barCand").attr("id");
                     $(this).mouseover(function() {
-                        $('.wholeDayCalendarDiv').find(".barCand#" + $(this).attr('id')).each(function() {
-                            $(this).addClass("dayCalendarDivHover");
+                        $('.wholeDayCalendarDiv').find(".barCand#" + id).each(function() {
+                            $(this).addClass("barDefaultHover");
                         });
                     }).mouseleave(function() {
-                        $('.barCand').removeClass("dayCalendarDivHover");
+                        $('.barCand').removeClass("barDefaultHover");
                     });
                 });
             }

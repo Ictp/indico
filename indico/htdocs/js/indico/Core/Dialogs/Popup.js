@@ -245,28 +245,8 @@ type("ExclusivePopupWithButtons", ["ExclusivePopup"], {
             this.buttons[this.defaultButton].focus();
         }
 
-        $("body").on("mousewheel wheel", function (e) {
-            var dialog = $(e.target).closest(".ui-dialog-content");
-
-            if (dialog.get(0) == $(".ui-dialog-content").get(0)) {
-
-                var elem = $(e.target).parentsUntil(".ui-dialog-content").filter(function(){
-                    return $(this).hasCSS("overflow-y", "auto");
-                });
-
-                var wheelup = (e.originalEvent.wheelDelta || -e.originalEvent.deltaY) / 120 > 0;
-
-                if (elem.scrollTop() === 0 && wheelup) {
-                    return false;
-                }
-
-                if (elem.scrollTop()+1 >= (elem.prop("scrollHeight") - elem.outerHeight())) {
-                    if (!wheelup) {
-                        return false;
-                    }
-                }
-            }
-            return true;
+        this.canvas.scrollblocker({
+            overflowType: "auto"
         });
     },
     _onClose: function(e) {
@@ -545,7 +525,6 @@ type('ConfirmPopupWithReason', ['ConfirmPopupWithPM'], {
     this.ConfirmPopupWithPM(title, Html.div({}, content, Html.div({style: {marginTop:pixels(10)}},Html.div({style:{fontWeight:"bold"}}, $T("Reason: ")),this.reason)), handler, buttonTitle, cancelButtonTitle);
     this.parameterManager.add(this.reason, 'text', false);
 });
-
 
 /**
  * Utility function to display a three buttons popup.

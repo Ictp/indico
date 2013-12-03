@@ -15,14 +15,14 @@
                             <li><span>${_("Confirm Reservation")}</span></li>
                         </ul>
                         % else :
-                            <span class="groupTitle bookingTitle" style="float: left; border-bottom-width: 0px; font-weight: bold; padding-top: 0px; margin: 0px;">
+                            <h2 class="page_title">
                             % if not title:
                                 <!-- Generic title -->
                                 ${ numResvs } ${ _("Booking(s) found")}:
                             % elif title:
                                 ${ title }
                             % endif
-                            </span>
+                            </h2>
                             % if prebookingsRejected:
                                 <br /><br />
                                 <span class="actionSucceeded">${ subtitle }</span>
@@ -53,11 +53,28 @@
 
 <script type="text/javascript">
 % if numRooms != 0 or not ofMyRooms:
-    var roomBookingCalendar = new RoomBookingCalendar(${ jsonEncode(barsFossil) }, ${ jsonEncode(dayAttrs) }, ${ str(dayLimit).lower() }, ${ str(overload).lower() },
-            {"prevURL" : "${ prevURL }", "nextURL" : "${ nextURL }", "formUrl" : "${ calendarFormUrl }",
-            "startD" : "${ startD }", "endD" : "${ endD }", "periodName" : "${ periodName }", "search" : ${jsonEncode(search)},
-            "params" : ${ jsonEncode(calendarParams)}, "newBooking" : ${ str(newBooking).lower()}}, ${ str(manyRooms).lower() }, '${ repeatability }', '${ str(finishDate).lower() }', '${ flexibleDatesRange }'
-            ${',"' + str(urlHandlers.UHRoomBookingRejectAllConflicting.getURL()) + '"' if showRejectAllButton else ''});
+
+    var roomBookingCalendar = new RoomBookingCalendar(
+      ${jsonEncode(barsFossil)},
+      ${jsonEncode(dayAttrs)},
+      ${str(dayLimit).lower()},
+      ${str(overload).lower()},
+      {"prevURL": "${prevURL}",
+       "nextURL": "${nextURL}",
+       "formUrl": "${calendarFormUrl}",
+       "startD": "${startD}",
+       "endD": "${endD}",
+       "periodName": "${periodName}",
+       "search": ${jsonEncode(search)},
+       "params": ${jsonEncode(calendarParams)},
+       "newBooking": ${str(newBooking).lower()}
+      },
+      ${str(manyRooms).lower()},
+      '${repeatability}',
+      '${str(finishDate).lower()}',
+      '${flexibleDatesRange}'
+      ${',"' + str(urlHandlers.UHRoomBookingRejectAllConflicting.getURL()) + '"' if showRejectAllButton else ''}
+    );
     $E("roomBookingCal").set(roomBookingCalendar.draw());
     roomBookingCalendar.addRepeatabilityBarsHovers();
 % endif

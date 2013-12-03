@@ -46,7 +46,7 @@ from MaKaC.webinterface.pages.base import WPDecorated
 from MaKaC.webinterface.pages.signIn import WPResetPasswordBase
 from MaKaC.webinterface.common.tools import strip_ml_tags, escape_html
 from MaKaC.webinterface.materialFactories import ConfMFRegistry,PaperFactory,SlidesFactory,PosterFactory
-from MaKaC.common import Config
+from indico.core.config import Config
 from MaKaC.webinterface.common.abstractStatusWrapper import AbstractStatusList
 from MaKaC.webinterface.common.contribStatusWrapper import ContribStatusList
 from MaKaC.common.output import outputGenerator
@@ -72,11 +72,11 @@ from MaKaC.common.Conversion import Conversion
 from MaKaC.common.logger import Logger
 from MaKaC.plugins.base import OldObservable
 from MaKaC.plugins.base import extension_point
-from MaKaC.common import Configuration
+from indico.core import config as Configuration
 from indico.modules import ModuleHolder
 from MaKaC.paperReviewing import ConferencePaperReview as CPR
 from MaKaC.conference import Session, Contribution, LocalFile
-from MaKaC.common.Configuration import Config
+from indico.core.config import Config
 from MaKaC.common.utils import formatDateTime
 from MaKaC.user import AvatarHolder
 from MaKaC.webinterface.general import WebFactory
@@ -185,12 +185,19 @@ class WPConferenceDefaultDisplayBase( WPConferenceBase):
         #registration form
         self._regFormOpt = self._sectionMenu.getLinkByName("registrationForm")
         self._viewRegFormOpt = self._sectionMenu.getLinkByName("ViewMyRegistration")
+        self._eTicketOpt = self._sectionMenu.getLinkByName("downloadETicket")
         self._newRegFormOpt = self._sectionMenu.getLinkByName("NewRegistration")
-        if awUser != None:
+        if awUser:
             self._viewRegFormOpt.setVisible(awUser.isRegisteredInConf(self._conf))
+            if self._conf.getRegistrationForm().getETicket().isEnabled() and \
+                    self._conf.getRegistrationForm().getETicket().isShownInConferenceMenu():
+                self._eTicketOpt.setVisible(awUser.isRegisteredInConf(self._conf))
+            else:
+                self._eTicketOpt.setVisible(False)
             self._newRegFormOpt.setVisible(not awUser.isRegisteredInConf(self._conf))
         else:
             self._viewRegFormOpt.setVisible(False)
+            self._eTicketOpt.setVisible(False)
             self._newRegFormOpt.setVisible(True)
         self._registrantsListOpt = self._sectionMenu.getLinkByName("registrants")
         if not self._conf.getRegistrationForm().isActivated() or not self._conf.hasEnabledSection("regForm"):
@@ -1272,7 +1279,7 @@ class WConferenceTimeTable(WConfDisplayBodyBase):
         self._aw = aw
 
     def getVars(self):
-        vars = wcomponents.WTemplated.getVars(self)
+        wvars = wcomponents.WTemplated.getVars(self)
         tz = DisplayTZ(self._aw, self._conf).getDisplayTZ()
         sf = schedule.ScheduleToJson.process(self._conf.getSchedule(),
                                              tz, self._aw,
@@ -1284,15 +1291,15 @@ class WConferenceTimeTable(WConfDisplayBodyBase):
             jsonf = ujson.encode
         except ImportError:
             jsonf = json.dumps
-        vars["ttdata"] = jsonf(sf)
+        wvars["ttdata"] = jsonf(sf)
         eventInfo = fossilize(self._conf, IConferenceEventInfoFossil, tz=tz)
         eventInfo['isCFAEnabled'] = self._conf.getAbstractMgr().isActive()
-        vars['eventInfo'] = eventInfo
-        vars['timetableLayout'] = vars.get('ttLyt', '')
-        return vars
+        wvars['eventInfo'] = eventInfo
+        wvars['timetableLayout'] = wvars.get('ttLyt', '')
+        return wvars
 
 
-class WPConferenceTimeTable( WPConferenceDefaultDisplayBase ):
+class WPConferenceTimeTable(WPConferenceDefaultDisplayBase):
     navigationEntry = navigation.NEConferenceTimeTable
 
     def getJSFiles(self):
@@ -3720,7 +3727,11 @@ class WConfModifDisplayMenu(wcomponents.WTemplated):
                         "moveDownURL": quoteattr(str(urlHandlers.UHConfModifDisplayDownLink.getURL(self._link))), \
                         "imageDownURL": quoteattr(str(Config.getInstance().getSystemIconURL("downArrow")))
                     }
-                vars["linkEdition"] = WSystemLinkModif(self._link).getHTML(p)
+                name = self._link.getName()
+                if name == "timetable":
+                    vars["linkEdition"] = WTimetableModif(self._link).getHTML(p)
+                else:
+                    vars["linkEdition"] = WSystemLinkModif(self._link).getHTML(p)
             elif isinstance(self._link, displayMgr.Spacer):
                 p = {
                         "removeLinkURL": quoteattr(str(urlHandlers.UHConfModifDisplayRemoveLink.getURL(self._link))), \
@@ -3996,6 +4007,26 @@ class WSystemLinkModif(wcomponents.WTemplated):
         url=urlHandlers.UHConfModifDisplayToggleLinkStatus.getURL(self._link)
         vars["toggleLinkStatusURL"]=quoteattr(str(url))
         return vars
+
+class WTimetableModif(WSystemLinkModif):
+
+    def getVars(self):
+        wvars = WSystemLinkModif.getVars(self)
+        # Timetable detailed view
+        wvars["viewMode"] = _("Generic")
+        wvars["changeViewModeTo"] = _("Detailed")
+        if self._link.getMenu().is_timetable_detailed_view():
+            wvars["viewMode"] = _("Detailed")
+            wvars["changeViewModeTo"] = _("Generic")
+        wvars["toggleTimetableViewURL"] = str(urlHandlers.UHConfModifDisplayToggleTimetableView.getURL(self._link))
+        # Timeable Layout
+        wvars["defaultTTLayout"] = _("Normal")
+        wvars["changedefaultTTLayoutTo"] = _("By room")
+        if self._link.getMenu().get_timetable_layout() == 'room':
+            wvars["defaultTTLayout"] = _("By room")
+            wvars["changedefaultTTLayoutTo"] = _("Normal")
+        wvars["toggleTTDefaultLayoutURL"] = str(urlHandlers.UHConfModifDisplayToggleTTDefaultLayout.getURL(self._link))
+        return wvars
 
 
 class WSpacerModif(wcomponents.WTemplated):

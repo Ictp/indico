@@ -31,7 +31,7 @@ from webassets.filter import Filter
 
 # legacy imports
 from MaKaC.common import HelperMaKaCInfo
-from MaKaC.common.Configuration import Config
+from indico.core.config import Config
 
 
 class PluginEnvironment(Environment):
@@ -79,7 +79,8 @@ indico_core = Bundle(
                'Services.js',
                'Util.js',
                'Login.js',
-               'Dragndrop.js'),
+               'Dragndrop.js',
+               'keymap.js'),
     filters='rjsmin', output='js/indico_core_%(version)s.min.js')
 
 indico_management = Bundle(
@@ -100,12 +101,12 @@ indico_management = Bundle(
     filters='rjsmin', output='js/indico_management_%(version)s.min.js')
 
 indico_room_booking = Bundle(
-    'js/indico/jquery/multiselect.js',
     *namespace('js/indico/RoomBooking',
 
                'MapOfRooms.js',
                'BookingForm.js',
-               'RoomBookingCalendar.js'),
+               'RoomBookingCalendar.js',
+               'roomselector.js'),
     filters='rjsmin', output='js/indico_room_booking_%(version)s.min.js')
 
 indico_admin = Bundle(
@@ -155,9 +156,14 @@ indico_jquery = Bundle(
 
                'defaults.js',
                'global.js',
+               'clearableinput.js',
+               'fieldarea.js',
                'multiselect.js',
                'fieldarea.js',
-               'fieldgrouping.js'),
+               'fieldgrouping.js',
+               'realtimefilter.js',
+               'scrollblocker.js'),
+
     filters='rjsmin', output='js/indico_jquery_%(version)s.min.js')
 
 indico_jquery_authors = Bundle('js/indico/jquery/authors.js',
@@ -192,12 +198,14 @@ jquery = Bundle(
     'js/lib/underscore.js',
     'js/lib/jquery.js',
     'js/lib/jquery.qtip.js',
+    'js/jquery/jquery-ui.js',
+    'js/lib/jquery.multiselect.js',
+    'js/lib/jquery.multiselect.filter.js',
     Bundle('js/jquery/jquery-migrate-silencer.js', filters=DebugLevelFilter(required_level=False),
            output='js/jquery_migrate_silencer_%(version)s.js'),
     *namespace('js/jquery',
 
         'jquery-migrate.js',
-        'jquery-ui.js',
         'jquery.form.js',
         'jquery.custom.js',
         'jquery.daterange.js',
@@ -206,11 +214,9 @@ jquery = Bundle(
         'jquery.colorbox.js',
         'jquery.menu.js',
         'date.js',
-        'jquery.multiselect.js',
         'jquery.colorpicker.js',
         'jquery-extra-selectors.js',
         'jquery.typewatch.js',
-        'jquery.multiselect.filter.js',
         'jstorage.js',
         'jquery.watermark.js',
         'jquery.placeholder.js'),
@@ -277,12 +283,15 @@ moment = Bundle(
 base_js = Bundle(jquery, utils, presentation, calendar, indico_jquery, moment, indico_core,
                  indico_legacy, indico_common)
 
-base_sass = Bundle('sass/screen.scss',
-                   filters=("pyscss", "cssrewrite", "cssmin"),
-                   output="sass/base_sass_%(version)s.css",
-                   depends=["sass/base/*.scss",
-                            "sass/partials/*.scss",
-                            "sass/modules/*.scss"])
+screen_sass = Bundle('sass/screen.scss',
+                     filters=("pyscss", "cssrewrite", "cssmin"),
+                     output="sass/screen_sass_%(version)s.css",
+                     depends=["sass/*.scss",
+                              "sass/base/*.scss",
+                              "sass/custom/*.scss",
+                              "sass/partials/*.scss",
+                              "sass/modules/*.scss",
+                              "sass/modules/roombooking/*.scss"])
 
 
 def register_all_js(env):
@@ -314,15 +323,15 @@ def register_all_css(env, main_css_file):
                     'calendar-blue.css',
                     'jquery-ui.css',
                     'lib/jquery.qtip.css',
+                    'lib/jquery.multiselect.css',
+                    'lib/jquery.multiselect.filter.css',
                     'jquery.colorbox.css',
                     'jquery-ui-custom.css',
                     'jquery.qtip-custom.css',
-                    'jquery.colorpicker.css',
-                    'jquery.multiselect.filter.css',
-                    'jquery.multiselect.css'),
+                    'jquery.colorpicker.css'),
         filters=("cssmin", "cssrewrite"),
         output='css/base_%(version)s.min.css')
 
     env.register('indico_badges_css', indico_badges_css)
     env.register('base_css', base_css)
-    env.register('base_sass', base_sass)
+    env.register('screen_sass', screen_sass)

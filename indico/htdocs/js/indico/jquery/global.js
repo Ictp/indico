@@ -46,14 +46,34 @@ $(document).ready(function() {
 
     $('.contextHelp[title]').qtip();
 
-    $('.i-button[title]').qtip({
-        events: {
-            show: function(event) {
-                if ($(event.originalEvent.target).hasClass('open')) {
-                    event.preventDefault();
+    $(document).on("mouseenter", '[title]', function(event) {
+        $(this).qtip({
+            overwrite: false,
+            show: {
+                event: event.type,
+                ready: true
+            },
+            events: {
+                show: function(event) {
+                    if ($(event.originalEvent.target).hasClass('open')) {
+                        event.preventDefault();
+                    }
                 }
+            },
+            hide: {
+                event: "mouseleave"
             }
-        }
+        }, event);
+    });
+
+    // Enable colorbox for links with rel="lightbox"
+    $('body').on('click', 'a[nofollow="lightbox"]', function() {
+        $(this).colorbox({
+            maxHeight: '90%',
+            maxWidth: '90%',
+            loop: false,
+            returnFocus: false
+        });
     });
 
     $('.contextHelp[data-src]').qtip({
@@ -64,8 +84,6 @@ $(document).ready(function() {
         }
     });
 
-    // Enable colorbox for links with rel="lightbox"
-    $('a[rel="lightbox"]').colorbox({maxHeight: '90%'});
     $(".body").on("click", "[data-confirm]", function(event){
         var self = this;
         new ConfirmPopup($(this).data("title"), $(this).data("confirm"), function(confirmed){

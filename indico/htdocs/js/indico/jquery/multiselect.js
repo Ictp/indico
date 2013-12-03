@@ -15,10 +15,31 @@
  * along with Indico; if not, see <http://www.gnu.org/licenses/>.
  */
 
-// Indico roomBooking jquery.multiselect specific settings
+var oldcreate = $.ech.multiselect.prototype._create;
+
+$.extend($.ech.multiselect.prototype, {
+
+    _create: function() {
+        this.oldcreate = oldcreate;
+        this.oldcreate(this);
+        this._fixEventBindings();
+    },
+
+    _fixEventBindings: function() {
+        this.header.delegate('input[type="checkbox"], input[type="radio"]', 'click.multiselect', function(e) {
+            e.stopPropagation();
+        });
+
+        this.header.delegate('label', 'mouseenter.multiselect', function(e) {
+            e.stopPropagation();
+        });
+    }
+});
+
 $.extend($.ech.multiselectfilter.prototype, {
+
     advancedFilter: function(searchText) {
-        this.searchText = searchText;
+        this.searchText = searchText || "";
         this._handler(this);
     },
 

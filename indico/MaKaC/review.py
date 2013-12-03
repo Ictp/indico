@@ -34,7 +34,7 @@ from MaKaC.accessControl import AdminList
 from MaKaC.trashCan import TrashCanManager
 from MaKaC.common.timezoneUtils import nowutc
 from MaKaC.i18n import _
-from MaKaC.common import Config
+from indico.core.config import Config
 from MaKaC.common.fossilize import fossilizes, Fossilizable
 from MaKaC.fossils.abstracts import IAbstractFieldFossil
 from MaKaC.fossils.abstracts import IAbstractTextFieldFossil
@@ -2202,9 +2202,11 @@ class Abstract(Persistent):
         #   problems with circular imports
         from MaKaC.conference import AcceptedContribution
         contrib = AcceptedContribution(self)
-        if session is not None:
+        if session:
             contrib.setSession(session)
             contrib.setDuration(dur=session.getContribDuration())
+        else:
+            contrib.setDuration()
         self.getCurrentStatus().setContribution(contrib)
         self._setContribution(contrib)
 

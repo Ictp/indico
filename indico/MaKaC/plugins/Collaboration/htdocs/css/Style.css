@@ -62,34 +62,6 @@ form.EAChoiceButton{
     vertical-align: middle;
 }
 
-.buttonWithPlay{
-    background: url(../images/green_arrow.png) no-repeat scroll left center #ECECEC;
-    padding: 5px 20px;
-    border: 1px solid #dcdcdc;
-    color: #555555;
-    border-radius: 5px;
-    display: inline;
-}
-
-.buttonWithPlay:hover{
-    color: #333;
-    border-color: #999;
-}
-
-.buttonWithStop{
-    background: url(../images/red_square.png) no-repeat scroll left center #ECECEC;
-    padding: 5px 20px;
-    border: 1px solid #dcdcdc;
-    color: #555555;
-    border-radius: 5px;
-    display: inline;
-}
-
-.buttonWithStop:hover{
-    color: #333;
-    border-color: #999;
-}
-
 .leftButton {
     -webkit-border-top-right-radius: 0;
     -moz-border-radius-topright: 0;
@@ -109,7 +81,7 @@ form.EAChoiceButton{
 }
 
 .error {
-    background: url(../images/warning_small.png);
+    background: url(../../images/warning_small.png);
     display: inline-block;
     width: 16px;
     height: 16px;
@@ -164,6 +136,11 @@ td.collaborationCell {
     white-space: nowrap;
 }
 
+td.collaborationCell.toolbarCell{
+    width: 100%;
+}
+
+
 td.collaborationCellNarrow {
     padding: 0px;
     padding-top: 3px;
@@ -180,9 +157,13 @@ td.collaborationCellNarrow {
 
 
 span.statusMessage {
-    font-size: medium;
+    font-size: 1.2em;
     font-weight: bold;
     vertical-align: middle;
+}
+
+span.bookingType {
+    font-size: 1.2em;
 }
 
 .statusMessageError {
@@ -708,3 +689,48 @@ td.collaborationDisplayInfoLeftCol span {
 span.HiddenPIN {
     color: #AAAAAA;
 }
+
+div.bookingListDiv {
+    margin-bottom: 10px;
+    height: 350px;
+    width: auto;
+    border: 1px solid #CCCCCC;
+    overflow: auto;
+    margin-top: 10px;
+}
+
+ul.bookingList {
+    border: none;
+    display: block;
+    list-style-type: none;
+    padding-left: 0px;
+    margin: 0;
+
+}
+
+ul.bookingList li {
+    cursor: pointer;
+    padding: 10px;
+    border-bottom: 1px solid #DDDDDD;
+}
+
+ul.bookingList li div.roomName {
+    color: #444;
+}
+ul.bookingList li div.bookingDescription {
+    color: #555;
+    margin-top: 0.5em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+}
+
+div.bookingListDiv div.noSearchMsg{
+    margin-top: 10px;
+    vertical-align: center;
+    color: #555;
+    font-size: 1.2em;
+    text-align: center;
+}
+

@@ -19,11 +19,11 @@
 
 <div id="headPanel" class="follow-scroll">
     <div id="button-menu" class="toolbar">
-        <div id="eventFilter" class="group labelled selection left">
+        <div class="group i-selection left">
             <span class="i-button label">${_("Filter by")}</span>
-            <input type="checkbox" id="emailLog" name="view_filter" checked>
+            <input type="checkbox" id="emailLog" checked>
             <label for="emailLog" class="i-button">${_("Email")}</label>
-            <input type="checkbox" id="actionLog" name="view_filter" checked>
+            <input type="checkbox" id="actionLog" checked>
             <label for="actionLog" class="i-button">${_("Action")}</label>
         </div>
         <div id="expandControlls" class="group left">
@@ -34,14 +34,11 @@
                 <span class="icon-stack-minus" aria-hidden="true"></span>
             </a>
         </div>
-        <div id="searchBox" class="group labelled right">
+        <div id="searchBox" class="group right">
             <span class="i-button label">
                 <span class="icon-search" aria-hidden="true"></span>
             </span>
-            <div class="text-input">
-                <input type="text" id="searchInput"/>
-                <span class="reset-input icon-close" aria-hidden="true"></span>
-            </div>
+            <input type="text" id="searchInput"/>
         </div>
     </div>
 </div>
@@ -111,10 +108,6 @@ $(document).ready(function(){
         $("#emptyLog").removeClass("hidden");
     }
 
-    if ($("#searchInput").val() !== "") {
-        $("#searchInput").val("");
-    }
-
     /* UI animations */
     $(window).scroll(function(){
         IndicoUI.Effect.followScroll();
@@ -161,12 +154,12 @@ $(document).ready(function(){
     };
 
     /* Event checkbox selector behavior */
-    $(".group.selection input[type=checkbox]").change(function() {
+    $(".i-selection input[type=checkbox]").change(function() {
         applyFilters();
     });
 
-    // Becasue IE8 does not trigger change event for input elements
-    $('.group.selection input[type=checkbox] + label').click(function () {
+    // Because IE8 does not trigger change event for input elements
+    $('.i-selection input[type=checkbox] + label').click(function () {
         var $checkbox = $(this).prev();
         $checkbox.prop("checked", !$checkbox.prop("checked"));
         $checkbox.trigger("change");
@@ -184,28 +177,10 @@ $(document).ready(function(){
         $("tr.i-table.interactive").removeClass("active border-bottom-none").next().addClass("weak-hidden");
     });
 
-    /* Search behavior */
-    $("#searchBox input").on('focus', function() {
-        $(this).closest('.text-input').addClass('active');
-    }).on('focusout', function() {
-        $(this).closest('.text-input').removeClass('active');
-    });
-
-    $("#searchInput").typeWatch({
+    $("#searchInput").realtimefilter({
         callback: function() {
             applyFilters();
-            updateResetButton();
-        },
-        wait: 250,
-        highlight: true,
-        captureLength: 0
-    });
-
-    $("#searchBox .reset-input").click(function(e) {
-        e.preventDefault();
-        $("#searchInput").val("");
-        applyFilters();
-        updateResetButton();
+        }
     });
 
     var resultCache = [];
@@ -215,7 +190,7 @@ $(document).ready(function(){
     var allContentRows = $("tr.i-table.content-wrapper");
 
     var applyFilters = function(){
-        var checkboxes = $(".group.selection input:checkbox:checked");
+        var checkboxes = $(".i-selection input:checkbox:checked");
         var items = getSearchFilteredItems().filter(getCheckboxFilteredItems(checkboxes));
 
         allTableTitles.show();
@@ -280,14 +255,5 @@ $(document).ready(function(){
             $("#nothingToShow").addClass("hidden");
         }
     };
-
-    var updateResetButton = function() {
-        if ($("#searchInput").val() === "") {
-            $(".reset-input").css('visibility', 'hidden');
-        } else {
-            $(".reset-input").css('visibility', 'visible');
-        }
-    };
-
 });
 </script>

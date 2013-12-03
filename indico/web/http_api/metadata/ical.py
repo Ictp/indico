@@ -130,6 +130,21 @@ def serialize_contrib(cal, fossil, now):
     serialize_event(cal, fossil, now, id_prefix="indico-contribution")
 
 
+def serialize_sessions(cal, fossil, now):
+    if len(fossil['sessions']) == 0:
+        serialize_event(cal, fossil, now)
+    else:
+        for sfossil in fossil['sessions']:
+            if sfossil['startDate']:
+                serialize_session(cal, sfossil, now, fid="%s-%s" % (fossil['id'], sfossil['id']))
+
+
+def serialize_session(cal, fossil, now, fid=None):
+    if fid:
+        fossil['id'] = fid
+    serialize_event(cal, fossil, now, id_prefix="indico-session")
+
+
 class ICalSerializer(Serializer):
 
     schemaless = False
@@ -137,11 +152,12 @@ class ICalSerializer(Serializer):
 
     _mappers = {
         'conferenceMetadata': serialize_event,
-        'reservationMetadata': serialize_reservation,
+        'contributionMetadata': serialize_contrib,
+        'sessionMetadata': serialize_session,
         'conferenceMetadataWithContribs': serialize_contribs,
-        'sessionMetadata': serialize_contribs,
+        'conferenceMetadataWithSessions': serialize_sessions,
         'sessionMetadataWithContributions': serialize_contribs,
-        'contributionMetadata': serialize_contrib
+        'reservationMetadata': serialize_reservation
     }
 
     @classmethod

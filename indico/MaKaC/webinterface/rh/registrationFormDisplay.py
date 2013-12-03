@@ -17,19 +17,22 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Indico;if not, see <http://www.gnu.org/licenses/>.
 from flask import session, request
+from cStringIO import StringIO
 
 from MaKaC.webinterface.rh.conferenceDisplay import RHConferenceBaseDisplay, RHConfSignIn
 import MaKaC.webinterface.urlHandlers as urlHandlers
 import MaKaC.webinterface.pages.registrationForm as registrationForm
 from MaKaC import registration
 from MaKaC.errors import FormValuesError,MaKaCError, AccessError, NotFoundError, NoReportError
-from MaKaC.common import Config
+from indico.core.config import Config
 from MaKaC.user import AvatarHolder
 from MaKaC.webinterface.rh.registrantsModif import RHRegistrantListModif
 
 from MaKaC.authentication import AuthenticatorMgr
 from MaKaC.common.mail import GenericMailer
 from MaKaC.common.utils import validMail
+from MaKaC.PDFinterface.conference import TicketToPDF
+from indico.web.flask.util import send_file
 
 
 class RHBaseRegistrationForm( RHConferenceBaseDisplay ):
@@ -166,7 +169,19 @@ class RHRegistrationFormCreation( RHRegistrationFormDisplayBase ):
             user.addRegistrant(rp)
             rp.setAvatar(user)
         # avoid multiple sending in case of db conflict
-        email = self._regForm.getNotification().createEmailNewRegistrant(self._regForm, rp)
+        email = self._regForm.getNotification()\
+            .createEmailNewRegistrant(self._regForm, rp)
+
+        modEticket = self._conf.getRegistrationForm().getETicket()
+
+        if modEticket.isEnabled() and modEticket.isAttachedToEmail():
+            attachment = {}
+            filename = "{0}- Ticket.pdf".format(self._target.getTitle())
+            attachment["name"] = filename
+            pdf = TicketToPDF(self._target, rp)
+            attachment["binary"] = pdf.getPDFBin()
+            email["attachments"] = [attachment]
+
         if email:
             GenericMailer.send(email)
         if canManageRegistration and user != self._getUser():
@@ -197,6 +212,15 @@ class RHRegistrationFormCreationDone( RHRegistrationFormRegistrantBase ):
         if self._registrant is not None:
             p = registrationForm.WPRegistrationFormCreationDone(self, self._conf, self._registrant)
             return p.display()
+
+
+class RHConferenceTicketPDF(RHRegistrationFormCreationDone):
+
+    def _process(self):
+        filename = "{0}- Ticket.pdf".format(self._target.getTitle())
+        pdf = TicketToPDF(self._target, self._registrant)
+        return send_file(filename, StringIO(pdf.getPDFBin()), 'PDF')
+
 
 class RHRegistrationFormconfirmBooking( RHRegistrationFormRegistrantBase ):
     _uh = urlHandlers.UHConfRegistrationFormDisplay

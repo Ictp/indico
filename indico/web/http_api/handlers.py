@@ -48,7 +48,7 @@ from indico.modules.oauth.components import OAuthUtils
 
 # indico legacy imports
 from indico.core.db import DBMgr
-from MaKaC.common import Config
+from indico.core.config import Config
 from MaKaC.common.logger import Logger
 from MaKaC.common.fossilize import fossilize, clearCache
 from MaKaC.accessControl import AccessWrapper
@@ -115,9 +115,9 @@ def checkAK(apiKey, signature, timestamp, path, query):
     return ak, onlyPublic
 
 
-def buildAW(ak, req, onlyPublic=False):
+def buildAW(ak, onlyPublic=False):
     aw = AccessWrapper()
-    aw.setIP(str(req.get_remote_ip()))
+    aw.setIP(str(request.remote_addr))
     if ak and not onlyPublic:
         # If we have an authenticated request, require HTTPS
         minfo = HelperMaKaCInfo.getMaKaCInfoInstance()
@@ -159,6 +159,9 @@ def handler(prefix, path):
     onlyPublic = get_query_parameter(queryParams, ['op', 'onlypublic'], 'no') == 'yes'
     onlyAuthed = get_query_parameter(queryParams, ['oa', 'onlyauthed'], 'no') == 'yes'
     oauthToken = 'oauth_token' in queryParams
+    # Check if OAuth data is supplied in the Authorization header
+    if not oauthToken and request.headers.get('Authorization') is not None:
+        oauthToken = 'oauth_token' in request.headers.get('Authorization')
 
     # Get our handler function and its argument and response type
     hook, dformat = HTTPAPIHook.parseRequest(path, queryParams)
@@ -187,10 +190,10 @@ def handler(prefix, path):
                 if enforceOnlyPublic:
                     onlyPublic = True
                 # Create an access wrapper for the API key's user
-                aw = buildAW(ak, req, onlyPublic)
-            else: # Access Token (OAuth)
+                aw = buildAW(ak, onlyPublic)
+            else:  # Access Token (OAuth)
                 at = OAuthUtils.OAuthCheckAccessResource()
-                aw = buildAW(at, req, onlyPublic)
+                aw = buildAW(at, onlyPublic)
             # Get rid of API key in cache key if we did not impersonate a user
             if ak and aw.getUser() is None:
                 cacheKey = normalizeQuery(path, query,

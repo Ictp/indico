@@ -21,12 +21,10 @@ from cStringIO import StringIO
 from flask import session, request
 import MaKaC.webinterface.urlHandlers as urlHandlers
 import MaKaC.webinterface.pages.registrants as registrants
-import MaKaC.webinterface.rh.conferenceModif as conferenceModif
 from MaKaC.webinterface.rh.fileAccess import RHFileAccess
 from MaKaC.PDFinterface.conference import RegistrantsListToPDF, RegistrantsListToBookPDF
 from MaKaC.export.excel import RegistrantsListToExcel
 import MaKaC.webinterface.common.regFilters as regFilters
-from MaKaC.common import Config
 from MaKaC.errors import FormValuesError
 from MaKaC.common import utils
 from MaKaC.registration import SocialEvent, MiscellaneousInfoGroup
@@ -37,9 +35,7 @@ from MaKaC.i18n import _
 import MaKaC.webinterface.pages.registrationForm as registrationForm
 from MaKaC.webinterface.rh import registrationFormModif
 from MaKaC.webinterface.rh.registrationFormModif import RHRegistrationFormModifBase
-import re
-import os
-from indico.web.flask.util import send_file
+from indico.web.flask.util import send_file, url_for
 
 class RHRegistrantListModifBase( registrationFormModif.RHRegistrationFormModifBase ):
     pass
@@ -408,15 +404,15 @@ class RHRegistrantListEmail:
         p=registrants.WPEMail(self._rh, self._conf, self._regList, self._from, self._cc, self._subject, self._body)
         return p.display()
 
-class RHRegistrantModifBase( conferenceModif.RHConferenceModifBase ):
+class RHRegistrantModifBase( RHRegistrationFormModifBase ):
 
     def _checkProtection( self ):
-        conferenceModif.RHConferenceModifBase._checkProtection(self)
+        RHRegistrationFormModifBase._checkProtection(self)
         if not self._conf.hasEnabledSection("regForm"):
             raise MaKaCError( _("The registrants' management was disabled by the conference managers"))
 
     def _checkParams( self, params ):
-        conferenceModif.RHConferenceModifBase._checkParams(self, params)
+        RHRegistrationFormModifBase._checkParams(self, params)
         regId=params.get("registrantId",None)
         if regId is None:
             raise MaKaCError(_("registrant id not set"))
@@ -429,6 +425,29 @@ class RHRegistrantModification( RHRegistrantModifBase ):
     def _process( self ):
         p = registrants.WPRegistrantModification( self, self._registrant )
         return p.display()
+
+
+class RHRegistrantModificationEticket(RHRegistrantModifBase):
+
+    def _process(self):
+        p = registrants.WPRegistrantModifETicket(self, self._registrant)
+        return p.display()
+
+
+class RHRegistrantModificationEticketCheckIn(RHRegistrantModifBase):
+
+    def _checkParams(self, params):
+        RHRegistrantModifBase._checkParams(self, params)
+        self._newStatus = params["changeTo"]
+
+    def _process(self):
+        eticket = self._conf.getRegistrationForm().getETicket()
+        if self._newStatus == "True":
+            self._registrant.setCheckedIn(True)
+        else:
+            self._registrant.setCheckedIn(False)
+        self._redirect(url_for("event_mgmt.confModifRegistrants-modification-eticket", self._registrant))
+
 
 class RHRegistrantSendEmail( RHRegistrationFormModifBase ):
 

@@ -28,6 +28,15 @@
                 ${ epaymentAnnounce }
             </td>
         </tr>
+        % if pdfTicketURL:
+        <tr>
+            <td>
+                <a class="i-button icon-file-pdf" target="blank" href="${pdfTicketURL}">
+                    ${ _("Download e-ticket") }
+                </a>
+            </td>
+        </tr>
+        % endif
         <tr>
             <td>
                 <span class="subGroupTitleRegForm">${ _("Registrant ID: ")}</span>

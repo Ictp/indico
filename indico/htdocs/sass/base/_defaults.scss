@@ -19,6 +19,9 @@
    along with Indico; if not, see <http://www.gnu.org/licenses/>.
 */
 
+// =======================================
+// Compass/Custom mixins default variables
+// =======================================
 $default-border-radius: 0.2em;
 $default-transition-duration: 0.25s;
 $default-transition-function: ease-out;
@@ -28,6 +31,14 @@ $default-border-style: solid;
 
 $color-variation: 15%;
 
+$default-box-shadow-color: lighten($gray, $color-variation);
+$default-box-shadow-blur: 1px;
+$default-box-shadow-h-offset: 1px;
+$default-box-shadow-v-offset: 1px;
+
+// =======================================
+// Custom mixins
+// =======================================
 @mixin border-top($color: $default-border-color, $style: $default-border-style) {
     border-top: 1px $style $color;
 }
@@ -53,6 +64,7 @@ $color-variation: 15%;
     @include border-horz($color, $style);
 }
 
-@mixin rounded-corners($radius: 0.2em) {
-    @include border-radius($radius, $radius);
+@mixin gradient($start-color, $end-color) {
+    background: $start-color;
+    @include background-image(linear-gradient(top, $start-color, $end-color));
 }

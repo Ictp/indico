@@ -34,7 +34,7 @@ import MaKaC.user as user
 import MaKaC.webinterface.mail as mail
 from MaKaC.webinterface.pages.errors import WPAccessError, WPError404
 import MaKaC.conference as conference
-from MaKaC.common import Config
+from indico.core.config import Config
 from indico.core.db import DBMgr
 from MaKaC.authentication import AuthenticatorMgr
 from MaKaC.webinterface.rh.base import RHDisplayBaseProtected
@@ -55,7 +55,7 @@ from reportlab.platypus.doctemplate import LayoutError
 from MaKaC.webinterface.rh.base import RH
 from MaKaC.webinterface.common.tools import cleanHTMLHeaderFilename
 from indico.web.http_api.metadata.serializer import Serializer
-from indico.web.http_api.api import CategoryEventHook
+from indico.web.http_api.hooks.event import CategoryEventHook
 from indico.web.flask.util import send_file
 from indico.util.contextManager import ContextManager
 
@@ -84,9 +84,10 @@ class RHConferenceAccessKey( conferenceBase.RHConferenceBase ):
 
     _isMobile = False
 
-    def _checkParams( self, params ):
-        conferenceBase.RHConferenceBase._checkParams(self, params )
-        self._accesskey = params.get( "accessKey", "" ).strip()
+    def _checkParams(self, params):
+        conferenceBase.RHConferenceBase._checkParams(self, params)
+        self._accesskey = params.get("accessKey", "").strip()
+        self._doNotSanitizeFields.append("accessKey")
 
     def _process(self):
         access_keys = session.setdefault("accessKeys", {})
@@ -152,22 +153,24 @@ class _UserUtils:
         ##################################
         # Fermi timezone awareness(end)  #
         ##################################
-    setUserData = classmethod( setUserData )
+    setUserData = classmethod(setUserData)
 
 
-class RHConfUserCreation( conferenceBase.RHConferenceBase ):
+class RHConfUserCreation(conferenceBase.RHConferenceBase):
     _uh = urlHandlers.UHConfUserCreation
 
-    def _checkProtection( self ):
+    def _checkProtection(self):
         pass
 
-    def _checkParams( self, params ):
+    def _checkParams(self, params):
         self._params = params
-        conferenceBase.RHConferenceBase._checkParams( self, params )
+        conferenceBase.RHConferenceBase._checkParams(self, params)
         self._save = params.get("Save", "")
-        self._returnURL = params.get( "returnURL", "").strip()
+        self._returnURL = params.get("returnURL", "").strip()
+        self._doNotSanitizeFields.append("password")
+        self._doNotSanitizeFields.append("passwordBis")
 
-    def _process( self ):
+    def _process(self):
         save = False
         authManager = AuthenticatorMgr()
         minfo = info.HelperMaKaCInfo.getMaKaCInfoInstance()
@@ -211,13 +214,13 @@ class RHConfUserCreation( conferenceBase.RHConferenceBase ):
                 a = res[0]
                 #check if the user have an identity:
                 if a.getIdentityList():
-                    self._redirect( urlHandlers.UHConfUserExistWithIdentity.getURL( self._conf, a))
+                    self._redirect(urlHandlers.UHConfUserExistWithIdentity.getURL(self._conf, a))
                     return
                 else:
-                    #create the identity to the user and send the comfirmatio email
-                    li = user.LoginInfo( self._params["login"], self._params["password"] )
-                    id = authManager.createIdentity( li, a, "Local" )
-                    authManager.add( id )
+                    #create the identity to the user and send the comfirmation email
+                    li = user.LoginInfo(self._params["login"], self._params["password"])
+                    id = authManager.createIdentity(li, a, "Local")
+                    authManager.add(id)
                     DBMgr.getInstance().commit()
                     if minfo.getModerateAccountCreation():
                         mail.sendAccountCreationModeration(a).send()

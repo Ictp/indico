@@ -25,7 +25,7 @@ from indico.core.extpoint import Component
 import indico.ext.search
 from indico.core.extpoint.events import INavigationContributor
 from indico.core.extpoint.plugins import IPluginSettingsContributor
-from indico.web.rh import RHHtdocs
+from indico.web.handlers import RHHtdocs
 from indico.util.contextManager import ContextManager
 
 from MaKaC.i18n import _
@@ -37,7 +37,7 @@ from MaKaC.webinterface.rh.conferenceBase import RHCustomizable
 from MaKaC.webinterface.pages.category import WPCategoryDisplayBase
 from MaKaC.webinterface.pages.conferences import WPConferenceDisplayBase
 
-from MaKaC.common.Configuration import Config
+from indico.core.config import Config
 from MaKaC.conference import CategoryManager, ConferenceHolder, Conference
 from indico.ext.search.register import SearchRegister
 from MaKaC.common.info import HelperMaKaCInfo

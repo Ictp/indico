@@ -248,9 +248,13 @@ class Menu(Persistent):
         self._conf = conf
         self._indent = "&nbsp;&nbsp;&nbsp;&nbsp;"
         self._linkGenerator = Counter()
+        self._timetable_detailed_view = False
+        self._timetable_layout = 'normal'
 
-    def clone( self, cdm ):
+    def clone(self, cdm):
         newMenu = cdm.getMenu()
+        newMenu.set_timetable_detailed_view(self.is_timetable_detailed_view())
+        newMenu.set_timetable_layout(self.get_timetable_layout())
         newMenu._linkGenerator = self._linkGenerator.clone()
         newList = []
         for link in self.getLinkList():
@@ -461,12 +465,39 @@ class Menu(Persistent):
     def getCurrentItem(self):
         return getattr(self, '_v_currentItem', None)
 
+    def set_timetable_layout(self, layout):
+        self._timetable_layout = layout
+
+    def toggle_timetable_layout(self):
+        if self._timetable_layout == 'normal':
+            self.set_timetable_layout('room')
+        else:
+            self.set_timetable_layout('normal')
+
+    def get_timetable_layout(self):
+        try:
+            return self._timetable_layout
+        except AttributeError:
+            self._timetable_layout = 'normal'
+            return self._timetable_layout
+
+    def set_timetable_detailed_view(self, view):
+        self._timetable_detailed_view = view
+
+    def is_timetable_detailed_view(self):
+        try:
+            return self._timetable_detailed_view
+        except AttributeError:
+            self._timetable_detailed_view = False
+            return self._timetable_detailed_view
+
     def __str__(self):
         str = ""
         for link in self._listLink:
             if link.isEnabled():
-                str += "%s\n"%link
+                str += "%s\n" % link
         return str
+
 
 class Spacer(Persistent):
     Type = "spacer"
@@ -798,15 +829,25 @@ class SystemLink(Link):
         # TOREMOVE: fix events with "absolute" URL
         if not hasattr(self, '_URLHandler'):
             self.getMenu().updateSystemLink()
-        conf = self.getMenu().getConference()
         if isinstance(self._URLHandler, str):
+            if self._URLHandler.startswith("http"):  # Fix for hardcoded URLs
+                self.getMenu().updateSystemLink()
             handler = getattr(urlHandlers, self._URLHandler)
         else:
             handler = self._URLHandler
-        return handler.getURL(conf)
+        return handler.getURL(self.getMenu().getConference())
 
     def getURL(self):
-        return str(self._getURLObject())
+        url = str(self._getURLObject())
+        if self._name == 'timetable':
+            menu = self.getMenu()
+            if menu.get_timetable_layout() == 'room':
+                url += '?ttLyt=room'
+            if menu.is_timetable_detailed_view():
+                startDate = menu.getConference().getSchedule().getAdjustedStartDate()
+                url += startDate.strftime('#%Y%m%d')
+                url += '.detailed'
+        return url
 
     def getURLHandler(self):
         if not hasattr(self, '_URLHandler'):
@@ -829,7 +870,6 @@ class SystemLink(Link):
 
     def isVisible(self):
         return self._getURLObject().valid and super(SystemLink, self).isVisible()
-
 
 class SystemLinkData(Observable):
 
@@ -940,6 +980,10 @@ class SystemLinkData(Observable):
                     "caption": N_("Modify my Registration"),
                     "URL": 'UHConfRegistrationFormModify',
                     "parent": "registrationForm"},
+                "downloadETicket": {
+                    "caption": N_("Download e-ticket"),
+                    "URL": 'UHConferenceTicketPDF',
+                    "parent": "registrationForm"},
                 "NewRegistration": {
                     "caption": N_("Registration Form"),
                     "URL": 'UHConfRegistrationFormDisplay',
@@ -991,6 +1035,7 @@ class SystemLinkData(Observable):
                                         "abstractsBook",
                                         "registrationForm",
                                         "ViewMyRegistration",
+                                        "downloadETicket",
                                         "NewRegistration",
                                         "registrants",
                                         "evaluation",

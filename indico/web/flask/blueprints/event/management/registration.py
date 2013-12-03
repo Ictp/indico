@@ -193,6 +193,13 @@ event_mgmt.add_url_rule('/registration/users/remove', 'confModifRegistrants-remo
                         registrantsModif.RHRegistrantListRemove, methods=('GET', 'POST'))
 event_mgmt.add_url_rule('/registration/users/<registrantId>/', 'confModifRegistrants-modification',
                         registrantsModif.RHRegistrantModification)
+event_mgmt.add_url_rule('/registration/users/<registrantId>/eticket',
+                        'confModifRegistrants-modification-eticket',
+                        registrantsModif.RHRegistrantModificationEticket)
+event_mgmt.add_url_rule('/registration/users/<registrantId>/eticket/checkin',
+                        'confModifRegistrants-modification-eticket-checkin',
+                        registrantsModif.RHRegistrantModificationEticketCheckIn,
+                        methods=('POST',))
 event_mgmt.add_url_rule('/registration/users/<registrantId>/attachments/<resId>.<fileExt>',
                         'confModifRegistrants-getAttachedFile', registrantsModif.RHGetAttachedFile)
 # Misc sections and personal data

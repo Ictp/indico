@@ -19,6 +19,7 @@
 from flask import request
 
 import random, time
+from uuid import uuid4
 from hashlib import md5
 from datetime import datetime,timedelta
 from pytz import timezone
@@ -28,10 +29,11 @@ from persistent import Persistent
 from persistent.mapping import PersistentMapping
 from persistent.list import PersistentList
 import MaKaC
+from indico.core.db import eticket
 from MaKaC.common.Counter import Counter
-from MaKaC.errors import FormValuesError,MaKaCError
+from MaKaC.errors import FormValuesError, MaKaCError
 from MaKaC.common.Locators import Locator
-from MaKaC.common import Config
+from indico.core.config import Config
 from MaKaC.common.TemplateExec import inlineContextHelp
 import MaKaC.webinterface.urlHandlers as urlHandlers
 from MaKaC.common.info import HelperMaKaCInfo
@@ -40,6 +42,7 @@ from MaKaC.trashCan import TrashCanManager
 from MaKaC.webinterface.mail import GenericMailer, GenericNotification
 from MaKaC.i18n import _
 from indico.util.i18n import i18nformat
+from indico.util.date_time import format_datetime, format_date
 from MaKaC.webinterface.common.countries import CountryHolder
 import re
 import tempfile, os
@@ -86,6 +89,7 @@ class RegistrationForm(Persistent):
             self.contactInfo = groupData.get("contactInfo", "")
             self.setCurrency(groupData.get("Currency", ""))
         self.notification = Notification()
+        self._eTicket = eticket.ETicket()
         # Status definition
         self._statuses={}
         self._statusesGenerator=Counter()
@@ -140,6 +144,7 @@ class RegistrationForm(Persistent):
         form.setSendPaidEmail(self.isSendPaidEmail())
         form.setAllSessions()
         form.notification=self.getNotification().clone()
+        form._eTicket = self.getETicket().clone()
         form.personalData = self.getPersonalData().clone(form)
         form.generalSectionForms[form.personalData.getId()] = form.personalData
         acf = self.getAccommodationForm()
@@ -579,6 +584,13 @@ class RegistrationForm(Persistent):
     def notifyModification(self):
         self._p_changed=1
         self._conf.notifyModification()
+
+    def getETicket(self):
+        try:
+            return self._eTicket
+        except AttributeError:
+            self._eTicket = eticket.ETicket()
+            return self._eTicket
 
 class Notification(Persistent):
 
@@ -2011,7 +2023,7 @@ class RadioItem(Persistent):
                 continue
             gf.getId() # for some reason it's empty when calling it for the first time
             item = mg.getResponseItemById(gf.getId())
-            if item is not None and item.getQuantity():
+            if item is not None and item.getQuantity() and item.getValue() == self.getCaption():
                 self.increaseNoPlaces()
 
     def clone(self, parent):
@@ -4495,6 +4507,9 @@ class Registrant(Persistent):
         self._id = ""
         self._complete = False
         self._registrationDate = nowutc()
+        self._checkedIn = False
+        self._checkInDate = None
+        self._checkInUUID = str(uuid4())
 
         self._title = ""
         self._firstName = ""
@@ -4700,6 +4715,46 @@ class Registrant(Persistent):
         except AttributeError, e:
             self._complete = False
         return self._complete
+
+    def isCheckedIn(self):
+        try:
+            if self._checkedIn:
+                pass
+        except AttributeError:
+            self._checkedIn = False
+        return self._checkedIn
+
+    def setCheckedIn(self, checkedIn):
+        if checkedIn:
+            self._checkInDate = nowutc()
+        else:
+            self._checkInDate = None
+        self._checkedIn = checkedIn
+
+    def getCheckInUUID(self):
+        try:
+            if self._checkInUUID:
+                pass
+        except AttributeError:
+            self._checkInUUID = str(uuid4())
+        return self._checkInUUID
+
+    def getCheckInDate(self):
+        try:
+            if self._checkInDate:
+                pass
+        except AttributeError:
+            self._checkInDate = None
+        return self._checkInDate
+
+    def getAdjustedCheckInDate(self,tz=None):
+        if not tz:
+            tz = self.getConference().getTimezone()
+        if tz not in all_timezones:
+            tz = 'UTC'
+        checkInDate = self.getCheckInDate()
+        if checkInDate:
+            return checkInDate.astimezone(timezone(tz))
 
     def getPayed(self):
         try:
@@ -5507,25 +5562,27 @@ class RegistrantMapping(object):
     def __init__(self, registrant):
         self._registrant = registrant
         self._regDict = {
-                        "FirstName" :           self._registrant.getFirstName,
-                        "LastName" :            self._registrant.getSurName,
-                        "Institution" :         self._registrant.getInstitution,
-                        "Position" :            self._registrant.getPosition,
-                        "Phone" :               self._registrant.getPhone,
-                        "City" :                self._registrant.getCity,
-                        "Address" :             self._registrant.getAddress,
-                        "Email" :               self._registrant.getEmail,
-                        "isPayed" :             self._registrant.isPayedText,
-                        "idpayment" :           self._registrant.getIdPay,
-                        "Country" :             self._getCountry,
-                        "amountToPay" :         self._getAmountToPay,
-                        "Accommodation" :        self._getAccomodation,
-                        "SocialEvents" :        self._getSocialEvents,
-                        "ReasonParticipation" : self._getReasonParticipation,
-                        "RegistrationDate" :    self._getRegistrationDate,
-                        "Sessions" :            self._getSessions,
-                        "DepartureDate" :       self._getDepartureDate,
-                        "ArrivalDate" :         self._getArrivalDate
+                        "FirstName":           self._registrant.getFirstName,
+                        "LastName":            self._registrant.getSurName,
+                        "Institution":         self._registrant.getInstitution,
+                        "Position":            self._registrant.getPosition,
+                        "Phone":               self._registrant.getPhone,
+                        "City":                self._registrant.getCity,
+                        "Address":             self._registrant.getAddress,
+                        "Email":               self._registrant.getEmail,
+                        "isPayed":             self._registrant.isPayedText,
+                        "idpayment":           self._registrant.getIdPay,
+                        "Country":             self._getCountry,
+                        "amountToPay":         self._getAmountToPay,
+                        "Accommodation":       self._getAccomodation,
+                        "SocialEvents":        self._getSocialEvents,
+                        "ReasonParticipation": self._getReasonParticipation,
+                        "RegistrationDate":    self._getRegistrationDate,
+                        "Sessions":            self._getSessions,
+                        "DepartureDate":       self._getDepartureDate,
+                        "ArrivalDate":         self._getArrivalDate,
+                        "checkedIn":           self._getCheckedIn,
+                        "checkInDate":         self._getCheckInDate
                         }
 
     def __getitem__(self, key):
@@ -5554,15 +5611,19 @@ class RegistrantMapping(object):
         return ""
 
     def _getDepartureDate(self):
-        if self._registrant.getAccommodation() is not None:
-            if self._registrant.getAccommodation().getDepartureDate() is not None:
-                return self._registrant.getAccommodation().getDepartureDate().strftime("%d-%B-%Y")
+        accomodation = self._registrant.getAccommodation()
+        if accomodation is not None:
+            departure_date = accomodation.getDepartureDate()
+            if departure_date is not None:
+                return format_date(departure_date)
         return ""
 
     def _getArrivalDate(self):
-        if self._registrant.getAccommodation() is not None:
-            if self._registrant.getAccommodation().getArrivalDate() is not None:
-                return self._registrant.getAccommodation().getArrivalDate().strftime("%d-%B-%Y")
+        accomodation = self._registrant.getAccommodation()
+        if accomodation is not None:
+            arrival_date = accomodation.getArrivalDate()
+            if arrival_date is not None:
+                return format_date(arrival_date)
         return ""
 
     def _getSocialEvents(self):
@@ -5574,9 +5635,9 @@ class RegistrantMapping(object):
         return self._registrant.getReasonParticipation() or ""
 
     def _getRegistrationDate(self):
-
-        if self._registrant.getRegistrationDate() is not None:
-            return self._registrant.getAdjustedRegistrationDate().strftime("%d-%B-%Y %H:%M")
+        registration_date = self._registrant.getAdjustedRegistrationDate()
+        if registration_date is not None:
+            return format_datetime(registration_date)
         else:
             return i18nformat("""--  _("date unknown")--""")
 
@@ -5611,3 +5672,19 @@ class RegistrantMapping(object):
             return self._formatValue(item.getGeneralField().getInput(), item.getValue())
         else:
             return ""
+
+    def _getCheckedIn(self):
+        conf = self._registrant.getConference()
+        if not conf.getRegistrationForm().getETicket().isEnabled():
+            return "-"
+        elif self._registrant.isCheckedIn():
+            return _("Yes")
+        else:
+            return _("No")
+
+    def _getCheckInDate(self):
+        checkInDate = self._registrant.getAdjustedCheckInDate()
+        if checkInDate:
+            return format_datetime(checkInDate)
+        else:
+            return "-"

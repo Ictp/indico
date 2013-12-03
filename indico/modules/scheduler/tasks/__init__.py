@@ -20,28 +20,28 @@
 import logging
 import os
 import urllib
+
 import zope.interface
-
-# Required by specific tasks
-from MaKaC.user import Avatar
-from MaKaC.common import Config, info
-# end required
-
 from persistent import Persistent
+
+from MaKaC.user import Avatar
+from MaKaC.common import info
+from MaKaC import schedule
+from MaKaC.common.utils import getLocationInfo
+from MaKaC.common.TemplateExec import render
 
 from indico.util.fossilize import fossilizes, Fossilizable
 from indico.util.date_time import int_timestamp, format_date, format_time, format_datetime
 from indico.modules.scheduler.fossils import ITaskFossil
 from indico.modules.scheduler import base
 from indico.core.index import IUniqueIdProvider, IIndexableByArbitraryDateTime
-from MaKaC import schedule
-from MaKaC.common.utils import getLocationInfo
-from MaKaC.common.TemplateExec import render
+from indico.core.config import Config
 
 
 """
 Defines base classes for tasks, and some specific tasks as well
 """
+
 
 class TimedEvent(Persistent, Fossilizable):
 
@@ -350,13 +350,11 @@ class AlarmTask(SendMailTask):
 
         self.setRelative(relative)
         self.setStartOn(startDateTime)
-
         self.text = ""
         self.note = ""
         self.confSumary = False
         self.toAllParticipants = False
         self._confRelId = confRelId
-        self._relative = relative
 
     def getConference(self):
         return self.conf
@@ -385,7 +383,7 @@ class AlarmTask(SendMailTask):
         for addr in self.getToAddrList():
             alarm.addToAddr(addr)
         alarm.setFromAddr(self.getFromAddr())
-        alarm.setSubject(self.getSubject())
+        alarm.setUpSubject()
         alarm.setConfSummary(self.getConfSummary())
         alarm.setNote(self.getNote())
         alarm.setText(self.getText())
@@ -397,6 +395,10 @@ class AlarmTask(SendMailTask):
         if not hasattr(self, '_relative'):
             self._relative = None
         return self._relative
+
+    def setUpSubject(self):
+        startDateTime = format_datetime(self.conf.getAdjustedStartDate(), format="short")
+        self.setSubject( _("Event reminder: %s (%s %s)") % (self.conf.getTitle(), startDateTime, self.conf.getTimezone()))
 
     def addToUser(self, user):
         super(AlarmTask, self).addToUser(user)
@@ -493,7 +495,7 @@ class AlarmTask(SendMailTask):
 
         # Email
         startDateTime = format_datetime(self.conf.getAdjustedStartDate(), format="short")
-        self.setSubject( _("Event reminder: %s (%s %s)") % (self.conf.getTitle(), startDateTime, self.conf.getTimezone()))
+        self.setUpSubject()
         try:
             locationText = self.conf.getLocation().getName()
             if self.conf.getLocation().getAddress() != "":

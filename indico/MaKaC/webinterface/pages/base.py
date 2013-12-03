@@ -25,7 +25,7 @@ from indico.web import assets
 
 import MaKaC.webinterface.wcomponents as wcomponents
 import MaKaC.webinterface.urlHandlers as urlHandlers
-from MaKaC.common.Configuration import Config
+from indico.core.config import Config
 from MaKaC.common.contextManager import ContextManager
 from MaKaC.common.info import HelperMaKaCInfo
 from MaKaC.i18n import _
@@ -101,7 +101,7 @@ class WPBase(OldObservable):
 
     def getCSSFiles(self):
         return self._asset_env['base_css'].urls() + \
-            self._asset_env['base_sass'].urls()
+            self._asset_env['screen_sass'].urls()
 
     def _getJavaScriptInclude(self, scriptPath):
         return '<script src="'+ scriptPath +'" type="text/javascript"></script>\n'

@@ -21,7 +21,7 @@ from webassets import Bundle
 from indico.web.assets import PluginEnvironment
 from indico.util.date_time import now_utc
 
-from MaKaC.common import Config
+from indico.core.config import Config
 from MaKaC.common.utils import formatTwoDates
 from MaKaC.common.contextManager import ContextManager
 from MaKaC.plugins.Collaboration.collaborationTools import CollaborationTools
@@ -376,15 +376,17 @@ class WConfModifCollaboration(wcomponents.WTemplated):
 
         hasCreatePermissions = {}
         videoServSupport = {}
+        isAllowedToSearch = {}
         for plugin in plugins:
             pname = plugin.getName()
-            hasCreatePermissions[pname] = RCVideoServicesUser.hasRights(user = self._user, pluginName = pname)
-            videoServSupport[pname] = plugin.getOption("contactSupport").getValue() if plugin.hasOption("contactSupport") else ""
+            hasCreatePermissions[pname] = RCVideoServicesUser.hasRights(user=self._user, pluginName=pname)
+            videoServSupport[pname] = plugin.getOption("contactSupport").getValue() \
+                if plugin.hasOption("contactSupport") else ""
+            isAllowedToSearch[pname] = plugin.getOption("searchAllow").getValue() if plugin.hasOption("searchAllow")  \
+                else False
         vars["HasCreatePermissions"] = hasCreatePermissions
         vars["VideoServiceSupport"] = videoServSupport
-
-
-
+        vars["isAllowedToSearch"] = isAllowedToSearch
 
         singleBookingForms = {}
         multipleBookingForms = {}
@@ -485,10 +487,10 @@ class WPCollaborationDisplay(WPConferenceDefaultDisplayBase, WPCollaborationBase
         self._sectionMenu.setCurrentItem(self._collaborationOpt)
 
     def getCSSFiles(self):
-        return WPConferenceDefaultDisplayBase.getCSSFiles(self) + WPCollaborationBase.getCSSFiles(self)
+        return WPConferenceDefaultDisplayBase.getCSSFiles(self)
 
     def getJSFiles(self):
-        return WPConferenceDefaultDisplayBase.getJSFiles(self) + WPCollaborationBase.getJSFiles(self)
+        return WPConferenceDefaultDisplayBase.getJSFiles(self)
 
     def _getBody(self, params):
 

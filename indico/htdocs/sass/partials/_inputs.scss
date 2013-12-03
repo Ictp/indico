@@ -20,6 +20,7 @@
 */
 
 %text-input {
+    @extend %font-size-body;
     @include border-all();
     @include box-sizing(border-box);
     @include single-transition(border-color);
@@ -39,10 +40,12 @@
 }
 
 input[type=text],
-input[type=password] {
+input[type=password],
+input[type=search] {
     @extend %text-input;
 
     height: 1.6em;
+    -webkit-appearance: textfield;
 
     &.placeholder {
         color: #aaa;
@@ -53,115 +56,149 @@ textarea {
     @extend %text-input;
 }
 
-/* ********** */
-/* Text-input */
-/* ********** */
-.text-input {
-    border: 1px solid #BBB;
-    display: inline-block;
-    height: 2.1em;
-    padding: 0em 0.7em 0em 0.7em;
-    transition: color .25s ease-out, border-color .25s ease-out;
-    -webkit-transition: color .25s ease-out, border-color .25s ease-out;
-    -moz-transition: color .25s ease-out, border-color .25s ease-out;
-    vertical-align: middle;
+.i-selection {
+    input[type=checkbox],
+    input[type=radio] {
+        display: none;
+
+        &:checked + label,
+        &:checked:not(:disabled) + label:hover {
+            @include gradient(#387EE5, #5D95EA);
+            box-shadow: 1px 1px 4px rgba(20, 20, 20, 0.1) inset;
+            color: white !important;
+        }
+
+        &:disabled + label.i-button {
+            @extend %button-disabled;
+        }
+    }
+
+    input[type=checkbox] {
+        &:checked:active + label {
+            @include gradient(#81ADEF, #A5C4F3);
+            color: $black !important;
+        }
+    }
+
+    input[type=radio] {
+        &:checked + label:hover {
+            cursor: default !important;
+        }
+    }
+
+    label {
+        &:hover {
+            @include gradient(#E2E2E2, #F7F7F7);
+            border-color: $gray !important;
+            box-shadow: 1px 1px 4px rgba(20, 20, 20, 0.1) inset;
+        }
+
+        &:active {
+            @include gradient(#81ADEF, #A5C4F3);
+        }
+    }
 }
 
-.text-input:hover {
-    border-color: #999 ;
-    box-shadow: 1px 1px 4px rgba(20, 20, 20, 0.1) inset;
+// Simple toogle switch
+
+$switchTransition: .15s ease-out;
+
+.switch {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  width: 56px;
+  height: 20px;
+  padding: 3px;
+  background-color: white;
+  border-radius: 18px;
+  box-shadow: inset 0 -1px white,
+              inset 0 1px 1px rgba(black, .05);
+  cursor: pointer;
+  @include linear-gradient(top, #eee, white 25px);
 }
 
-.text-input.active {
-    border-color: #999;
-    box-shadow: 1px 1px 4px rgba(20, 20, 20, 0.1) inset;
+.switch-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
 }
 
-.text-input input[type=text] {
-    background: transparent;
-    border: none;
-    color: #555;
-    font-size: 13px;
-    font-weight: bold;
-    outline: none;
-    height: 1.9em;
+.switch-label {
+  position: relative;
+  display: block;
+  height: inherit;
+  font-size: 10px;
+  text-transform: uppercase;
+  background: $red;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 2px rgba(black, .12),
+              inset 0 0 2px rgba(black, .15);
+  @include transition($switchTransition);
+  @include transition-property(opacity background);
+
+  &:before, &:after {
+    position: absolute;
+    top: 50%;
+    margin-top: -.5em;
+    line-height: 1;
+    @include transition(inherit);
+  }
+
+  &:before {
+    content: attr(data-off);
+    right: 11px;
+    color: white;
+    text-shadow: 0 1px rgba(white, .5);
+  }
+
+  &:after {
+    content: attr(data-on);
+    left: 11px;
+    color: white;
+    text-shadow: 0 1px rgba(black, .2);
+    opacity: 0;
+  }
+
+  .switch-input:checked ~ & {
+    background: $green;
+    box-shadow: inset 0 1px 2px rgba(black, .15),
+                inset 0 0 3px rgba(black, .2);
+
+    &:before { opacity: 0; }
+    &:after { opacity: 1; }
+  }
 }
 
-.text-input > .reset-input {
-    color: #BBB;
-    visibility: hidden;
-    font-size: 1.2em;
-    vertical-align: -10%;
-}
+.switch-handle {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 18px;
+  height: 18px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 1px 1px 5px rgba(black, .2);
+  @include linear-gradient(top, white 40%, #f0f0f0);
+  @include transition(left #{$switchTransition});
 
-.text-input > .reset-input:hover {
-    color: #999;
-    cursor: pointer;
-}
+  &:before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -6px 0 0 -6px;
+    width: 12px;
+    height: 12px;
+    background: #f9f9f9;
+    border-radius: 6px;
+    box-shadow: inset 0 1px rgba(black, .02);
+    @include linear-gradient(top, #eee, white);
+  }
 
-.text-input > .reset-input:active {
-    color: #555;
-}
-
-/* ******************* */
-/* Checkboxes & radios */
-/* ******************* */
-.group.selection > input[type=checkbox],
-.group.selection > input[type=radio] {
-    display: none;
-}
-
-.group.selection > label.i-button:hover {
-    background-color: #F7F7F7;
-    background-image: -ms-linear-gradient(top, #E2E2E2, #F7F7F7);
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#E2E2E2), to(#F7F7F7));
-    background-image: -webkit-linear-gradient(top, #E2E2E2, #F7F7F7);
-    background-image: -o-linear-gradient(top, #E2E2E2, #F7F7F7);
-    background-image: -moz-linear-gradient(top, #E2E2E2, #F7F7F7);
-    background-image: linear-gradient(bottom, #E2E2E2, #F7F7F7);
-    border-color: #BBB;
-    box-shadow: 1px 1px 4px rgba(20, 20, 20, 0.1) inset;
-}
-
-.group.selection > label.i-button:active {
-    background-color: #A5C4F3;
-    background-image: -ms-linear-gradient(top, #81ADEF, #A5C4F3);
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#81ADEF), to(#A5C4F3));
-    background-image: -webkit-linear-gradient(top, #81ADEF, #A5C4F3);
-    background-image: -o-linear-gradient(top, #81ADEF, #A5C4F3);
-    background-image: -moz-linear-gradient(top, #81ADEF, #A5C4F3);
-    background-image: linear-gradient(bottom, #81ADEF, #A5C4F3);
-}
-
-.group.selection > input[type=checkbox]:checked + label,
-.group.selection > input[type=radio]:checked + label {
-    background-color: #5D95EA;
-    background: -moz-linear-gradient(top, #387EE5, #5D95EA);
-    background: -webkit-linear-gradient(top, #387EE5, #5D95EA);
-    background: -o-linear-gradient(top, #387EE5, #5D95EA);
-    background: -ms-linear-gradient(top, #387EE5, #5D95EA);
-    background: linear-gradient(top, #387EE5, #5D95EA);
-    box-shadow: 1px 1px 4px rgba(20, 20, 20, 0.1) inset;
-    color: #EEE !important;
-}
-
-.group.selection > input[type=checkbox]:checked + label:hover {
-    box-shadow: none !important;
-    color: #FFF !important;
-}
-
-.group.selection > input[type=radio]:checked + label:hover {
-    cursor: default !important;
-}
-
-.group.selection > input[type=checkbox]:checked + label:active,
-.group.selection > input[type=radio]:checked + label:active {
-    background-color: #A5C4F3;
-    background-image: -ms-linear-gradient(top, #81ADEF, #A5C4F3);
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#81ADEF), to(#A5C4F3));
-    background-image: -webkit-linear-gradient(top, #81ADEF, #A5C4F3);
-    background-image: -o-linear-gradient(top, #81ADEF, #A5C4F3);
-    background-image: -moz-linear-gradient(top, #81ADEF, #A5C4F3);
-    background-image: linear-gradient(bottom, #81ADEF, #A5C4F3);
-    color: #555 !important;
+  .switch-input:checked ~ & {
+    left: 40px;
+    box-shadow: -1px 1px 5px rgba(black, .2);
+  }
 }

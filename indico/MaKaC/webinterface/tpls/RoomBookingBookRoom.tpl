@@ -1,343 +1,3 @@
-<script type="text/javascript">
-
-    var userId = "rb-user-${user.getId() if user else 'not-logged'}";
-
-    var maxRoomCapacity = 0;
-
-    % if rooms:
-        var maxRoomCapacity = ${ max(room.capacity for room in rooms) };
-    % endif
-
-    // Reds out the invalid textboxes and returns false if something is invalid.
-    // Returns true if form may be submited.
-    function validateForm(onlyLocal) {
-
-        // Clean up - make all textboxes white again
-        var searchForm = $('#searchForm');
-        $(':input', searchForm).removeClass('invalid');
-
-        // Init
-        var isValid = true;
-
-        // Capacity validator
-        var capacity = $('#capacity').val();
-        if (capacity != '' && (capacity < 0 || capacity > maxRoomCapacity || parseInt(capacity, 10).toString() == 'NaN')) {
-            capacity.addClass('invalid');
-            isValid = false;
-        }
-
-        // Holidays warning
-        if (!onlyLocal) {
-            saveCalendarData($('#finishDate').val());
-            var holidaysWarning = indicoSource('roomBooking.getDateWarning', searchForm.serializeObject());
-            holidaysWarning.state.observe(function(state) {
-                if (state == SourceState.Loaded) {
-                    $('#holidays-warning').html(holidaysWarning.get());
-                    if (holidaysWarning.get() == '')
-                        $('#holidays-warning').hide();
-                    else
-                        $('#holidays-warning').show();
-                }
-
-            });
-        }
-
-        // Flexible date range
-        if ($("#flexibleDates").is(':checked')) {
-            var sdate = new Date($('#sYear').val(), parseInt($('#sMonth').val() - 1), $('#sDay').val());
-            var edate = new Date($('#eYear').val(), parseInt($('#eMonth').val() - 1), $('#eDay').val());
-            sdate.setDate(sdate.getDate() - parseInt($('#flexibleDatesRange').val()));
-            edate.setDate(edate.getDate() + parseInt($('#flexibleDatesRange').val()));
-            $('#sDay').val(sdate.getDate());
-            $('#sMonth').val(parseInt(sdate.getMonth() + 1));
-            $('#sYear').val(sdate.getFullYear());
-            $('#eDay').val(edate.getDate());
-            $('#eMonth').val(parseInt(edate.getMonth() + 1));
-            $('#eYear').val(edate.getFullYear());
-        }
-
-        // Date validator (repeatability)
-        if ($('#repeatability').val() != 'None') {
-            isValid = validate_period(true, true, 1) && isValid; // 1: validate dates
-        }
-
-        // Time validator
-        if ($('#sTime').val() != '') {
-            isValid = validate_period(false, false, 2) && isValid; // 2: validate only times
-        }
-
-        return isValid;
-    }
-
-    $(window).on('load', function() {
-
-        // Multiselect widget init
-        $('#roomGUID').multiselect({
-            height: 255,
-            minWidth: 490,
-            checkAllText: 'All',
-            uncheckAllText: 'None',
-            noneSelectedText: '0 selected',
-            autoOpen: true,
-            beforeclose: function (event, ui) {
-                return false;
-            },
-            classes : "RoomBooking"
-        }).multiselectfilter({
-            label: "",
-            placeholder: ""
-        });
-
-        $("#roomGUID").bind("multiselectclick", function(event, ui) {
-            changeSelectedStyle($('.RoomBooking.ui-multiselect-menu input[value="' + ui.value + '"]'));
-            updateSelectionCounter();
-        });
-
-        $("#roomGUID").bind("multiselectcheckall", function(event, ui) {
-            changeSelectedStyleAll();
-        });
-
-        $("#roomGUID").bind("multiselectuncheckall", function(event, ui) {
-            changeSelectedStyleAll();
-        });
-
-        $("#roomGUID").multiselect("widget").bind( {
-            mouseleave: function(){
-                $("#roomGUID").multiselect("widget").find('label').removeClass('ui-state-hover');
-            }
-        });
-
-        $("#roomGUID").bind("multiselectrefresh", function(event, ui) {
-
-           // Header modifications
-           var o = $("#roomGUID").multiselect("option");
-           var menu = $("#roomGUID").multiselect("widget");
-
-           $('.RoomBooking .ui-widget-header .ui-helper-reset').html('<li><span>Select: </span> <a class="ui-multiselect-all" href="#"><span class="ui-icon ui-icon-check"></span><span>' + o.checkAllText + '</span></a></li><li>, <a class="ui-multiselect-none" href="#"><span class="ui-icon ui-icon-close"></span><span>' + o.uncheckAllText + '</span></a>');
-
-           $('<div />').addClass('ui-multiselect-search-advanced')
-                .html(function(){
-                    return '<span id="advancedOptionsText" style="float: right; padding: 2px 10px 0px 20px" >&nbsp;</span>';
-                }).appendTo( menu.children().first() );
-
-            $('<div />').addClass('ui-multiselect-ui-multiselect-scrollbar-up').insertAfter( menu.children().first() );
-            $('<div />').addClass('ui-multiselect-ui-multiselect-scrollbar-down').appendTo( menu );
-            $('<div />').addClass('ui-multiselect-selection-counter').appendTo( menu );
-            $('<div />').addClass('ui-multiselect-selection-summary').appendTo( menu );
-
-            $('.RoomBooking .ui-multiselect-selection-counter').text(o.selectedText.replace('#', $(".RoomBooking.ui-multiselect-menu input:checked").length));
-
-            // Adding advanced lables
-            var advancedImages = ["images/rb_video.png","images/rb_webcast.png", "images/rb_public.png", "images/rb_capacity.png"];
-            var advancedImagesTitles = ["Video conference", "Webcast/Recording", "Public room", "Capacity"];
-
-            $("#roomGUID option").each(function(index) {
-                var advLabelsParts = $(this).attr('label').split(":");
-                var html = '</br><div style="padding: 4px 0px 0px 20px; color: gray">';
-                for (var i = 0; i < advLabelsParts.length; i++){
-                    if (advLabelsParts[i] != 'None' && advLabelsParts[i].toLowerCase() !='false'){
-                        html += '<img title="' + advancedImagesTitles[i] + '" class="ui-multiselect-images" src="' + Indico.Urls.Base + '/' + advancedImages[i]+  '">';
-                        if (advLabelsParts[i].toLowerCase() != "true") {
-                            html += advLabelsParts[i];
-                        }
-                    }
-                }
-                var label = $('.RoomBooking.ui-multiselect-menu input[value="' + $(this).val() +'"]').next();
-                $(label).html(label.text() + html);
-            });
-
-            changeSelectedStyleAll();
-        });
-
-        $("#roomGUID").bind("multiselectfilterfilter", function(event, matches) {
-            $('.RoomBooking .ui-multiselect-selection-summary').text($('.RoomBooking .ui-multiselect-checkboxes li:visible').length + " / " + $(".RoomBooking .ui-multiselect-checkboxes li").length + " items");
-            $('.RoomBooking .ui-multiselect-selection-summary').effect("pulsate", { times:1 }, 400);
-        });
-
-        // Calendars init
-        $("#sDatePlace, #eDatePlace").datepicker({
-            defaultDate: null,
-            minDate: 0,
-            firstDay: 1,
-            showButtonPanel: true,
-            changeMonth: true,
-            changeYear: true,
-            numberOfMonths: 1,
-            onSelect: function( selectedDate ) {
-                if ($("#sDatePlace").datepicker('getDate') > $("#eDatePlace").datepicker('getDate')) {
-                    $("#eDatePlace").datepicker('setDate', $("#sDatePlace").datepicker('getDate'));
-                }
-                validateForm(false);
-            }
-        });
-
-        // Capacity slider init
-        $('#capacityRange').slider({
-            range: "max",
-            min: 0,
-            max: maxRoomCapacity,
-            value: 1,
-            step: 1,
-            create: function(event, ui) {
-                updateCapacitySlider(event,ui);
-            },
-
-            start: function(event, ui) {
-                updateCapacitySlider(event,ui);
-            },
-
-            slide: function(event, ui) {
-                validateForm(true);
-                updateCapacitySlider(event,ui);
-            },
-
-            stop: function(event, ui) {
-                $('#capacity').keyup();
-            }
-          });
-
-        // Default date
-        % if today.day != '':
-            $("#sDatePlace").datepicker('setDate', new Date (${ today.year } + "/" + ${ today.month } + "/" + ${ today.day }));
-            $("#eDatePlace").datepicker('setDate', new Date (${ today.year } + "/" + ${ today.month } + "/" + ${ today.day }));
-        % endif
-
-        // Restore saved form data
-        var rbUserData = $.jStorage.get(userId, {});
-        if (rbUserData.sDay) {
-            $("#sDatePlace").datepicker('setDate', new Date (rbUserData.sYear + "/" + rbUserData.sMonth + "/" + rbUserData.sDay));
-            $("#eDatePlace").datepicker('setDate', new Date (rbUserData.eYear + "/" + rbUserData.eMonth + "/" + rbUserData.eDay));
-        }
-        if (rbUserData.sTime) {
-            $("#sTime").val(rbUserData.sTime);
-            $("#eTime").val(rbUserData.eTime);
-        } else  {
-            $("#sTime").val("8:30");
-            $("#eTime").val("17:30");
-        }
-
-        $("#capacity").val(rbUserData.capacity);
-        $("#videoconference").prop('checked', rbUserData.videoconference);
-        $("#webcast").prop('checked', rbUserData.webcast);
-        $("#publicroom").prop('checked', rbUserData.publicroom);
-
-        $("#finishDate").val(rbUserData.finishDate);
-        $("#flexibleDates").prop('checked', rbUserData.flexibleDates);
-        if (rbUserData.flexibleDatesRange) {
-            $("#flexibleDatesRange").val(rbUserData.flexibleDatesRange);
-        }
-        if (rbUserData.repeatability) {
-            $("#repeatability").val(rbUserData.repeatability);
-        }
-
-        // Time slider init
-        $('#timeRange').slider({
-            range: true,
-            max: 1439,
-            values: [510, 1050],
-            step: 5,
-            create: function(event, ui) {
-                updateTimeSlider(event,ui);
-
-            },
-
-            start: function(event, ui) {
-                updateTimeSlider(event,ui);
-            },
-
-            slide: function(event, ui) {
-                validateForm(false);
-                updateTimeSlider(event,ui);
-            }
-          });
-
-        restoreSelection(rbUserData.selectedRooms);
-        $("#roomGUID").multiselect("refresh");
-
-        // Restore filter and advanced filter
-        $('#advancedOptions').toggle(!rbUserData.showAdvancedOptions);
-        showAdvancedOptions();
-
-        $('.ui-multiselect-filter :input').val(rbUserData.filter);
-        advancedFilter();
-
-        // Set watermarks
-        $('.ui-multiselect-filter :input').watermark($T('Search: name, number, location...'));
-        $('#capacity').watermark('0');
-
-        // CSS and text
-        $("#roomSelectWidgetSpace").height($('.ui-multiselect-menu').height() + 20);
-        $("#advancedOptions").css('left', parseInt($('.ui-multiselect-menu').css('left').replace('px','')) + parseInt($('.ui-multiselect-menu').width()) + 'px'  ).css('top', $('.ui-multiselect-menu').css('top') );
-        $('#bookingLegend').width($('.ui-multiselect-menu').width());
-        $("#advancedOptionsText").addClass('fakeLink');
-        $("#maxRoomCapacity").text(maxRoomCapacity);
-        $('#flexibleDatesRange').prop('disabled', !$("#flexibleDates").prop('checked'));
-        if ($("#finishDate").val() == 'true')
-            $('#eDatePlaceDiv').show();
-
-        // Qtips
-        $("#publicRoomHelp").qtip({
-            content: {
-                text: "room that can be booked by anyone without special permissions"
-            },
-            position: {
-                target: 'mouse',
-                adjust: { mouse: true, x: 11, y: 13 }
-            },
-            show: {
-
-            }
-        });
-
-        // Listeners
-        $('#searchForm').delegate(':input', 'change keyup', function() {
-            if (validateForm(false)){
-                updateCapacitySlider();
-                updateTimeSlider();
-            }
-        }).submit(function(e) {
-            saveFormData();
-            if (!validateForm(true)) {
-                new AlertPopup($T("Error"), $T("There are errors in the form. Please correct fields with red background.")).open();
-                e.preventDefault();
-            }
-            else if($('#roomGUID').val() == null) {
-                new AlertPopup($T("Error"), $T("Please select a room (or several rooms)..")).open();
-                e.preventDefault();
-            }
-        });
-
-        $("#advancedOptionsText").click(function () {
-            showAdvancedOptions();
-        });
-
-        $('#repeatability').change(function() {
-            if ($(this).val() != 'None') {
-                $('#sDatePlaceTitle').text('${ _("Start date")}');
-                $('#finishDate').val('true');
-                $('#eDatePlaceDiv').show();
-            } else {
-                $('#sDatePlaceTitle').text('${ _("Booking date")}');
-                $('#finishDate').val('false');
-                $('#eDatePlaceDiv').hide();
-            }
-            if ($(this).val() == '0') {
-                $('#flexibleDatesDiv').hide();
-                $('#flexibleDates').prop('checked', false);
-            } else {
-                $('#flexibleDatesDiv').show();
-            }
-
-        });
-
-        $('#repeatability').change();
-
-        $('#flexibleDates').on('change', function() {
-            $('#flexibleDatesRange').prop('disabled', !this.checked);
-        });
- });
-</script>
-
 <form id="searchForm" method="post" action="${ roomBookingBookingListURL }">
     <table id="roomBookingTable" style="width: 100%; padding-left: 20px;">
         <tr>
@@ -351,128 +11,63 @@
         </tr>
         <tr>
             <td>
-                <div class="groupTitle bookingTitle">${ _("Choose rooms") }</div>
+                <h2 class="group_title">
+                    <i class="icon-location"></i>
+                    ${_("Rooms")}
+                </h2>
             </td>
         </tr>
         <!-- ROOMS -->
         <tr>
           <td>
-             <div id="roomSelectWidgetSpace">
-                <select name="roomGUID" id="roomGUID" multiple="multiple" size="10" style="display: none" >
-                    % for room in rooms:
-                        <option label="${str(room.needsAVCSetup) + ':' + str(room.hasWebcastRecording()) + ':' + str(room.isReservable and not room.customAtts.get('Booking Simba List')) + ':' + (str(room.capacity) if room.capacity else '0')}" name = "${ str(room.getBookingUrl()) }" value="${ str( room.guid ) }" class="${ roomClass( room ) }">${ room.locationName + " &nbsp; " + room.getFullName()}</option>
-                    % endfor
-                </select>
-             </div>
-             <!--  ADVANCED SEARCH -->
-             <div id="advancedOptions" style="background-color: #eaeaea; position: absolute; padding: 5px; border-radius: 0px 10px 10px 0px; display: none; ">
-                <table>
-                    <!-- CAPACITY -->
-                    <tr >
-                        <td>
-                            <img src="${Config.getInstance().getBaseURL()}/images/rb_capacity.png">
-                            <small> ${ _("Minimum capacity")}&nbsp;&nbsp;</small>
-                        </td>
-                        <td>
-                            <input name="capacity" id="capacity" size="3" type="text" value="" style="width: 43px;" onkeyup="advancedFilter();" />
-                        </td>
-                    </tr>
-                    <!-- CAPACITY SLIDER-->
-                    <tr>
-                        <td colspan="2" >
-                            <div id="minRoomCapacity" style="float: left; color: gray; padding-right: 5px">0</div>
-                            <div id="capacityRange" style="float: left; width: 100px; margin: 0px 0px 9px 10px;"></div>
-                            <div id="maxRoomCapacity"style="float: left; color: gray; padding-left: 12px;"></div>
-                        </td>
-                    </tr>
-                    <!-- VIDEO CONFERENCE -->
-                    <tr>
-                        <td>
-                            <img src="${Config.getInstance().getBaseURL()}/images/rb_video.png">
-                            <small> ${ _("Video conference")}&nbsp;&nbsp;</small>
-                        </td>
-                        <td>
-                            <input name="videoconference" id="videoconference" type="checkbox" onchange="advancedFilter();" />
-                        </td>
-                    </tr>
-                    <!-- WEBCAST/RECORDING -->
-                    <tr>
-                        <td>
-                            <img src="${Config.getInstance().getBaseURL()}/images/rb_webcast.png">
-                            <small> ${ _("Webcast/Recording")}&nbsp;&nbsp;</small>
-                        </td>
-                        <td>
-                            <input name="webcast" id="webcast" type="checkbox" onchange="advancedFilter();" />
-                        </td>
-                    </tr>
-                    <!-- PUBLIC ROOM -->
-                    <tr>
-                        <td >
-                            <img src="${Config.getInstance().getBaseURL()}/images/rb_public.png">
-                            <small> ${ _("Public room")}&nbsp;&nbsp;</small>
-                        </td>
-                        <td>
-                            <input name="publicroom" id="publicroom" type="checkbox" onchange="advancedFilter();" />
-                        </td>
-                    </tr>
-                </table>
-             </div>
-             <!-- LEGEND -->
-             <div id="bookingLegend" style="background: #F2F2F2; border-top: 1px solid #DDD; padding: 5px 0px 3px 0px; margin-top: -9px">
-                <!-- CAPACITY -->
-                <img src="${Config.getInstance().getBaseURL()}/images/rb_capacity.png" style="padding-left: 5px;">
-                <small> ${ _("Capacity")}&nbsp;&nbsp;</small>
-                <!-- VIDEO CONFERENCE -->
-                <img src="${Config.getInstance().getBaseURL()}/images/rb_video.png">
-                <small> ${ _("Video conference")}&nbsp;&nbsp;</small>
-                <!-- WEBCAST/RECORDING -->
-                <img src="${Config.getInstance().getBaseURL()}/images/rb_webcast.png">
-                <small> ${ _("Webcast/Recording")}&nbsp;&nbsp;</small>
-                <!-- PUBLIC ROOM -->
-                <span id="publicRoomHelp">
-                    <img src="${Config.getInstance().getBaseURL()}/images/rb_public.png">
-                    <small> ${ _("Public room")}&nbsp;&nbsp;</small>
-                </span>
-             </div>
+              <div id="roomselector"></div>
            </td>
         </tr>
         <!-- DATES -->
         <tr>
             <td>
-                <div class="groupTitle bookingTitle" style="padding-top: 20px;">${ _("Select date range") }</div>
+                <h2 class="group_title">
+                    <i class="icon-calendar"></i>
+                    ${_("Date range")}
+                </h2>
             </td>
         </tr>
         <tr>
-            <td style="text-align: center;" >
-                <div style="float: left; clear: both; padding-bottom: 30px;">
-                    ${ _("Type")}
-                    <select name="repeatability" id="repeatability" style=" width: 230px;">
-                        <option value="None"> ${ _("Single reservation")}</option>
-                        <option value="0"> ${ _("Repeat daily")}</option>
-                        <option value="1"> ${ _("Repeat once a week")}</option>
-                        <option value="2"> ${ _("Repeat once every two weeks")}</option>
-                        <option value="3"> ${ _("Repeat once every three weeks")}</option>
-                        <option value="4"> ${ _("Repeat every month")}</option>
-                    </select>
+            <td>
+                <div class="toolbar thin">
+                    <div id="repeatability" class="group i-selection">
+                        <span class="i-button label">${_("Frequency")}</span>
+                        <input type="radio" id="once"  value="None" name="repeatability" checked>
+                        <label for="once" class="i-button">${_("Once")}</label>
+                        <input type="radio" id="daily" value="0" name="repeatability">
+                        <label for="daily" class="i-button">${_("Daily")}</label>
+                        <input type="radio" id="weekly" value="1" name="repeatability">
+                        <label for="weekly" class="i-button">${_("Weekly")}</label>
+                        <input type="radio" id="monthly" value="4" name="repeatability">
+                        <label for="monthly" class="i-button">${_("Monthly")}</label>
+                    </div>
+                    <div id="flexibleDates" class="group i-selection">
+                        <span class="i-button label">${_("Flexibility")}</span>
+                        <input type="radio" value="0" id="0d" name="flexibleDatesRange" checked>
+                        <label for="0d" class="i-button">${_("Exact")}</label>
+                        <input type="radio" value="1" id="1d" name="flexibleDatesRange">
+                        <label for="1d" class="i-button"><sup>+</sup>/<sub>-</sub> ${_("1 day")}</label>
+                        <input type="radio" value="2" id="2d" name="flexibleDatesRange">
+                        <label for="2d" class="i-button"><sup>+</sup>/<sub>-</sub> ${("2 days")}</label>
+                        <input type="radio" value="3" id="3d" name="flexibleDatesRange">
+                        <label for="3d" class="i-button"><sup>+</sup>/<sub>-</sub> ${("3 days")}</label>
+                    </div>
                 </div>
                 <div id="sDatePlaceDiv" class="titleCellFormat bookDateDiv" style="clear: both;" >
-                    <span id='sDatePlaceTitle' class='label'>${ _("Booking date")}</span>
+                    <div id='sDatePlaceTitle' class='label'>${_("Booking date")}</div>
                     <div id="sDatePlace"></div>
                 </div>
                 <div id="eDatePlaceDiv" class="titleCellFormat bookDateDiv" style="display: none;" >
-                    <span id='eDatePlaceTitle' class='label'>${ _("End date")}</span>
+                    <div id='eDatePlaceTitle' class='label'>${_("End date")}</div>
                     <div id="eDatePlace"></div>
                 </div>
                 <div class="infoMessage" id="holidays-warning" style="float: left; display: none"></div>
-                <div id="flexibleDatesDiv" style="float: left; clear: both; ">
-                    <input name="flexibleDates" type="checkbox" id="flexibleDates" />
-                   ${ _("Flexible on dates") }
-                    <select name="flexibleDatesRange" id="flexibleDatesRange">
-                      <option value="1">${ _("+/- 1 day")}</option>
-                      <option value="2">${ _("+/- 2 days")}</option>
-                      <option value="3">${ _("+/- 3 days")}</option>
-                    </select>
-                </div>
+
                 <input name="finishDate" id="finishDate" type="hidden" />
                 <input name="sDay" id="sDay" type="hidden" />
                 <input name="sMonth" id="sMonth" type="hidden" />
@@ -485,15 +80,18 @@
         <!-- TIME -->
         <tr>
             <td>
-                <div class="groupTitle bookingTitle" style="padding-top: 30px;">${ _("Select time range") }</div>
+                <h2 class="group_title">
+                    <i class="icon-time"></i>
+                    ${ _("Time range") }
+                </h2>
             </td>
         </tr>
         <tr>
             <td>
                 ${ _("Booking time from")}
-                <input name="sTime" id="sTime" style="width: 43px;" type="text" />
+                <input name="sTime" id="sTime" type="text" />
                 ${ _("to")}
-                <input name="eTime" id="eTime" style="width: 43px;" type="text" />
+                <input name="eTime" id="eTime" type="text" />
             </td>
         </tr>
         <!-- TIME SLIDER-->
@@ -527,3 +125,173 @@
         </tr>
     </table>
 </form>
+
+<script type="text/javascript">
+    var userId = "rb-user-${user.getId() if user else 'not-logged'}";
+    var rbUserData = $.jStorage.get(userId, {});
+    var maxRoomCapacity = ${maxRoomCapacity};
+
+    $(document).ready(function() {
+        initWidgets();
+        eventBindings();
+        restoreUserData();
+
+        function initWidgets() {
+            $("#roomselector").roomselector({allowEmpty: false,
+                                             rooms: ${rooms | j, n},
+                                             roomMaxCapacity: maxRoomCapacity,
+                                             userData: rbUserData,
+                                             selectName: "roomGUID"});
+
+            // Calendars init
+            $("#sDatePlace, #eDatePlace").datepicker({
+                defaultDate: null,
+                minDate: 0,
+                firstDay: 1,
+                showButtonPanel: true,
+                changeMonth: true,
+                changeYear: true,
+                numberOfMonths: 1,
+                onSelect: function( selectedDate ) {
+                    if ($("#sDatePlace").datepicker('getDate') > $("#eDatePlace").datepicker('getDate')) {
+                        $("#eDatePlace").datepicker('setDate', $("#sDatePlace").datepicker('getDate'));
+                    }
+                    validateForm(false);
+                }
+            });
+
+            // Time slider init
+            $('#timeRange').slider({
+                range: true,
+                max: 1439,
+                values: [510, 1050],
+                step: 5,
+                create: function(event, ui) {
+                    updateTimeSlider(event,ui);
+
+                },
+                start: function(event, ui) {
+                    updateTimeSlider(event,ui);
+                },
+                slide: function(event, ui) {
+                    validateForm(false);
+                    updateTimeSlider(event,ui);
+                }
+            });
+
+            % if today.day != '':
+                $("#sDatePlace").datepicker('setDate', new Date (${ today.year } + "/" + ${ today.month } + "/" + ${ today.day }));
+                $("#eDatePlace").datepicker('setDate', new Date (${ today.year } + "/" + ${ today.month } + "/" + ${ today.day }));
+            % endif
+
+            $("#sTime").val("8:30");
+            $("#eTime").val("17:30");
+            updateTimeSlider();
+        }
+
+        function eventBindings() {
+            $('#searchForm').delegate(':input', 'change keyup', function() {
+                if (validateForm(false)) {
+                    updateTimeSlider();
+                }
+            }).submit(function(e) {
+                saveFormData();
+                if (!validateForm(true)) {
+                    new AlertPopup($T("Error"), $T("There are errors in the form. Please correct fields with red background.")).open();
+                    e.preventDefault();
+                } else if (!$("#roomselector").roomselector("validate")) {
+                    new AlertPopup($T("Error"), $T("Please select a room (or several rooms).")).open();
+                    e.preventDefault();
+                }
+            });
+
+            $("#repeatability input:radio[name=repeatability]").change(function() {
+                if ($(this).val() == 'None') {
+                    $('#sDatePlaceTitle').text('${_("Booking date")}');
+                    $('#finishDate').val('false');
+                    $('#eDatePlaceDiv').hide();
+                } else {
+                    $('#sDatePlaceTitle').text('${_("Start date")}');
+                    $('#finishDate').val('true');
+                    $('#eDatePlaceDiv').show();
+                }
+
+                if ($(this).val() == '0') {
+                    $('#flexibleDatesDiv').hide();
+                    $("#flexibleDates input:radio").attr("disabled", true);
+                } else {
+                    $("#flexibleDates input:radio").attr("disabled", false);
+                }
+            });
+        }
+
+        function restoreUserData() {
+            if (rbUserData.sDay) {
+                $("#sDatePlace").datepicker('setDate', new Date (rbUserData.sYear + "/" + rbUserData.sMonth + "/" + rbUserData.sDay));
+                $("#eDatePlace").datepicker('setDate', new Date (rbUserData.eYear + "/" + rbUserData.eMonth + "/" + rbUserData.eDay));
+            }
+
+            $("#finishDate").val(rbUserData.finishDate);
+            $("#repeatability input[name=repeatability][value="+ rbUserData.repeatability +"]")
+                .prop('checked', true)
+                .change();
+            $("#flexibleDates input[name=flexibleDatesRange][value="+ rbUserData.flexibleDatesRange +"]")
+                .prop('checked', true);
+
+            if (rbUserData.sTime) {
+                $("#sTime").val(rbUserData.sTime);
+                $("#eTime").val(rbUserData.eTime);
+                updateTimeSlider();
+            }
+        }
+
+        // Reds out the invalid textboxes and returns false if something is invalid.
+        // Returns true if form may be submited.
+        function validateForm(onlyLocal) {
+            var searchForm = $('#searchForm');
+            $('.invalid', searchForm).removeClass('invalid');
+
+            var isValid = true;
+            var repeatability = $("#repeatability input:radio[name='repeatability']:checked").val();
+
+            if (!onlyLocal) {
+                saveCalendarData($('#finishDate').val());
+                var holidaysWarning = indicoSource('roomBooking.getDateWarning', searchForm.serializeObject());
+                holidaysWarning.state.observe(function(state) {
+                    if (state == SourceState.Loaded) {
+                        $('#holidays-warning').html(holidaysWarning.get());
+                        if (holidaysWarning.get() == '')
+                            $('#holidays-warning').hide();
+                        else
+                            $('#holidays-warning').show();
+                    }
+                });
+            }
+
+            updateDateRange(repeatability);
+            isValid = validate_period(true, true, 1, repeatability) && isValid; // 1: validate dates
+
+            // Time validator
+            if ($('#sTime').val() != '') {
+                isValid = validate_period(false, false, 2) && isValid; // 2: validate only times
+            }
+            return isValid;
+        }
+
+        function updateDateRange(repeatability) {
+            var flexibilityrange = $("#flexibleDates input:radio[name='flexibleDatesRange']:checked").val();
+            var sdate = new Date($('#sYear').val(), parseInt($('#sMonth').val() - 1), $('#sDay').val());
+            var edate = new Date($('#eYear').val(), parseInt($('#eMonth').val() - 1), $('#eDay').val());
+            if (repeatability !== "0") {
+                sdate.setDate(sdate.getDate() - parseInt(flexibilityrange));
+                edate.setDate(edate.getDate() + parseInt(flexibilityrange));
+            }
+            $('#sDay').val(sdate.getDate());
+            $('#sMonth').val(parseInt(sdate.getMonth() + 1));
+            $('#sYear').val(sdate.getFullYear());
+            $('#eDay').val(edate.getDate());
+            $('#eMonth').val(parseInt(edate.getMonth() + 1));
+            $('#eYear').val(edate.getFullYear());
+        }
+    });
+</script>

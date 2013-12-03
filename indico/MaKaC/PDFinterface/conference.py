@@ -21,20 +21,19 @@ import string
 import types
 from copy import deepcopy
 from textwrap import wrap, fill
-try :
-    from PIL import Image
-except ImportError, e:
-    from MaKaC.PDFinterface.base import Image
+from PIL import Image
+from qrcode import QRCode, constants
+
 from MaKaC.PDFinterface.base import escape, Int2Romans
 from datetime import timedelta,datetime
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch, cm
+from reportlab.lib.utils import ImageReader
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_JUSTIFY, TA_CENTER, TA_LEFT, TA_RIGHT
 from reportlab.rl_config import defaultPageSize
 from reportlab.platypus import Table,TableStyle,KeepTogether, XPreformatted
 from reportlab.pdfgen import canvas
-#from PIL import Image
 from MaKaC.common.timezoneUtils import DisplayTZ,nowutc
 import MaKaC.webinterface.urlHandlers as urlHandlers
 import MaKaC.review as review
@@ -58,6 +57,9 @@ from MaKaC.webinterface.common.tools import strip_ml_tags
 import re
 from MaKaC.i18n import _
 from indico.util.i18n import i18nformat, ngettext
+from indico.util.date_time import format_date
+from indico.util import json
+from MaKaC.common.Configuration import Config
 
 
 styles = getSampleStyleSheet()
@@ -3166,3 +3168,101 @@ class LectureToPosterPDF:
 
                     # finally, draw
                     p.drawOn(self.__canvas, posx + itemx, self.__height - posy - itemy - h)
+
+
+class TicketToPDF(PDFBase):
+
+    def __init__(self, conf, registrant, doc=None, story=None):
+        self._conf = conf
+        self._registrant = registrant
+        PDFBase.__init__(self, doc, story)
+
+    def firstPage(self, c, doc):
+        c.saveState()
+        height = self._PAGE_HEIGHT - 1*cm
+        width = 1*cm
+
+        # Conference title
+        height -= 1*cm
+        self._drawWrappedString(c, escape(self._conf.getTitle()),
+                                height=height, width=width, size=20,
+                                align="left", font='Times-Bold')
+
+        # Conference start and end date
+        height -= 0.7*cm
+        self._drawWrappedString(c, "%s - %s" % (
+            format_date(self._conf.getStartDate(), format='full'),
+            format_date(self._conf.getEndDate(), format='full')),
+            height=height, width=width, align="left", font="Times-Italic",
+            size=15)
+
+        # Conference location
+        if self._conf.getLocation():
+            height -= 0.7*cm
+            self._drawWrappedString(
+                c,
+                escape(self._conf.getLocation().getName()),
+                height=height, width=width, size=15, align="left",
+                font="Times-Italic")
+
+        # e-Ticket
+        c.setFont('Times-Bold', 30)
+        height -= 2*cm
+        c.drawCentredString(self._PAGE_WIDTH/2.0, height, _("e-ticket"))
+
+        # QRCode (Version 6 with error correction L can contain up to 106 bytes)
+        height -= 6*cm
+        qr = QRCode(
+            version=6,
+            error_correction=constants.ERROR_CORRECT_M,
+            box_size=4,
+            border=1
+        )
+        config = Config.getInstance()
+        baseURL = config.getBaseSecureURL() if config.getBaseSecureURL() else config.getBaseURL()
+        qr_data = {"registrant_id": self._registrant.getId(),
+                   "secret": self._registrant.getCheckInUUID(),
+                   "event_id": self._conf.getId(),
+                   "server_url": baseURL
+                  }
+        json_qr_data = json.dumps(qr_data)
+        qr.add_data(json_qr_data)
+        qr.make(fit=True)
+        qr_img = qr.make_image()
+
+        c.drawImage(ImageReader(qr_img._img), width, height, height=4*cm,
+                    width=4*cm)
+
+        # QRCode and registrant info separating line
+        width += 4.5*cm
+        c.setStrokeColorRGB(0, 0, 0)
+        c.line(width, height, width, height + 4*cm)
+
+        # Registrant info
+        width += 0.5*cm
+        height += 3*cm
+        self._drawWrappedString(c, escape(self._registrant.getFullName()),
+                                height=height, width=width, size=15,
+                                align="left", font='Times-Roman')
+        if self._registrant.getInstitution():
+            height -= 0.5*cm
+            self._drawWrappedString(c,
+                                    escape(self._registrant.getInstitution()),
+                                    height=height, width=width, size=15,
+                                    align="left", font='Times-Roman')
+        if self._registrant.getAddress():
+            height -= 0.5*cm
+            self._drawWrappedString(c, escape(self._registrant.getAddress()),
+                                    height=height, width=width, size=15,
+                                    align="left", font='Times-Roman')
+        if self._registrant.getCity():
+            height -= 0.5*cm
+            self._drawWrappedString(c, escape(self._registrant.getCity()),
+                                    height=height, width=width, size=15,
+                                    align="left", font='Times-Roman')
+        if self._registrant.getCountry():
+            height -= 0.5*cm
+            self._drawWrappedString(c, escape(self._registrant.getCountry()),
+                                    height=height, width=width, size=15,
+                                    align="left", font='Times-Roman')
+        c.restoreState()

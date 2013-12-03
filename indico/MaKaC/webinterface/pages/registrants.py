@@ -26,7 +26,7 @@ from MaKaC.webinterface.pages.conferences import WConfDisplayBodyBase
 from MaKaC.webinterface import wcomponents
 from xml.sax.saxutils import quoteattr
 from MaKaC.webinterface.pages.conferences import WPConferenceModifBase, WPConferenceDefaultDisplayBase
-from MaKaC.common import Config
+from indico.core.config import Config
 from MaKaC.webinterface.common.countries import CountryHolder
 from MaKaC.webinterface.common.person_titles import TitlesRegistry
 from MaKaC.webinterface.common.registrantNotificator import EmailNotificator
@@ -34,6 +34,8 @@ from MaKaC import registration
 from conferences import WConfModifBadgePDFOptions
 from MaKaC.i18n import _
 from indico.util.i18n import i18nformat
+from indico.util. date_time import format_datetime
+from indico.web.flask.util import url_for
 from xml.sax.saxutils import escape
 import string
 
@@ -122,6 +124,8 @@ class WConfModifRegistrants(wcomponents.WTemplated):
         self._dispopts["Sessions"] = ["Sessions"]
         #if self._conf.getRegistrationForm().getReasonParticipationForm().isEnabled():
         self._dispopts["ReasonParticipation"]=["ReasonParticipation"]
+        if self._conf.getRegistrationForm().getETicket().isEnabled():
+            self._dispopts["eTicket"] = ["checkedIn", "checkInDate"]
         self._dispopts["more"]=["RegistrationDate"]
         for sect in self._conf.getRegistrationForm().getGeneralSectionFormsList():
             self._dispopts[sect.getId()]=[]
@@ -148,9 +152,30 @@ class WConfModifRegistrants(wcomponents.WTemplated):
             if self._columns:
                 pass
         except AttributeError:
-            columns ={"PersonalData":_("Personal Data"),"Id":_("Id"), "Email": _("Email"), "Position":_("Position"), "Institution":_("Institution"),"Phone":_("Phone"),"City":_("City"),\
-                      "Country":_("Country"), "Address":_("Address"), "ArrivalDate": _("Arrival Date"), "DepartureDate": _("Departure Date"), \
-                      "RegistrationDate": i18nformat("""_("Registration date") (%s)""")%self._conf.getTimezone()}
+            columns = {"PersonalData": _("Personal Data"),
+                       "Id": _("Id"),
+                       "statuses": _("Statuses"),
+                       "LastName": _("Surname"),
+                       "FirstName": _("First name"),
+                       "Email": _("Email"),
+                       "Position": _("Position"),
+                       "Institution": _("Institution"),
+                       "Phone": _("Phone"),
+                       "City": _("City"),
+                       "Country": _("Country"),
+                       "Address": _("Address"),
+                       "ArrivalDate": _("Arrival Date"),
+                       "DepartureDate": _("Departure Date"),
+                       "amountToPay": _("Amount"),
+                       "idpayment": _("Payment ID"),
+                       "isPayed": _("Paid"),
+                       "eTicket": _("e-ticket"),
+                       "checkedIn": _("Checked in"),
+                       "checkInDate": _("Check in Date"),
+                       "more": _("General info"),
+                       "RegistrationDate": i18nformat(
+                           """_("Registration date") (%s)""") % self._conf.getTimezone()
+                       }
 
             tit=self._conf.getRegistrationForm().getSessionsForm().getTitle()
             if not self._conf.getRegistrationForm().getSessionsForm().isEnabled():
@@ -168,13 +193,6 @@ class WConfModifRegistrants(wcomponents.WTemplated):
             if not self._conf.getRegistrationForm().getReasonParticipationForm().isEnabled():
                 tit='%s <span style="color:red;font-size: 75%%">(disabled)</span>'%tit
             columns["ReasonParticipation"]=tit
-            columns["more"]=_("General info")
-            columns["statuses"]=_("Statuses")
-            columns["isPayed"]=_("Paid")
-            columns["idpayment"]=_("Payment ID")
-            columns["amountToPay"]=_("Amount")
-            columns["LastName"]=_("Surname")
-            columns["FirstName"]=_("First name")
 
             for st in self._conf.getRegistrationForm().getStatusesList(False):
                 columns["s-%s"%st.getId()]=st.getCaption()
@@ -429,6 +447,7 @@ class WConfModifRegistrants(wcomponents.WTemplated):
 
         vars = wcomponents.WTemplated.getVars( self )
 
+        vars["conferenceId"] = self._conf.getId()
         vars["filterUrl"] = str(self._filterUrl)
 
         sortingField = self._sortingCrit.getField()
@@ -488,6 +507,7 @@ class WConfModifRegistrants(wcomponents.WTemplated):
         vars["displayMenu"] = self._getDisplayMenu()%vars
         vars["filterMenu"] = self._getFilterMenu()
         vars["groups_order"] = self._groupsorder
+        vars["eTicketEnabled"] = self._conf.getRegistrationForm().getETicket().isEnabled()
 
         return vars
 
@@ -841,10 +861,17 @@ class WPRegistrantModifBase( WPRegistrantBase ):
 
     def _createTabCtrl( self ):
         self._tabCtrl = wcomponents.TabControl()
-        self._tabMain = self._tabCtrl.newTab( "main", _("Main"), \
-                urlHandlers.UHRegistrantModification.getURL( self._target ) )
+        self._tabMain = self._tabCtrl.newTab("main", _("Main"),
+                                             url_for("event_mgmt.confModifRegistrants-modification",
+                                                     self._target))
+        self._tabETicket = self._tabCtrl.newTab("eticket", _("e-ticket"),
+                                                url_for("event_mgmt.confModifRegistrants-modification-eticket",
+                                                        self._target))
         self._setActiveTab()
         self._setupTabCtrl()
+
+        if not self._conf.getRegistrationForm().getETicket().isEnabled():
+            self._tabETicket.disable()
 
     def _setActiveTab( self ):
         pass
@@ -863,6 +890,38 @@ class WPRegistrantModifBase( WPRegistrantBase ):
 
     def _getTabContent( self, params ):
         return  _("nothing")
+
+
+class WPRegistrantModifETicket(WPRegistrantModifBase):
+
+    def _setActiveTab(self):
+        self._tabETicket.setActive()
+
+    def _getTabContent(self, params):
+        wc = WRegistrantModifETicket(self._registrant)
+        return wc.getHTML()
+
+
+class WRegistrantModifETicket(wcomponents.WTemplated):
+
+    def __init__(self, registrant):
+        self._registrant = registrant
+        self._conf = self._registrant.getConference()
+
+    def getVars(self):
+        vars = wcomponents.WTemplated.getVars(self)
+        vars["checkInUrl"] = url_for("event_mgmt.confModifRegistrants-modification-eticket-checkin",
+                             self._registrant)
+        vars["eTicketUrl"] = url_for("event.e-ticket-pdf",
+                                     self._registrant,
+                                     authkey=self._registrant.getRandomId())
+        vars["isCheckedIn"] = self._registrant.isCheckedIn()
+        checkInDate = self._registrant.getAdjustedCheckInDate()
+        if checkInDate:
+            vars["checkInDate"] = format_datetime(checkInDate)
+
+        return vars
+
 
 class WPRegistrantModifMain( WPRegistrantModifBase ):
 

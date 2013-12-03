@@ -17,6 +17,7 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Indico;if not, see <http://www.gnu.org/licenses/>.
 from flask import session, request
+from indico.web.flask.util import url_for
 
 from MaKaC.webinterface.pages.conferences import WConfDisplayBodyBase
 import MaKaC.webinterface.pages.conferences as conferences
@@ -28,12 +29,12 @@ from MaKaC import registration
 from MaKaC.webinterface import wcomponents
 from xml.sax.saxutils import quoteattr
 from MaKaC.webinterface.common.person_titles import TitlesRegistry
-from MaKaC.common import Configuration
+from indico.core import config as Configuration
 from datetime import timedelta
 from MaKaC.common.timezoneUtils import nowutc
 from MaKaC.webinterface.common.countries import CountryHolder
 from MaKaC.webinterface.pages.base import WPBase
-from MaKaC.common import Config
+from indico.core.config import Config
 from MaKaC.i18n import _
 from indico.util.i18n import i18nformat
 from MaKaC.registration import RadioGroupInput, TextareaInput
@@ -53,6 +54,8 @@ class WPConfModifRegFormBase( conferences.WPConferenceModifBase ):
                 urlHandlers.UHConfModifRegistrationPreview.getURL( self._conf ) )
         self._tabEPay = self._tabCtrl.newTab( "epay", _("e-payment"), \
                 urlHandlers.UHConfModifEPayment.getURL( self._conf ) )
+        self._tabETicket = self._tabCtrl.newTab("eticket", _("e-ticket"),
+                url_for("event_mgmt.confModifETicket", self._conf))
 
         self._setActiveTab()
 
@@ -61,6 +64,7 @@ class WPConfModifRegFormBase( conferences.WPConferenceModifBase ):
             self._tabRegistrants.disable()
             self._tabEPay.disable()
             self._tabRegistrationPreview.disable()
+            self._tabETicket.disable()
 
     def _getPageContent(self, params):
         self._createTabCtrl()
@@ -1318,7 +1322,24 @@ class WConfRegistrationForm(WConfDisplayBodyBase):
             if regForm.inRegistrationPeriod() and not registered:
                 submitOpt = i18nformat("""<li><a href=%s> _("Show registration form")</a></li>""") % (quoteattr(str(urlHandlers.UHConfRegistrationFormDisplay.getURL(self._conf))))
             if registered:
-                submitOpt = i18nformat("""%s<li><a href=%s> _("View or modify your already registration")</a></li>""") % (submitOpt, quoteattr(str("")))
+                modify_registration_url = url_for(
+                    "event.confRegistrationFormDisplay-modify",
+                    self._conf)
+                submitOpt = i18nformat(
+                    """%s<li><a href=%s>
+                        _("View or modify your already registration")
+                       </a></li>""") % (submitOpt,
+                                        quoteattr(str(modify_registration_url)))
+            if registered and self._conf.getRegistrationForm().getETicket().isEnabled() and \
+                    self._conf.getRegistrationForm().getETicket().isShownAfterRegistration():
+                registrant = self._avatar.getRegistrantById(self._conf.getId())
+                e_ticket_url = url_for("event.e-ticket-pdf", registrant,
+                                       authkey=registrant.getRandomId())
+                submitOpt = i18nformat(
+                    """%s<li><a href=%s>
+                            _("Download your e-ticket")
+                       </a></li>""") % (submitOpt,
+                                        quoteattr(str(e_ticket_url)))
             html = i18nformat("""
             <b> _("Possible actions you can carry out"):</b>
             <ul>
@@ -2352,8 +2373,17 @@ class WConfRegistrationFormCreationDone(WConfDisplayBodyBase):
         if self._registrant.getRegistrationDate() is not None:
             wvars["registrationDate"] = self._registrant.getAdjustedRegistrationDate().strftime("%d-%B-%Y %H:%M")
         wvars["otherSections"] = self._getFormSections()
-        wvars["paymentInfo"]  = self._getPaymentInfo()
+        wvars["paymentInfo"] = self._getPaymentInfo()
         wvars["epaymentAnnounce"] = ""
+
+        modEticket = self._conf.getRegistrationForm().getETicket()
+
+        if modEticket.isEnabled() and modEticket.isShownAfterRegistration():
+            wvars["pdfTicketURL"] = url_for(
+                "event.e-ticket-pdf",
+                self._registrant,
+                authkey=self._registrant.getRandomId())
+
         if self._conf.getModPay().isActivated() and self._registrant.doPay():
             wvars["epaymentAnnounce"] = """<br><span>Please proceed to the <b>payment of your order</b> (by using the "Next" button down this page). You will then receive the payment details.</span>"""
         return wvars

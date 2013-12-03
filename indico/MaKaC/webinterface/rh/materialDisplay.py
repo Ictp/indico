@@ -25,7 +25,7 @@ import MaKaC.webinterface.urlHandlers as urlHandlers
 import MaKaC.conference as conference
 from MaKaC.webinterface.rh.base import RHDisplayBaseProtected
 from MaKaC.webinterface.rh.conferenceBase import RHMaterialBase
-from MaKaC.common import Config
+from indico.core.config import Config
 from MaKaC.export import fileConverter
 from MaKaC.i18n import _
 
@@ -101,6 +101,7 @@ class RHMaterialDisplayStoreAccessKey(RHMaterialDisplayBase):
     def _checkParams(self, params):
         RHMaterialDisplayBase._checkParams(self, params)
         self._accesskey = params.get("accessKey", "").strip()
+        self._doNotSanitizeFields.append("accessKey")
 
     def _checkProtection(self):
         pass

@@ -42,7 +42,7 @@ from MaKaC.errors import MaKaCError,FormValuesError,NoReportError
 import MaKaC.conference as conference
 from MaKaC.conference import ConferenceChair
 import MaKaC.statistics as statistics
-from MaKaC.common.Configuration import Config
+from indico.core.config import Config
 import MaKaC.user as user
 import MaKaC.common.info as info
 from MaKaC.i18n import _
@@ -51,7 +51,7 @@ from MaKaC.common.utils import validMail, setValidEmailSeparators
 from MaKaC.common.mail import GenericMailer
 from MaKaC.webinterface.common.tools import escape_html
 from indico.web.flask.util import send_file, endpoint_for_url
-from indico.web.http_api.api import CategoryEventHook
+from indico.web.http_api.hooks.event import CategoryEventHook
 from indico.web.http_api.metadata.serializer import Serializer
 
 class RHCategDisplayBase( base.RHDisplayBaseProtected ):

@@ -36,7 +36,7 @@ from MaKaC.common.indexes import IndexesHolder, CategoryDayIndex, CalendarDayInd
 from indico.core.db import DBMgr
 from MaKaC.common.info import HelperMaKaCInfo
 from MaKaC.common.Counter import Counter
-from MaKaC.common.Configuration import Config
+from indico.core.config import Config
 from MaKaC.conference import ConferenceHolder, CategoryManager, Conference, CustomLocation, CustomRoom
 from MaKaC.common.timerExec import HelperTaskList
 from MaKaC.plugins.base import PluginType, PluginsHolder
@@ -59,6 +59,7 @@ from indico.ext import livesync
 from indico.util import console, i18n
 from indico.modules.scheduler.tasks import AlarmTask
 from indico.modules.scheduler.tasks.periodic import FoundationSyncTask, CategoryStatisticsUpdaterTask
+from indico.modules.scheduler.tasks.suggestions import CategorySuggestionTask
 from indico.modules import ModuleHolder
 from indico.util.redis import avatar_links
 from indico.util.redis import client as redis_client
@@ -782,7 +783,7 @@ def convertLinkedTo(dbi, withRBDB, prevVersion):
     dbi.commit()
 
 
-@since('1.1', never=True)
+@since('1.1')
 def redisLinkedTo(dbi, withRBDB, prevVersion):
     """Import linkedTo information into Redis"""
     if not Config.getInstance().getRedisConnectionURL():
@@ -799,6 +800,18 @@ def redisLinkedTo(dbi, withRBDB, prevVersion):
             sys.stdout.flush()
         pipe.execute()
     print '\r  Done   '
+
+
+@since('1.2')
+def addSuggestionsTask(dbi, withRBDB, prevVersion):
+    """Add Category Suggestion Task to scheduler (Redis needed)"""
+    if not Config.getInstance().getRedisConnectionURL():
+        print console.colored("  Redis not configured, skipping", 'yellow')
+        return
+    task = CategorySuggestionTask(rrule.DAILY)
+    client = Client()
+    client.enqueue(task)
+    dbi.commit()
 
 
 @since('1.2')
@@ -903,6 +916,24 @@ def updateAvatarEmails(dbi, withRBDB, prevVersion):
         if j % 1000 == 999:
             dbi.commit()
         j += 1
+    dbi.commit()
+
+
+@since('1.2')
+def addETicketLinkToMenu(dbi, withRBDB, prevVersion):
+    """
+    Add download e-ticket PDF link to the menu
+    """
+
+    cdmr = displayMgr.ConfDisplayMgrRegistery()
+    ch = ConferenceHolder()
+    i = 0
+
+    for (__, conf) in console.conferenceHolderIterator(ch, deepness='event'):
+        _fixDefaultStyle(conf, cdmr)
+        i += 1
+        if i % 1000 == 0:
+            dbi.commit()
     dbi.commit()
 
 

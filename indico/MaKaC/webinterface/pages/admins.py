@@ -30,7 +30,7 @@ import MaKaC.webinterface.pages.conferences as conferences
 from MaKaC.webinterface.pages.conferences import WConfModifBadgePDFOptions
 import MaKaC.common.info as info
 import MaKaC.webcast as webcast
-from MaKaC.common.Configuration import Config
+from indico.core.config import Config
 import MaKaC.conference as conference
 import MaKaC.user as user
 from MaKaC.common import utils, timezoneUtils
@@ -766,11 +766,19 @@ class WPAdminLayoutGeneral( WPTemplatesCommon ):
 
         tplRE = re.compile('^([^\.]+)\.([^\.]+)\.wohl$')
 
-        fnames = os.listdir(os.path.join(tplDir,'chelp'));
+        fnames = os.listdir(os.path.join(tplDir, 'chelp'))
         for fname in fnames:
             m = tplRE.match(fname)
             if m:
                 templates[m.group(2)] = None
+
+        cssRE = re.compile('Default.([^\.]+)\.css$')
+
+        fnames = os.listdir(Config.getInstance().getCssDir())
+        for fname in fnames:
+            m = cssRE.match(fname)
+            if m:
+                templates[m.group(1)] = None
 
         return templates.keys()
 
@@ -1161,10 +1169,13 @@ class WBrowseUsers(wcomponents.WTemplated):
 
         vars["browseResult"] = ""
 
-        if self._letter != None:
+        if self._letter is not None:
             ah = user.AvatarHolder()
             if self._letter != "all":
-                res = ah.matchFirstLetter(self._browseIndex, self._letter, onlyActivated=False, searchInAuthenticators=True)
+                res = ah.matchFirstLetter(self._browseIndex,
+                                          self._letter,
+                                          onlyActivated=False,
+                                          searchInAuthenticators=False)
             else:
                 res = ah.getValuesToList()
             if self._browseIndex == "surName" or self._browseIndex == "status":
@@ -1424,6 +1435,7 @@ class WUserDashboard(wcomponents.WTemplated):
 
         html_vars["offset"] = '{0:+02d}:{1:02d}'.format(hours, minutes)
         html_vars["categories"] = user.getRelatedCategories()
+        html_vars["suggested_categories"] = user.getSuggestedCategories()
         html_vars["redisEnabled"] = bool(redis_client)
 
         return html_vars
@@ -1624,45 +1636,24 @@ class WPUserPreferences( WPPersonalArea ):
 
 class WIdentityModification(wcomponents.WTemplated):
 
-    def __init__( self, av, identity=None ):
+    def __init__(self, av, identity=None):
         self._avatar = av
         self._identity = identity
 
-    def getVars( self ):
-        vars = wcomponents.WTemplated.getVars( self )
+    def getVars(self):
+        wvars = wcomponents.WTemplated.getVars(self)
 
-        locatorList = ["""<input type="hidden" name="userId" value="%s">"""%self._avatar.getId() ]
-        if self._identity == None:
-            WTitle = _("New Identity for user")+" :<br>%s"%(self._avatar.getFullName())
-            WDescription = ""
-            login = vars.get("login",self._avatar.getEmail())
-            password = ""
+        wvars["avatarId"] = self._avatar.getId()
+        if self._identity:
+            wvars["actionLabel"] = _("Change password")
+            wvars["login"] = self._identity.getId()
         else:
-            WTitle, WDescription = "", ""
-            login = self._identity.getId()
-            password = ""
+            wvars["actionLabel"] = _("New Identity")
+            wvars["login"] = wvars.get("login", self._avatar.getEmail())
 
-        vars["login"] = login
-        vars["password"] = password
-
-        if vars.get("WTitle",None) is None :
-            vars["WTitle"] = WTitle
-        if vars.get("WDescription",None) is None :
-            vars["WDescription"] = WDescription
-        if vars.get("disabledLogin",None) is None :
-            vars["disabledLogin"] = ""
-            vars["hiddenLogin"] = ""
-        else :
-            vars["hiddenLogin"] = """<input type=hidden name="login" value="%s">"""%vars["login"]
-        if vars.get("disabledSystem",None) is None :
-            vars["disabledSystem"] = ""
-
-        vars["locator"] = "\n".join(locatorList)
-        html = ""
-        for auth in AuthenticatorMgr().getList():
-            html = html + "<option value=" + auth.getId() + ">" + auth.getName() + "</option>\n"
-        vars["systemList"] = html
-        return vars
+        auths = [{"id": auth.getId(), "name": auth.getName()} for auth in AuthenticatorMgr().getList()]
+        wvars["systemList"] = auths
+        return wvars
 
 
 class WPIdentityCreation(WPUserDetails):
@@ -1673,10 +1664,10 @@ class WPIdentityCreation(WPUserDetails):
         self._params = params
 
     def _getTabContent(self, params):
-        c = WIdentityModification( self._avatar )
-        self._params["identityId"] = ""
+        c = WIdentityModification(self._avatar)
         self._params["postURL"] = urlHandlers.UHUserIdentityCreation.getURL()
-        return c.getHTML( self._params )
+        self._params["isDisabled"] = False
+        return c.getHTML(self._params)
 
 
 class WPIdentityChangePassword(WPUserDetails):
@@ -1687,17 +1678,11 @@ class WPIdentityChangePassword(WPUserDetails):
         self._params = params
 
     def _getTabContent(self, params):
-
-        identity = self._avatar.getIdentityById(self._params["identityId"],"Local")
-        c = WIdentityModification( self._avatar, identity )
-        postURL = urlHandlers.UHUserIdentityChangePassword.getURL()
-        self._params["postURL"] = postURL
-        self._params["WTitle"] = _("Change password for user")+" :<br>%s"%self._avatar.getFullName()
-        self._params["disabledLogin"] = "disabled"
-        self._params["disabledSystem"] = "disabled"
-        self._params["login"] = self._params["identityId"]
-        return c.getHTML( self._params )
-
+        identity = self._avatar.getIdentityById(self._params["login"], "Local")
+        c = WIdentityModification(self._avatar, identity)
+        self._params["postURL"] = urlHandlers.UHUserIdentityChangePassword.getURL()
+        self._params["isDisabled"] = True
+        return c.getHTML(self._params)
 
 
 class WPGroupCommon(WPUsersAndGroupsCommon):

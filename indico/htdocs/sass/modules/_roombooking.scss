@@ -1,0 +1,295 @@
+/*
+* -*- mode: text; coding: utf-8; -*-
+
+
+   This file is part of Indico.
+   Copyright (C) 2002 - 2013 European Organization for Nuclear Research (CERN).
+
+   Indico is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License as
+   published by the Free Software Foundation; either version 3 of the
+   License, or (at your option) any later version.
+
+   Indico is distributed in the hope that it will be useful, but
+   WITHOUT ANY WARRANTY; without even the implied warranty MERCHANTABILITY
+   of or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with Indico; if not, see <http://www.gnu.org/licenses/>.
+*/
+
+@import "roombooking/bars";
+@import "roombooking/breadcrums";
+@import "roombooking/roomselector";
+
+#roomBookingCal {
+    width: 820px;
+}
+
+.tip {
+    border:solid 1px #888888;
+    color:#222222;
+    background-color:#f0f0f0;
+    font-size: 11px;
+    padding: 2px;
+
+    a {
+        font-size:11px;
+    }
+
+    ul, strong, em {
+        color:#222222;
+        font-size:11px;
+    }
+}
+
+.tip-no-borders {
+    @extend .tip;
+    border: none;
+}
+
+.dayDiv {
+    position: relative;
+    height: 10px;
+    font-size:0px;
+    margin-top: 6px;
+}
+
+.dayCalendarDiv {
+    position: relative;
+    height: 20px;
+    font-size:0px;
+    display: inline-block;
+    vertical-align: middle;
+
+    & .time-bar {
+        background: url('../indico/images/rb_timebar_bg.png');
+        width: 675px;
+        height: 20px;
+    }
+}
+
+.dayCalendarDivHeader {
+    height: 20px;
+    font-size:0px;
+    margin-top: 6px;
+    margin-left: 120px;
+    position: relative;
+}
+
+div.calHour {
+    margin-top: 2px;
+    position: absolute;
+    font-size: 8px;
+    height: 20px;
+    color: #666;
+}
+
+.room-row {
+    min-height: 20px;
+    width: 100%;
+    margin-bottom: 5px;
+    clear: both;
+
+    & .link {
+        line-height: 20px;
+        width: 120px;
+        padding-left: 5px;
+        display: inline-block;
+        vertical-align: middle;
+    }
+}
+
+.wholeDayCalendarDiv {
+    clear: both;
+    float: left;
+    width: 800px;
+    padding-bottom: 20px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.wholeDayCalendarDayHighlight {
+    background-color: #D9EDF7;
+    padding: 5px 0px 0px 5px;
+}
+
+/* Form fields: field description width. */
+.subFieldWidth {
+    width: 160px;
+    color: #523D04;
+}
+.subFieldWidthSmaller {
+    width: 60px;
+    color: #523D04;
+}
+
+.actionSucceeded {
+    color: Green;
+    margin-left: 6px;
+    font-weight: bold;
+}
+
+.actionFailed {
+    color: Red;
+    margin-left: 6px;
+    font-weight: bold;
+}
+
+a.roomLink:hover, a.dateLink:hover {
+    text-decoration: underline;
+}
+
+a.basicRoom {
+    color: #0b63a5;
+}
+
+option.publicRoom, span.publicRoom, a.publicRoom {
+    color: Green;
+}
+
+option.moderatedRoom, span.moderatedRoom, a.moderatedRoom {
+    color: #D37209;
+}
+
+option.privateRoom, span.privateRoom, a.privateRoom, a.weekend {
+    color: Red;
+}
+
+a.blocked {
+    background-color: #f00;
+    color: #fff;
+}
+
+a.preblocked {
+    background-color: #fb0;
+    color: #000;
+}
+
+a.blocked_permitted {
+    background-color: #af5;
+    color: #000;
+}
+
+a.blocked_override {
+    background-color: #b5f;
+    color: #000;
+}
+
+span.unavailable {
+    background-color: #881122;
+    color: white;
+    padding: 1px;
+}
+
+a.weekday {
+    color: Black;
+}
+
+.bookingDisplayTitleCell {
+    width: 25%;
+}
+
+.bookingShowHideHistory {
+    margin-top: 9px;
+}
+
+.bookingDisplayEntryMoreInfo, .bookingDisplayEntryHideInfo {
+    white-space: nowrap;
+    padding-left: 7px;
+}
+
+.bookingDisplayHistoryTimestamp {
+    color: #999;
+    font-size: 11px;
+    display: table-cell;
+    white-space: pre;
+    padding-right: 10px;
+}
+
+.bookingDisplayHistoryInfo {
+    display: table-cell;
+    /* For GChrome and Safari*/
+    width: 1000px;
+}
+
+.bookingHistoryTooltip {
+    padding: 3px;
+    background-color: white;
+}
+
+#roomBookingTable {
+    sub, sup {
+        top: -0.2em;
+        right: -0.1em;
+    }
+
+    sub {
+        top: 0.2em;
+        right: 0.1em;
+    }
+
+    .ui-datepicker-week-end,
+    .ui-datepicker-week-end .ui-state-default {
+        color: #881122 !important;
+    }
+}
+
+#mapOfRoomAvailabilityForm {
+
+    & .subFieldWidth {
+        width: 60px;
+    }
+
+    & #repeatability {
+        width: 115px;
+    }
+
+    & div.dateField input {
+        width: 65px;
+    }
+}
+
+#eTime,
+#sTime {
+    width: 4em;
+}
+
+#sDatePlaceDiv,
+#eDatePlaceDiv {
+
+    #sDatePlaceTitle,
+    #eDatePlaceTitle {
+        text-align: center;
+    }
+
+    .ui-datepicker-inline {
+        background-color: transparent;
+    }
+}
+
+
+
+.bookDateDiv {
+    float: left;
+    margin-right: 35px;
+    padding: 10px;
+    background-color: #FAFAFA;
+
+    span {
+        color: #777;
+    }
+}
+
+#flexibleDatesDiv {
+    margin-top: 20px;
+}
+
+.bookingTitle {
+   border-bottom: 1px solid #eaeaea;
+   padding-top: 15px;
+}

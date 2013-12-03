@@ -29,7 +29,8 @@ import os, tempfile, time
 from werkzeug.exceptions import NotFound
 from indico.util import json
 from indico.web.flask.util import send_file
-from indico.web.rh import RHHtdocs
+from indico.web.handlers import RHHtdocs
+from MaKaC.webinterface.rh.conferenceDisplay import RHConferenceBaseDisplay
 from MaKaC.plugins.Collaboration.base import SpeakerStatusEnum
 from MaKaC.conference import LocalFile
 from MaKaC.common.logger import Logger
@@ -48,7 +49,7 @@ from MaKaC.user import Group, Avatar
 from MaKaC.plugins.Collaboration.pages import WPAdminCollaboration, WPCollaborationDisplay, \
     WPConfModifCollaboration, WPConfModifCollaborationProtection, WPElectronicAgreementFormConference, \
     WPElectronicAgreementForm, WPElectronicAgreement
-from MaKaC.common.Configuration import Config
+from indico.core.config import Config
 
 
 class RCCollaborationAdmin(object):

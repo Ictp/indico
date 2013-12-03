@@ -23,8 +23,9 @@ import urlparse
 from flask import request, session, url_for
 
 from MaKaC.common.url import URL, EndpointURL
-from MaKaC.common.Configuration import Config
+from indico.core.config import Config
 import MaKaC.user as user
+from MaKaC.user import AvatarHolder
 from MaKaC.common.utils import utf8rep
 from MaKaC.common.timezoneUtils import nowutc
 from MaKaC.common.contextManager import ContextManager
@@ -676,16 +677,16 @@ class UHRoomPhoto(URLHandler):
     _endpoint = 'rooms.photo_large'
 
     @classmethod
-    def getURL(cls, target=None):
-        return super(UHRoomPhoto, cls).getURL(room=target)
+    def getURL(cls, target=None, extension="jpg"):
+        return super(UHRoomPhoto, cls).getURL(room=target, ext=extension)
 
 
 class UHRoomPhotoSmall(URLHandler):
     _endpoint = 'rooms.photo_small'
 
     @classmethod
-    def getURL(cls, target=None):
-        return super(UHRoomPhotoSmall, cls).getURL(room=target)
+    def getURL(cls, target=None, extension="jpg"):
+        return super(UHRoomPhotoSmall, cls).getURL(room=target, ext=extension)
 
 
 class UHConferenceClose(URLHandler):
@@ -1178,6 +1179,12 @@ class UHConfModifDisplayUpLink(URLHandler):
 
 class UHConfModifDisplayDownLink(URLHandler):
     _endpoint = 'event_mgmt.confModifDisplay-downLink'
+
+class UHConfModifDisplayToggleTimetableView(URLHandler):
+    _endpoint = 'event_mgmt.confModifDisplay-toggleTimetableView'
+
+class UHConfModifDisplayToggleTTDefaultLayout(URLHandler):
+    _endpoint = 'event_mgmt.confModifDisplay-toggleTTDefaultLayout'
 
 
 class UHConfModifFormatTitleBgColor(URLHandler):
@@ -1733,8 +1740,8 @@ class UHCategoryDisplay(URLHandler):
     _endpoint = 'category.categoryDisplay'
 
     @classmethod
-    def getURL(cls, target=None):
-        url = cls._getURL()
+    def getURL(cls, target=None, **params):
+        url = cls._getURL(**params)
         if target:
             if target.isRoot():
                 return UHWelcome.getURL()
@@ -2877,6 +2884,21 @@ class UHConfRegistrationFormCreationDone(URLHandler):
         url = cls._getURL()
         url.setParams(registrant.getLocator())
         url.addParam('authkey', registrant.getRandomId())
+        return url
+
+
+class UHConferenceTicketPDF(URLHandler):
+    _endpoint = 'event.e-ticket-pdf'
+
+    @classmethod
+    def getURL(cls, conf):
+        url = cls._getURL()
+        user = ContextManager.get("currentUser")
+        if user:
+            registrant = user.getRegistrantById(conf.getId())
+            if registrant:
+                url.setParams(registrant.getLocator())
+                url.addParam('authkey', registrant.getRandomId())
         return url
 
 

@@ -27,7 +27,7 @@ import MaKaC.webinterface.urlHandlers as urlHandlers
 from MaKaC.common import log
 from MaKaC.webinterface.rh.base import RH
 from MaKaC.errors import MaKaCError
-from MaKaC.common.Configuration import Config
+from indico.core.config import Config
 from MaKaC.conference import LocalFile,Link,Category
 from MaKaC.export import fileConverter
 from MaKaC.conference import Conference,Session,Contribution,SubContribution
@@ -226,15 +226,16 @@ class RHSubmitMaterialBase(object):
 
         self._files = []
         self._links = []
-        self._topdf=params.has_key("topdf")
+        self._topdf = "topdf" in params
 
-        self._displayName = params.get("displayName","").strip()
-        self._uploadType = params.get("uploadType","")
-        self._materialId = params.get("materialId","")
-        self._description = params.get("description","")
+        self._displayName = params.get("displayName", "").strip()
+        self._uploadType = params.get("uploadType", "")
+        self._materialId = params.get("materialId", "")
+        self._description = params.get("description", "")
         self._statusSelection = int(params.get("statusSelection", 1))
         self._visibility = int(params.get("visibility", 0))
-        self._password = params.get("password","")
+        self._password = params.get("password", "")
+        self._doNotSanitizeFields.append("password")
 
         self._userList = json.loads(params.get("userList", "[]"))
         maxUploadFilesTotalSize = float(self._cfg.getMaxUploadFilesTotalSize())
@@ -251,7 +252,7 @@ class RHSubmitMaterialBase(object):
                 if type(fileUpload) != str and fileUpload.filename.strip() != "":
                     fDict = {}
 
-                    fDict["fileName"] = fileUpload.filename
+                    fDict["fileName"] = fileUpload.filename.encode("utf-8")
                     estimSize = request.content_length
 
                     if maxUploadFilesTotalSize and estimSize > (maxUploadFilesTotalSize * BYTES_1MB):
@@ -395,7 +396,8 @@ class RHSubmitMaterialBase(object):
                 mat.addResource(resource, forcedFileId=None)
 
             #apply conversion
-            if self._topdf and fileConverter.CDSConvFileConverter.hasAvailableConversionsFor(os.path.splitext(resource.getFileName())[1].strip().lower()):
+            file_ext = os.path.splitext(resource.getFileName())[1].strip().lower()
+            if self._topdf and fileConverter.CDSConvFileConverter.hasAvailableConversionsFor(file_ext):
                 #Logger.get('conv').debug('Queueing %s for conversion' % resource.getFilePath())
                 fileConverter.CDSConvFileConverter.convert(resource.getFilePath(), "pdf", mat)
                 resource.setPDFConversionRequestDate(nowutc())

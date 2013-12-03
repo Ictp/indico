@@ -22,7 +22,7 @@ import operator
 from BTrees.OOBTree import OOTreeSet, union
 
 from persistent import Persistent
-from accessControl import AdminList
+from accessControl import AdminList, AccessWrapper
 import MaKaC
 from MaKaC.common import filters, indexes
 from MaKaC.common.Locators import Locator
@@ -45,7 +45,8 @@ from indico.util.caching import order_dict
 from indico.util.decorators import cached_classproperty
 from indico.util.event import truncate_path
 from indico.util.redis import write_client as redis_write_client
-import indico.util.redis.avatar_links as avatar_links
+from indico.util.redis import avatar_links, suggestions
+from flask import request
 
 """Contains the classes that implement the user management subsystem
 """
@@ -409,6 +410,9 @@ class Avatar(Persistent, Fossilizable):
 
             self.setDisplayTZMode(userData.get("displayTZMode", "Event Timezone"))
 
+    def __repr__(self):
+        return '<Avatar({0}, {1})>'.format(self.getId(), self.getFullName())
+
     def mergeTo(self, av):
         if av:
             av.mergeFrom(self)
@@ -470,6 +474,30 @@ class Avatar(Persistent, Fossilizable):
                 'path': truncate_path(categ.getCategoryPathTitles(), 30, False)
             }
         return OrderedDict(sorted(res.items(), key=operator.itemgetter(0)))
+
+    def getSuggestedCategories(self):
+        if not redis_write_client:
+            return []
+        related = union(self.getLinkTo('category', 'favorite'), self.getLinkTo('category', 'manager'))
+        res = []
+        for id, score in suggestions.get_suggestions(self, 'category').iteritems():
+            categ = MaKaC.conference.CategoryManager().getById(id)
+            if not categ or categ.isSuggestionsDisabled() or categ in related:
+                continue
+            if any(p.isSuggestionsDisabled() for p in categ.iterParents()):
+                continue
+            aw = AccessWrapper()
+            aw.setUser(self)
+            if request:
+                aw.setIP(request.remote_addr)
+            if not categ.canAccess(aw):
+                continue
+            res.append({
+                'score': score,
+                'categ': categ,
+                'path': truncate_path(categ.getCategoryPathTitles(), 30, False)
+            })
+        return res
 
     def resetLinkedTo(self):
         self.linkedTo = {}
@@ -1128,13 +1156,16 @@ class AvatarHolder(ObjectHolder):
         result = {}
         if index not in self._indexes:
             return None
-        match = indexes.IndexesHolder().getById(index).matchFirstLetter(letter)
-        if match != None:
+        if index in ["name", "surName", "organisation"]:
+            match = indexes.IndexesHolder().getById(index).matchFirstLetter(letter, accent_sensitive=False)
+        else:
+            match = indexes.IndexesHolder().getById(index).matchFirstLetter(letter)
+        if match is not None:
             for userid in match:
                 if self.getById(userid) not in result:
-                    av=self.getById(userid)
+                    av = self.getById(userid)
                     if not onlyActivated or av.isActivated():
-                        result[av.getEmail()]=av
+                        result[av.getEmail()] = av
         if searchInAuthenticators:
             for authenticator in AuthenticatorMgr().getList():
                 matches = authenticator.matchUserFirstLetter(index, letter)
@@ -1156,11 +1187,11 @@ class AvatarHolder(ObjectHolder):
     def match(self, criteria, exact=0, onlyActivated=True, searchInAuthenticators=True):
         result = {}
         iset = set()
-        for f,v in criteria.items():
+        for f, v in criteria.items():
             v = str(v).strip()
             if v and f in self._indexes:
-                match = indexes.IndexesHolder().getById(f).matchUser(v, exact=exact)
-                if match!= None:
+                match = indexes.IndexesHolder().getById(f).matchUser(v, exact=exact, accent_sensitive=False)
+                if match is not None:
                     if len(iset) == 0:
                         iset = set(match)
                     else:
@@ -1424,6 +1455,7 @@ class AvatarHolder(ObjectHolder):
         # Merge avatars in redis
         if redis_write_client:
             avatar_links.merge_avatars(prin, merged)
+            suggestions.merge_avatars(prin, merged)
 
         # remove merged from holder
         self.remove(merged)

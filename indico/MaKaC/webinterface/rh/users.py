@@ -36,6 +36,8 @@ from MaKaC.authentication import AuthenticatorMgr
 from indico.core.db import DBMgr
 from MaKaC.common import pendingQueues
 from MaKaC.i18n import _
+from indico.util.redis import suggestions
+from indico.util.redis import write_client as redis_write_client
 
 
 class RHUserManagementSwitchAuthorisedAccountCreation( admins.RHAdminBase ):
@@ -108,14 +110,19 @@ class RHUserCreation( RH ):
         if self._aw.getUser() and self._aw.getUser() in minfo.getAdminList().getList():
             return
         if not minfo.getAuthorisedAccountCreation():
-            raise MaKaCError( _("User registration has been disabled by the site administrator"))
+            raise MaKaCError(_("User registration has been disabled by the site administrator"))
 
-    def _checkParams( self, params ):
+    def _checkParams(self, params):
         self._params = params
-        RH._checkParams( self, params )
         self._save = params.get("Save", "")
+        self._email = params.get("email", "")
+        self._login = params.get("login", "")
+        self._password = params.get("password", "")
+        self._passwordBis = params.get("passwordBis", "")
+        self._doNotSanitizeFields.append("password")
+        self._doNotSanitizeFields.append("passwordBis")
 
-    def _process( self ):
+    def _process(self):
         save = False
         authManager = AuthenticatorMgr()
         minfo = info.HelperMaKaCInfo.getMaKaCInfoInstance()
@@ -123,50 +130,51 @@ class RHUserCreation( RH ):
         if self._save:
             save = True
             #check submited data
-            if not self._params.get("name",""):
-                self._params["msg"] += _("You must enter a name.")+"<br>"
+            if not self._params.get("name", ""):
+                self._params["msg"] += _("You must enter a name.") + "<br>"
                 save = False
-            if not self._params.get("surName",""):
-                self._params["msg"] += _("You must enter a surname.")+"<br>"
+            if not self._params.get("surName", ""):
+                self._params["msg"] += _("You must enter a surname.") + "<br>"
                 save = False
-            if not self._params.get("organisation",""):
-                self._params["msg"] += _("You must enter the name of your organisation.")+"<br>"
+            if not self._params.get("organisation", ""):
+                self._params["msg"] += _("You must enter the name of your organisation.") + "<br>"
                 save = False
-            if not self._params.get("email",""):
-                self._params["msg"] += _("You must enter an email address.")+"<br>"
+            if not self._email:
+                self._params["msg"] += _("You must enter an email address.") + "<br>"
                 save = False
-            if not self._params.get("login",""):
-                self._params["msg"] += _("You must enter a login.")+"<br>"
+            if not self._login:
+                self._params["msg"] += _("You must enter a login.") + "<br>"
                 save = False
-            if not self._params.get("password",""):
-                self._params["msg"] += _("You must define a password.")+"<br>"
+            if not self._password:
+                self._params["msg"] += _("You must define a password.") + "<br>"
                 save = False
-            if self._params.get("password","") != self._params.get("passwordBis",""):
-                self._params["msg"] += _("You must enter the same password twice.")+"<br>"
+            if self._password != self._passwordBis:
+                self._params["msg"] += _("You must enter the same password twice.") + "<br>"
                 save = False
-            if not authManager.isLoginAvailable(self._params.get("login", "")):
-                self._params["msg"] += _("Sorry, the login you requested is already in use. Please choose another one.")+"<br>"
+            if not authManager.isLoginAvailable(self._login):
+                self._params["msg"] += _("""Sorry, the login you requested is already in use.
+                                            Please choose another one.""") + "<br>"
                 save = False
-            if not self._validMail(self._params.get("email","")):
-                self._params["msg"]+= _("You must enter a valid email address")
+            if not self._validMail(self._email):
+                self._params["msg"] += _("You must enter a valid email address")
                 save = False
         if save:
             #Data are OK, Now check if there is an existing user or create a new one
             ah = user.AvatarHolder()
-            res =  ah.match({"email": self._params["email"]}, exact=1, searchInAuthenticators=False)
+            res = ah.match({"email": self._email}, exact=1, searchInAuthenticators=False)
             if res:
                 #we find a user with the same email
                 a = res[0]
                 #check if the user have an identity:
                 if a.getIdentityList():
-                    self._redirect( urlHandlers.UHUserExistWithIdentity.getURL(a))
+                    self._redirect(urlHandlers.UHUserExistWithIdentity.getURL(a))
                     return
                 else:
                     #create the identity to the user and send the comfirmatio email
-                    _UserUtils.setUserData( a, self._params )
-                    li = user.LoginInfo( self._params["login"], self._params["password"] )
-                    id = authManager.createIdentity( li, a, "Local" )
-                    authManager.add( id )
+                    _UserUtils.setUserData(a, self._params)
+                    li = user.LoginInfo(self._login, self._password)
+                    id = authManager.createIdentity(li, a, "Local")
+                    authManager.add(id)
                     DBMgr.getInstance().commit()
                     if minfo.getModerateAccountCreation():
                         mail.sendAccountCreationModeration(a).send()
@@ -176,11 +184,11 @@ class RHUserCreation( RH ):
                             mail.sendAccountCreationNotification(a).send()
             else:
                 a = user.Avatar()
-                _UserUtils.setUserData( a, self._params )
+                _UserUtils.setUserData(a, self._params)
                 ah.add(a)
-                li = user.LoginInfo( self._params["login"], self._params["password"] )
-                id = authManager.createIdentity( li, a, "Local" )
-                authManager.add( id )
+                li = user.LoginInfo(self._login, self._password)
+                id = authManager.createIdentity(li, a, "Local")
+                authManager.add(id)
                 DBMgr.getInstance().commit()
                 if minfo.getModerateAccountCreation():
                     mail.sendAccountCreationModeration(a).send()
@@ -188,19 +196,19 @@ class RHUserCreation( RH ):
                     mail.sendConfirmationRequest(a).send()
                     if minfo.getNotifyAccountCreation():
                         mail.sendAccountCreationNotification(a).send()
-            self._redirect(urlHandlers.UHUserCreated.getURL( a ))
+            self._redirect(urlHandlers.UHUserCreated.getURL(a))
         else:
-            cp=None
-            if self._params.has_key("cpEmail"):
-                ph=pendingQueues.PendingQueuesHolder()
-                cp=ph.getFirstPending(self._params["cpEmail"])
+            cp = None
+            if "cpEmail" in self._params:
+                ph = pendingQueues.PendingQueuesHolder()
+                cp = ph.getFirstPending(self._params["cpEmail"])
             if self._aw.getUser() and self._aw.getUser() in minfo.getAdminList().getList():
-                p = adminPages.WPUserCreation( self, self._params, cp )
+                p = adminPages.WPUserCreation(self, self._params, cp)
             else:
-                p = adminPages.WPUserCreationNonAdmin( self, self._params, cp )
+                p = adminPages.WPUserCreationNonAdmin(self, self._params, cp)
             return p.display()
 
-    def _validMail(self,email):
+    def _validMail(self, email):
         if re.search("^[a-zA-Z][\w\.-]*[a-zA-Z0-9]@[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]$",email):
             return True
         return False
@@ -297,6 +305,8 @@ class RHUserDashboard(RHUserBase):
 
     def _process(self):
         p = adminPages.WPUserDashboard(self, self._avatar)
+        if redis_write_client:
+            suggestions.schedule_check(self._avatar)
         return p.display()
 
 
@@ -396,6 +406,8 @@ class RHUserIdentityCreation( RHUserIdentityBase ):
         self._system = params.get("system", "")
         self._ok = params.get("OK", "")
         self._params = params
+        self._doNotSanitizeFields.append("password")
+        self._doNotSanitizeFields.append("passwordBis")
 
     def _process(self):
         if self._params.get("Cancel") is not None:
@@ -430,19 +442,20 @@ class RHUserIdentityCreation( RHUserIdentityBase ):
         return p.display()
 
 
-
-class RHUserIdPerformCreation( RHUserIdentityBase ):
+class RHUserIdPerformCreation(RHUserIdentityBase):
     _uh = urlHandlers.UHUserIdPerformCreation
 
-    def _checkParams( self, params ):
-        RHUserIdentityBase._checkParams( self, params )
+    def _checkParams(self, params):
+        RHUserIdentityBase._checkParams(self, params)
         self._login = params.get("login", "")
         self._pwd = params.get("password", "")
         self._pwdBis = params.get("passwordBis", "")
         self._fromURL = params.get("fromURL", "")
         self._system = params.get("system", "")
+        self._doNotSanitizeFields.append("password")
+        self._doNotSanitizeFields.append("passwordBis")
 
-    def _process( self ):
+    def _process(self):
         authManager = AuthenticatorMgr()
         #first, check if login is free
         if not authManager.isLoginAvailable(self._login):
@@ -460,32 +473,39 @@ class RHUserIdPerformCreation( RHUserIdentityBase ):
         DBMgr.getInstance().commit()
         scr = mail.sendConfirmationRequest(self._avatar)
         scr.send()
-        self._redirect( urlHandlers.UHUserDetails.getURL( self._avatar ) ) #to set to the returnURL
+        self._redirect(urlHandlers.UHUserDetails.getURL(self._avatar))  # to set to the returnURL
 
 
-class RHUserIdentityChangePassword( RHUserIdentityBase ):
+class RHUserIdentityChangePassword(RHUserIdentityBase):
     _uh = urlHandlers.UHUserIdentityChangePassword
 
-    def _checkParams( self, params ):
-        RHUserIdentityBase._checkParams( self, params )
+    def _checkParams(self, params):
+        RHUserIdentityBase._checkParams(self, params)
         self._params = params
+        self._doNotSanitizeFields.append("password")
+        self._doNotSanitizeFields.append("passwordBis")
 
     def _process(self):
-        if self._params.get("OK") is not None:
-            if self._params.get("password","") == "" or self._params.get("passwordBis","") == "" :
+        if self._params.get("OK"):
+            if self._params.get("password", "") == "" or self._params.get("passwordBis", "") == "":
                 self._params["msg"] = _("Both password and password confirmation fields must be filled up")
                 del self._params["OK"]
-                p = adminPages.WPIdentityChangePassword( self, self._avatar, self._params )
+                p = adminPages.WPIdentityChangePassword(self, self._avatar, self._params)
                 return p.display()
-            if self._params.get("password","") != self._params.get("passwordBis","") :
+            if self._params.get("password", "") != self._params.get("passwordBis", ""):
                 self._params["msg"] = _("Password and password confirmation are not equal")
                 del self._params["OK"]
-                p = adminPages.WPIdentityChangePassword( self, self._avatar, self._params )
+                p = adminPages.WPIdentityChangePassword(self, self._avatar, self._params)
                 return p.display()
             identity = self._avatar.getIdentityById(self._params["login"], "Local")
+            if not identity:
+                self._params["msg"] = _("You can NOT change others' passwords")
+                del self._params["OK"]
+                p = adminPages.WPIdentityChangePassword(self, self._avatar, self._params)
+                return p.display()
             identity.setPassword(self._params["password"])
             self._redirect(urlHandlers.UHUserDetails.getURL(self._avatar))
-        elif self._params.get("Cancel") is not None:
+        elif self._params.get("Cancel"):
             self._redirect(urlHandlers.UHUserDetails.getURL(self._avatar))
         else:
             self._params["msg"] = ""

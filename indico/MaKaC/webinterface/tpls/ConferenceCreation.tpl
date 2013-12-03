@@ -90,12 +90,7 @@
                     <td nowrap class="titleCellTD">
                         <span class="titleCellFormat">${ _("Chairperson") }</span>
                     </td>
-                    <td class="contentCellTD">
-                    <input type="hidden" id="chairperson" name="chairperson" value="">
-                    <div id="chairpersonsContainer">
-                    <!-- Filled through DOM manipulation   -->
-                    </div>
-                    </td>
+                    <%include file="EventParticipantAddition.tpl"/>
                 </tr>
                 <tr>
                     <td nowrap class="titleCellTD">
@@ -134,8 +129,8 @@
 
 <script type="text/javascript">
 
-    //---- chairperson management
 
+    //---- chairperson management
     var uf = new UserListField('VeryShortPeopleListDiv', 'PeopleList',
             null, true, null,
             true, false, false, {"grant-manager": [${ jsonEncode(_("event modification"))}, false], "presenter-grant-submission": [$T("submission rights"), false]},
@@ -144,38 +139,6 @@
 
     $E('chairpersonsContainer').set(uf.draw());
     
-    //---- fieldgrouping management
-    var fg = $("#rolesContainer").fieldgrouping();
-    
-    // Default roles: non editable
-    var rolesDefault = [];
-    var raw = ${rolesData};
-    for (var i=0;i<raw.length;i++) {
-        raw[i].editable = false;
-        rolesDefault.push(raw[i]);
-    }    
-    fg.fieldgrouping("setInfo", rolesDefault);
-    
-    
-    // ---- save roles values when submitting
-    $("#conferenceCreationForm").submit(function() {
-        // fix id numbers and remove new empty children
-        var raw = fg.fieldgrouping("getInfo");
-        var fix = [];
-        for (var i=0;i<raw.length;i++) {
-            var child = [];
-            for (var j=0;j<raw[i].child.length;j++) {
-                if (raw[i].child[j].value != "") {
-                    raw[i].child[j].id = j;
-                    child.push(raw[i].child[j]);
-                }
-            }    
-            raw[i].id = i;
-            raw[i].child = child;
-            fix.push(raw[i]);
-        }
-        $("input[name=roles]").val(JSON.stringify(fix));
-    });    
 
     // ----- show concurrent events
     function createDatesDict() {
@@ -264,5 +227,37 @@
         $E('descriptionBox').set(editor.draw());
     });
 
+    //---- fieldgrouping management
+    var fg = $("#rolesContainer").fieldgrouping();
+    
+    // Default roles: non editable
+    var rolesDefault = [];
+    var raw = ${rolesData};
+    for (var i=0;i<raw.length;i++) {
+        raw[i].editable = false;
+        rolesDefault.push(raw[i]);
+    }    
+    fg.fieldgrouping("setInfo", rolesDefault);
+    
+    
+    // ---- save roles values when submitting
+    $("#conferenceCreationForm").submit(function() {
+        // fix id numbers and remove new empty children
+        var raw = fg.fieldgrouping("getInfo");
+        var fix = [];
+        for (var i=0;i<raw.length;i++) {
+            var child = [];
+            for (var j=0;j<raw[i].child.length;j++) {
+                if (raw[i].child[j].value != "") {
+                    raw[i].child[j].id = j;
+                    child.push(raw[i].child[j]);
+                }
+            }    
+            raw[i].id = i;
+            raw[i].child = child;
+            fix.push(raw[i]);
+        }
+        $("input[name=roles]").val(JSON.stringify(fix));
+    });    
 
 </script>

@@ -17,6 +17,8 @@
 ## You should have received a copy of the GNU General Public License
 ## along with Indico;if not, see <http://www.gnu.org/licenses/>.
 
+from itertools import ifilter
+
 # fossil classes
 from MaKaC.common.timezoneUtils import datetimeToUnixTimeInt
 from MaKaC.plugins import PluginsHolder, Observable
@@ -69,13 +71,13 @@ from MaKaC.schedule import ConferenceSchedule, SessionSchedule,SlotSchedule,\
      PosterSlotSchedule, SlotSchTypeFactory, ContribSchEntry, \
      LinkedTimeSchEntry, BreakTimeSchEntry
 import MaKaC.review as review
-from MaKaC.common import Config, utils
+from MaKaC.common import utils
 from MaKaC.common.Counter import Counter
 from MaKaC.common.ObjectHolders import ObjectHolder
 from MaKaC.common.Locators import Locator
 from MaKaC.accessControl import AccessController, AdminList
 from MaKaC.errors import MaKaCError, TimingError, ParentTimingError, EntryTimingError, NoReportError
-from MaKaC import registration,epayment
+from MaKaC import registration, epayment
 from MaKaC.evaluation import Evaluation
 from MaKaC.trashCan import TrashCanManager
 from MaKaC.user import AvatarHolder
@@ -91,7 +93,7 @@ from MaKaC.common.utils import getHierarchicalId
 from MaKaC.i18n import _
 from MaKaC.common.PickleJar import Updates
 from MaKaC.common.PickleJar import if_else
-
+from MaKaC.schedule import ScheduleToJson
 from MaKaC.webinterface import urlHandlers
 
 from MaKaC.common.logger import Logger
@@ -104,7 +106,7 @@ from indico.util.date_time import utc_timestamp
 from indico.core.index import IIndexableByStartDateTime, IUniqueIdProvider, Catalog
 from indico.core.db import DBMgr
 from indico.core.db.event import SupportInfo
-from MaKaC.schedule import ScheduleToJson
+from indico.core.config import Config
 
 from indico.util.redis import write_client as redis_write_client
 import indico.util.redis.avatar_links as avatar_links
@@ -372,6 +374,10 @@ class Category(CommonObjectBase):
             # or use them as keys.
             return cmp(hash(self), hash(other))
         return cmp(self.getId(), other.getId())
+
+    def __repr__(self):
+        path = '/'.join(self.getCategoryPathTitles()[:-1])
+        return '<Category({0}, {1}, {2})>'.format(self.getId(), self.getName(), path)
 
     def __str__(self):
         return "<Category %s@%s>" % (self.getId(), hex(id(self)))
@@ -833,6 +839,16 @@ class Category(CommonObjectBase):
         self._visibility = int(visibility)
         self._reindex()
 
+    def isSuggestionsDisabled(self):
+        try:
+            return self._suggestions_disabled
+        except AttributeError:
+            self._suggestions_disabled = False
+            return False
+
+    def setSuggestionsDisabled(self, value):
+        self._suggestions_disabled = value
+
     def _reindex(self):
         catIdx = indexes.IndexesHolder().getIndex('category')
         catIdx.reindexCateg(self)
@@ -931,6 +947,12 @@ class Category(CommonObjectBase):
             l = self.getOwner().getCategoryPath()
             l.append(self.getId())
             return l
+
+    def iterParents(self):
+        categ = self
+        while not categ.isRoot():
+            categ = categ.getOwner()
+            yield categ
 
     def getCategoryPathTitles(self):
         # Breadcrumbs
@@ -2107,6 +2129,9 @@ class Conference(CommonObjectBase, Locatable):
 
         self._observers = []
 
+    def __repr__(self):
+        return '<Conference({0}, {1}, {2})'.format(self.getId(), self.getTitle(), self.getStartDate())
+
     def __str__(self):
         return "<Conference %s@%s>" % (self.getId(), hex(id(self)))
 
@@ -2714,6 +2739,9 @@ class Conference(CommonObjectBase, Locatable):
         for manager in self.getManagerList():
             if isinstance(manager, MaKaC.user.Avatar):
                 manager.unlinkTo(self, "manager")
+
+        creator = self.getCreator()
+        creator.unlinkTo(self, "creator")
 
         # Remove all links in redis
         if redis_write_client:
@@ -3421,10 +3449,13 @@ class Conference(CommonObjectBase, Locatable):
                     res.append(session)
         return res
 
-    def getNumberOfSessions( self ):
+    def getSessionSlotList(self):
+        return [slot for session in self.sessions.values() for slot in session.getSlotList()]
+
+    def getNumberOfSessions(self):
         return len(self.sessions)
 
-    def _generateNewContributionId( self ):
+    def _generateNewContributionId(self):
         """Returns a new unique identifier for the current conference
             contributions
         """
@@ -3809,7 +3840,7 @@ class Conference(CommonObjectBase, Locatable):
             return True
 
         # Managers have always access
-        if self.canUserModify(aw.getUser()):
+        if self.canModify(aw):
             return True
 
         if self.isProtected():
@@ -6281,24 +6312,29 @@ class Session(CommonObjectBase, Locatable):
             return True
         #####################################################
 
-        if not self.canIPAccess(aw.getIP()) and not self.canUserModify(aw.getUser()) and not self.isAllowedToAccess( aw.getUser() ):
+        # Managers have always access
+        if self.canModify(aw):
+            return True
+
+        flag_allowed_to_access = self.isAllowedToAccess(aw.getUser())
+        if not self.canIPAccess(aw.getIP()) and not self.canUserModify(aw.getUser()) and \
+                not flag_allowed_to_access:
             return False
         if not self.isProtected():
             return True
-        flag = self.isAllowedToAccess( aw.getUser() )
-        return flag or self.conference.canKeyAccess( aw )
+        return flag_allowed_to_access or self.conference.canKeyAccess(aw)
 
-    def grantModification( self, sb, sendEmail=True ):
+    def grantModification(self, sb, sendEmail=True):
         if isinstance(sb, SessionChair) or isinstance(sb, SlotChair):
             ah = AvatarHolder()
-            results=ah.match({"email":sb.getEmail()}, exact=1)
-            r=None
+            results = ah.match({"email": sb.getEmail()}, exact=1)
+            r = None
             for i in results:
                 if sb.getEmail().lower().strip() in [j.lower().strip() for j in i.getEmails()]:
-                    r=i
+                    r = i
                     break
             if r is not None and r.isActivated():
-                self.__ac.grantModification( r )
+                self.__ac.grantModification(r)
                 r.linkTo(self, "manager")
             elif sb.getEmail() != "":
                 modificationEmailGranted = self.__ac.grantModificationEmail(sb.getEmail())
@@ -6888,18 +6924,22 @@ class SessionSlot(Persistent, Fossilizable, Locatable):
     def getSession(self):
         return self.session
 
-    def getOwner( self ):
+    def getOwner(self):
         return self.session
 
-    def _setSchedule(self,klass):
-        old_sch=self.getSchedule()
-        self._schedule=klass(self)
+    def getContributionList(self):
+        return [e.getOwner() for e in ifilter(lambda e: isinstance(e, ContribSchEntry),
+                                              self.getSchedule().getEntries())]
+
+    def _setSchedule(self, klass):
+        old_sch = self.getSchedule()
+        self._schedule = klass(self)
         #after removing old entries, one could try to fit them into the new
         #   schedule, but there are several things to consider which are left
         #   for later implementation (breaks, entries not fitting in the
         #   slots,...)
-        while len(old_sch.getEntries())>0:
-            entry=old_sch.getEntries()[0]
+        while len(old_sch.getEntries()) > 0:
+            entry = old_sch.getEntries()[0]
             old_sch.removeEntry(entry)
         self.notifyModification()
 
@@ -10997,8 +11037,12 @@ class Material(CommonObjectBase):
                self._notify("isPluginAdmin", {"user": aw.getUser(), "plugins": "any"})):
             return True
 
-        canUserAccess = self.isAllowedToAccess( aw.getUser() )
-        canIPAccess = self.canIPAccess( aw.getIP() )
+        # Managers have always access
+        if self.canModify(aw):
+            return True
+
+        canUserAccess = self.isAllowedToAccess(aw.getUser())
+        canIPAccess = self.canIPAccess(aw.getIP())
         if not self.isProtected():
             return canUserAccess or canIPAccess
         else:
@@ -11451,7 +11495,12 @@ class Resource(CommonObjectBase):
                self._notify("isPluginAdmin", {"user": aw.getUser(), "plugins": "any"})):
             return True
 
-        if not self.canIPAccess(aw.getIP()) and not self.canUserModify(aw.getUser()) and not self.isAllowedToAccess( aw.getUser() ):
+        # Managers have always access
+        if self.canModify(aw):
+            return True
+
+        if not self.canIPAccess(aw.getIP()) and not self.canUserModify(aw.getUser()) and \
+                not self.isAllowedToAccess(aw.getUser()):
             return False
         if not self.isProtected():
             return True

@@ -28,7 +28,7 @@ from indico.core.index import OOIndex
 from indico.web.flask.util import create_flat_args
 from indico.modules.oauth.errors import OAuthError
 from MaKaC.common.logger import Logger
-from MaKaC.common.Configuration import Config
+from indico.core.config import Config
 from MaKaC.common.timezoneUtils import nowutc
 
 
@@ -66,7 +66,7 @@ class OAuthUtils:
             now = nowutc()
             consumer_key = oauth_request.get_parameter('oauth_consumer_key')
             if not ConsumerHolder().hasKey(consumer_key):
-                raise OAuthError('Invalid Consumer Key', apache.HTTP_UNAUTHORIZED)
+                raise OAuthError('Invalid Consumer Key', 401)
             consumer = ConsumerHolder().getById(consumer_key)
             token = oauth_request.get_parameter('oauth_token')
             if not token or not AccessTokenHolder().hasKey(token):
@@ -75,9 +75,9 @@ class OAuthUtils:
             oauth_consumer = oauth.Consumer(consumer.getId(), consumer.getSecret())
             OAuthServer.getInstance().verify_request(oauth_request, oauth_consumer, access_token.getToken())
             if access_token.getConsumer().getId() != oauth_consumer.key:
-                raise OAuthError('Invalid Consumer Key', apache.HTTP_UNAUTHORIZED)
+                raise OAuthError('Invalid Consumer Key', 401)
             elif (now - access_token.getTimestamp()) > timedelta(seconds=Config.getInstance().getOAuthAccessTokenTTL()):
-                raise OAuthError('Expired Token', apache.HTTP_UNAUTHORIZED)
+                raise OAuthError('Expired Token', 401)
             return access_token
         except oauth.Error, e:
             if e.message.startswith("Invalid Signature"):
