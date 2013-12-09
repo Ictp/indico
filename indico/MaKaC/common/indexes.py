@@ -278,7 +278,7 @@ class CategoryIndex(Persistent):
             if SearchRegister().getDefaultSearchEngineAgentName() == 'repozer':
                 from indico.ext.search.repozer.repozeIndexer import RepozeCatalog
                 rc = RepozeCatalog()
-                rc.unindex(c) 
+                rc.unindex(conf) 
 
     def unindexConfById(self, confid):
         for categid in self._idxCategItem.keys():
