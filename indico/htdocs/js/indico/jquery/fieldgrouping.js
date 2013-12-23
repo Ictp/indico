@@ -31,6 +31,7 @@
 
         _create: function() {
             this.info = [];
+            this.avatars = {};
             this.element.addClass("field-grouping");
             this._createList();
             this._handleEvents();
@@ -47,7 +48,6 @@
             var self = this;
             self.list = $("<ul></ul>");
             self.element.append(self.list);
-
             if (self.options["ui_sortable"]) {
                 self.list.sortable({
                     axis: "y",
@@ -78,17 +78,16 @@
                 self._drawNewItem();
             });
             
-            self.element.on("focusout", "div.inareaContainer", function(e) {
-                self._updateField($(this).parent().find("input.fieldgrouping-caption"));
-            });
-
+            self.element.on("focusout", "div.avatarContainer", function(e) {
+                self._updateChild(this);
+            });            
+            
             self.element.on("click", "a.i-fieldgrouping-button-remove", function(e) {
                 e.preventDefault();
                 self._deleteItem($(this).closest("li"));
             });
 
             self.element.on("keyup propertychange paste", "input.fieldgrouping-caption", function(e) {
-
                 // Enter
                 if (e.type == "keyup" && e.which == 13) {
                     $(this).blur();                    
@@ -98,7 +97,7 @@
                 if ($(this).val() === "") {
                     self._deleteNewItem($(this).closest("li"));
                 }
-
+                 //lert("DNI di keyup input.fieldgrouping");
                 self._drawNewItem();
             });
 
@@ -115,30 +114,23 @@
         },
 
         _drawList: function() {
-            var self = this;
-            var list = self.list;
-
-            self._reinitList();
-
-            for (var i=0; i<self.info.length; ++i) {
-                list.append(self._item(self.info[i]));
+            this._reinitList();
+            for (var i=0; i < this.info.length; ++i) {
+                this.list.append(this._item(this.info[i]));
             }
-
-            self._drawNewItem();
+            this._drawNewItem();
         },
 
         _reinitList: function() {
             this.next_id = -1;
             this.new_item = undefined;
-
             this.list.find("li").each(function() {
                 $(this).remove();
             });
         },
 
         _drawNewItem: function() {
-            if (this.new_item === undefined || this.new_item.find("input").val() !== "") {
-                this.element.find("div.inareaContainer").fieldarea({ui_sortable: false, fields_caption: 'person'});
+            if (this.new_item === undefined || this.new_item.find("input").val() !== "") {                
                 this.new_item = this._item(this._addNewFieldInfo());
                 this.list.append(this.new_item);
                 this.element.scrollTop(this.element[0].scrollHeight);
@@ -169,7 +161,7 @@
 
         _addNewFieldInfo: function() {
             var id = this._nextId();
-            var field = {"id": id, "value": "", "editable": true, "child": []};
+            var field = {"id": id, "value": "", "editable": true, "child": [] };
             this.info.push(field);
             return field;
         },
@@ -185,7 +177,6 @@
                     return this.info[i];
                 }
             }
-
             return undefined;
         },
 
@@ -195,7 +186,6 @@
                     return i;
                 }
             }
-
             return undefined;
         },
 
@@ -219,6 +209,12 @@
             var id = field["id"];
             var value = field["value"];
             var child = field["child"];
+            if (child == '') { child = null; }
+            else { 
+                child = eval(child); 
+                this._getField(id)["child"] = child;
+            }
+
             var editable = field["editable"];
             var disabled = !editable ? "DISABLED " : "";
             var classe = editable ? "fieldgrouping-caption" : "fieldgrouping-caption noEdit";
@@ -229,8 +225,15 @@
             if (this.options["ui_sortable"]) { item.append($("<span class='handle'></span>")); }                        
             item.append($("<input "+disabled+"type='text' class='"+classe+"' data-id='"+ id +"' placeholder='"+ placeholder+"' value='"+ value +"'/>").placeholder());
             if (editable) { item.append($("<a class='i-fieldgrouping-button-remove' title='"+ $T("Delete") +"' href='#' tabIndex='-1'><i class='icon-remove'></i></a>")); } 
-            item.append($("<div class='inareaContainer'></div>"));
 
+            item.append($("<div id='avatarContainer"+id+"' class='avatarContainer'></div>"));
+            var av = new UserListField('VeryShortPeopleListDiv', 'PeopleList', child, true, null, true, false, false, {},
+                    true, false, true, userListNothing, userListNothing, userListNothing);
+            this.avatars[id] = av;
+            var avaContainer = item.find("div.avatarContainer").get(0);            
+            
+            $E(avaContainer).set(av.draw());
+            
             item.find("a.i-fieldgrouping-button-remove").qtip({
                 position: {
                     at: "top center",
@@ -241,14 +244,12 @@
                     event: "mouseleave"
                 }
             });
-            
-            if (child != []) {
-                var areaContainer = item.find("div.inareaContainer").get(0);
-                $(areaContainer).fieldarea().fieldarea("setInfo", child);   
-            }
+
             return item;
         },
 
+
+        
         _updateField: function(input) {
             input = $(input);
             var item = input.closest("li");
@@ -257,11 +258,15 @@
             } else {
                 this._getField(input.data("id"))["value"] = input.val();
                 this._addFieldToPM(input);
-                var areaContainer = item.find("div.inareaContainer").get(0);
-                this._getField(input.data("id"))["child"] = $(areaContainer).fieldarea().fieldarea("getInfo");
             }
             
         },
+        
+        _updateChild: function(input) {
+            var elem = $(input).parent().find("input.fieldgrouping-caption");
+            var id = elem.data("id");
+            this._getField(id)["child"] = Json.write(this.avatars[id].getUsers());
+        },    
 
         _nextId: function() {
             return this.next_id--;
@@ -279,6 +284,27 @@
             }
         },
 
+        getManagedInfo: function() {
+            // Return a JSON Info with fixed Ids
+            var raw = this.getInfo();
+            var fix = [];
+            for (var i=0;i<raw.length;i++) {
+                var child = [];
+                if (typeof(raw[i].child) == 'object') { var ochild = raw[i].child; }
+                else { var ochild = JSON.parse(raw[i].child); }                
+                for (var j=0;j<ochild.length;j++) {
+                    if (ochild[j].value != "") {
+                        ochild[j].id = j;
+                        child.push(ochild[j]);
+                    }
+                }    
+                raw[i].id = i;
+                raw[i].child = child;
+                fix.push(raw[i]);
+            }
+            return JSON.stringify(fix);
+        },
+        
         getInfo: function() {
             return this.info.slice().splice(0, this.info.length-1);
         },
@@ -287,8 +313,11 @@
             var html = "<dl>";
             for (var i = 0; i < this.info.length; i++) {
                 var child = [];
-                for (var j = 0; j < this.info[i].child.length-1; j++) {
-                    var val = this.info[i].child[j].value;
+                
+                var echild = eval(this.info[i].child);
+                for (var j = 0; j < echild.length; j++) {
+                    var val = echild[j].familyName;
+                    if ('firstName' in echild[j]) { val = val + " " + echild[j].firstName; }
                     if (str(val) != '') { child.push(val); }
                 }
                 if (child.length > 0) {
@@ -299,14 +328,13 @@
                 }
             }
             html += "</dl>";
-            var areaContainer = this.element[0];
             this.list.remove();
             this.element.append($(html));
             
             return html
         },
 
-        setInfo: function(raw_info) {
+        setInfo: function(raw_info) {            
             var info = [];
             for (var i = 0; i < raw_info.length; i++) {
                 var info_item = raw_info[i];

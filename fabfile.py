@@ -63,7 +63,8 @@ def node_env():
     if env.system_node:
         yield
     else:
-        with prefix('. {0}'.format(os.path.join(env.node_env_path, 'bin/activate'))):
+        # Ictp: with virtualenv return error
+        #with prefix('. {0}'.format(os.path.join(env.node_env_path, 'bin/activate'))):
             yield
 
 

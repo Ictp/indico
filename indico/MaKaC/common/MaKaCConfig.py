@@ -18,7 +18,7 @@
 ## along with Indico;if not, see <http://www.gnu.org/licenses/>.
 
 ## WARNING: THE FOLLOWING LINE WILL BE OVERWRITTEN AT INSTALLATION TIME
-indico_conf = "/opt/indico/src/etc/indico.conf" # path to indico.conf
+indico_conf = "/opt/indico/src/indico/etc/indico.conf" # path to indico.conf
 ##
 
 import os

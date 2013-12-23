@@ -86,11 +86,10 @@ ${ actions }
 
 
 <script type="text/javascript">
-
+                
       var fg = $('div.rolesContainer').fieldgrouping();
       fg.fieldgrouping("setInfo", ${conf.getRoles()});
       fg.fieldgrouping("getStructuredInfo");     
-
 
       $('.chair_list .nomail').qtip({
              content: {

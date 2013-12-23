@@ -1855,8 +1855,7 @@ type('AutocheckTextBox', ['RealtimeTextBox'],
 	);
 
 
-// Ictp
-// Grouping Widget
+// Ictp - Grouping Widget
 type("GroupingWidget", ["InputEditWidget"],
         {
             _handleEditMode: function(value) {
@@ -1873,13 +1872,13 @@ type("GroupingWidget", ["InputEditWidget"],
                 return content;
             },
             
-            _handleDisplayMode: function(value) {
-                var content = '';
+            _handleDisplayMode: function(value) {                
+                var content = "";
                 if(str(value)!=""){
                     var fg = $('<div></div>').fieldgrouping();
                     fg.fieldgrouping("setInfo", JSON.parse(this.value));
-                    fg.fieldgrouping("getStructuredInfo");
-                    content = fg.get(0);
+                    fg.fieldgrouping("getStructuredInfo"); 
+                    content = fg.get(0);  
                 }
                 else{
                     content = Html.em({}, "No text");
@@ -1887,23 +1886,10 @@ type("GroupingWidget", ["InputEditWidget"],
                 return content;
             },
        
-            _getNewValue: function() {            
-                // fix id numbers and remove new empty children
-                var raw = this.fg.fieldgrouping("getInfo");
-                var fix = [];
-                for (var i=0;i<raw.length;i++) {
-                    var child = [];
-                    for (var j=0;j<raw[i].child.length;j++) {
-                        if (raw[i].child[j].value != "") {
-                            raw[i].child[j].id = j;
-                            child.push(raw[i].child[j]);
-                        }
-                    }    
-                    raw[i].id = i;
-                    raw[i].child = child;
-                    fix.push(raw[i]);
-                }                        
-                return JSON.stringify(fix);
+            _getNewValue: function() {                            
+                var mInfo = this.fg.fieldgrouping("getManagedInfo");              
+                $("input[name=roles]").val(mInfo);  
+                return mInfo;
             },
 
         },

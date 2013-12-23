@@ -99,7 +99,6 @@
                     <td class="contentCellTD">
                     <input type="hidden" name="roles" id="roles" value="" />   
                     <div id="rolesContainer"></div>
-      
                     </td>
                 </tr>                
                 <tr>
@@ -261,5 +260,26 @@
         $E('descriptionBox').set(editor.draw());
     });
 
+<<<<<<< HEAD
+=======
+    //---- fieldgrouping management
+    var fg = $("#rolesContainer").fieldgrouping();
+    
+    // Default roles: non editable
+    var rolesDefault = [];
+    var raw = ${rolesData};
+    for (var i=0;i<raw.length;i++) {
+        raw[i].editable = false;
+        rolesDefault.push(raw[i]);
+    }    
+    fg.fieldgrouping("setInfo", rolesDefault);
+    
+    // ---- save roles values when submitting
+    $("#conferenceCreationForm").submit(function() {        
+        var mInfo = fg.fieldgrouping("getManagedInfo");
+        $("input[name=roles]").val(mInfo);        
+        
+    });    
+>>>>>>> Implemented Avatar aware
 
 </script>
