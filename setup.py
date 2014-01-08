@@ -564,7 +564,7 @@ if __name__ == '__main__':
             calendaring.outlook = indico.ext.calendaring.outlook
 
             search.invenio = indico.ext.search.invenio
-                        
+
             """,
           zip_safe=False,
           packages=foundPackages,
