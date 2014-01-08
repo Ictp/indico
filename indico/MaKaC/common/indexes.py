@@ -270,15 +270,6 @@ class CategoryIndex(Persistent):
     def unindexConf(self, conf):
         confid = str(conf.getId())
         self.unindexConfById(confid)
-        
-        # Ictp: Added for Repozer
-        from indico.ext.search.register import SearchRegister
-        defaultSearchEngine = SearchRegister().getDefaultSearchEngineAgent()
-        if defaultSearchEngine is not None and defaultSearchEngine.isActive():
-            if SearchRegister().getDefaultSearchEngineAgentName() == 'repozer':
-                from indico.ext.search.repozer.repozeIndexer import RepozeCatalog
-                rc = RepozeCatalog()
-                rc.unindex(conf) 
 
     def unindexConfById(self, confid):
         for categid in self._idxCategItem.keys():
