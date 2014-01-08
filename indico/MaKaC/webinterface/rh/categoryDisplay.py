@@ -252,15 +252,6 @@ class RHConferencePerformCreation( RoomBookingDBMixin, RHConferenceCreationBase 
             else :
                 c.disableSessionSlots()
 
-        # Ictp: Added for Repozer
-        from indico.ext.search.register import SearchRegister
-        defaultSearchEngine = SearchRegister().getDefaultSearchEngineAgent()
-        if defaultSearchEngine is not None and defaultSearchEngine.isActive():
-            if SearchRegister().getDefaultSearchEngineAgentName() == 'repozer':
-                from indico.ext.search.repozer.repozeIndexer import RepozeCatalog
-                rc = RepozeCatalog()
-                rc.index(c) 
-
         return c
 
     def _getPersons(self):
