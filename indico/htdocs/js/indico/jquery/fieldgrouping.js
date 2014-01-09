@@ -78,9 +78,16 @@
                 self._drawNewItem();
             });
             
-            self.element.on("focusout", "div.avatarContainer", function(e) {
+            self.element.on("focusout", "div.avatarContainer", function(e) {        
+                // catches added children    
                 self._updateChild(this);
             });            
+            
+            self.element.on("click", "", function(e) {            
+                // catches deleted and modified childern
+                self._updateChild(this);
+            }); 
+
             
             self.element.on("click", "a.i-fieldgrouping-button-remove", function(e) {
                 e.preventDefault();
@@ -228,6 +235,7 @@
 
             item.append($("<div id='avatarContainer"+id+"' class='avatarContainer'></div>"));
             var av = new UserListField('VeryShortPeopleListDiv', 'PeopleList', child, true, null, true, false, false, {},
+            //        true, false, true, false, userListNothing, userListNothing, this._updateChild);
                     true, false, true, userListNothing, userListNothing, userListNothing);
             this.avatars[id] = av;
             var avaContainer = item.find("div.avatarContainer").get(0);            
@@ -261,12 +269,12 @@
             }
             
         },
-        
+               
         _updateChild: function(input) {
             var elem = $(input).parent().find("input.fieldgrouping-caption");
-            var id = elem.data("id");
+            var id = elem.data("id");            
             this._getField(id)["child"] = Json.write(this.avatars[id].getUsers());
-        },    
+        }, 
 
         _nextId: function() {
             return this.next_id--;
