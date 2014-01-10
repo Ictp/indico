@@ -19,6 +19,8 @@
    along with Indico; if not, see <http://www.gnu.org/licenses/>.
 */
 
+var avatars = {};
+
 (function($) {
     $.widget("ui.fieldgrouping", {
 
@@ -30,8 +32,8 @@
         },
 
         _create: function() {
+            avatars = {};
             this.info = [];
-            this.avatars = {};
             this.element.addClass("field-grouping");
             this._createList();
             this._handleEvents();
@@ -77,18 +79,7 @@
                 self._updateField(this);
                 self._drawNewItem();
             });
-            
-            self.element.on("focusout", "div.avatarContainer", function(e) {        
-                // catches added children    
-                self._updateChild(this);
-            });            
-            
-            self.element.on("click", "", function(e) {            
-                // catches deleted and modified childern
-                self._updateChild(this);
-            }); 
-
-            
+             
             self.element.on("click", "a.i-fieldgrouping-button-remove", function(e) {
                 e.preventDefault();
                 self._deleteItem($(this).closest("li"));
@@ -213,15 +204,16 @@
         _item: function(field) {
             field = field || this._addNewFieldInfo();
 
+            var self = this;
             var id = field["id"];
             var value = field["value"];
             var child = field["child"];
             if (child == '') { child = null; }
             else { 
                 child = eval(child); 
-                this._getField(id)["child"] = child;
-            }
-
+                this._getField(id)["child"] = child;                
+            }         
+            
             var editable = field["editable"];
             var disabled = !editable ? "DISABLED " : "";
             var classe = editable ? "fieldgrouping-caption" : "fieldgrouping-caption noEdit";
@@ -235,11 +227,11 @@
 
             item.append($("<div id='avatarContainer"+id+"' class='avatarContainer'></div>"));
             var av = new UserListField('VeryShortPeopleListDiv', 'PeopleList', child, true, null, true, false, false, {},
-            //        true, false, true, false, userListNothing, userListNothing, this._updateChild);
-                    true, false, true, userListNothing, userListNothing, userListNothing);
-            this.avatars[id] = av;
-            var avaContainer = item.find("div.avatarContainer").get(0);            
-            
+                    true, false, true, false, userListNothing, userListNothing, userListNothing);
+
+            avatars[id] = av;
+                    
+            var avaContainer = item.find("div.avatarContainer").get(0);                        
             $E(avaContainer).set(av.draw());
             
             item.find("a.i-fieldgrouping-button-remove").qtip({
@@ -268,14 +260,14 @@
                 this._addFieldToPM(input);
             }
             
+        },        
+        
+        _updateAvatars: function(obj) {
+            jQuery.each(avatars, function(id, ul) {
+                obj._getField(id)["child"] = Json.write(ul.getUsers());
+            });
         },
-               
-        _updateChild: function(input) {
-            var elem = $(input).parent().find("input.fieldgrouping-caption");
-            var id = elem.data("id");            
-            this._getField(id)["child"] = Json.write(this.avatars[id].getUsers());
-        }, 
-
+        
         _nextId: function() {
             return this.next_id--;
         },
@@ -294,6 +286,7 @@
 
         getManagedInfo: function() {
             // Return a JSON Info with fixed Ids
+            this._updateAvatars(this);
             var raw = this.getInfo();
             var fix = [];
             for (var i=0;i<raw.length;i++) {
