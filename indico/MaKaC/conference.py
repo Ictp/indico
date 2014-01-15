@@ -3551,6 +3551,17 @@ class Conference(CommonObjectBase, Locatable):
         """
         return self.contributions.values()
 
+    # Ictp
+    def getBreakList(self):
+        """Returns a list of the conference break objects
+        """
+        breaks = []
+        for session in self.getSessionSlotList():
+            for entry in session.getSchedule().getEntries() :
+                if isinstance(entry,BreakTimeSchEntry):
+                    breaks.append(entry)
+        return breaks
+
     def iterContributions(self):
         return self.contributions.itervalues()
 

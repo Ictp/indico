@@ -239,6 +239,28 @@ class IConferenceMetadataFossil(_IncludeMaterialFossil, IFossil):
     getRoomMapURL.produce = lambda x: RoomLinker().getURL(x.getRoom(), x.getLocation())
 
 
+# Ictp
+class IBreakMetadataFossil(IFossil):
+
+    def getTitle(self):
+        pass
+
+    def getStartDate(self):
+        pass
+    getStartDate.convert = Conversion.datetime
+
+    def getEndDate(self):
+        pass
+    getEndDate.convert = Conversion.datetime
+
+    def getDescription(self):
+        pass
+        
+        
+        
+        
+
+
 class IContributionMetadataFossil(_IncludeMaterialFossil, IFossil):
 
     def getId(self):
@@ -346,6 +368,22 @@ class IConferenceMetadataWithContribsFossil(_IncludeMaterialFossil, IConferenceM
     getContributionList.result = IContributionMetadataFossil
     getContributionList.name = 'contributions'
     getContributionList.filterBy = 'access'
+
+
+# ICTP    
+class IConferenceMetadataWithContribsAndBreaksFossil(_IncludeMaterialFossil, IConferenceMetadataFossil):
+
+    def getBreakList(self):
+        pass
+    getBreakList.result = IBreakMetadataFossil
+    getBreakList.name = 'breaks'
+
+    def getContributionList(self):
+        pass
+    getContributionList.result = IContributionMetadataFossil
+    getContributionList.name = 'contributions'
+    getContributionList.filterBy = 'access'
+
 
 
 class IConferenceMetadataWithSubContribsFossil(_IncludeMaterialFossil, IConferenceMetadataFossil):
