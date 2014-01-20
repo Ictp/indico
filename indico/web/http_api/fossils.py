@@ -210,6 +210,12 @@ class IConferenceMetadataFossil(_IncludeMaterialFossil, IFossil):
     # ICTP
     def getRoles(self):
         pass
+
+    # ICTP    
+    def getKeywords(self):
+        pass
+    getKeywords.produce = lambda x: x.getKeywords().splitlines() if x.getKeywords().strip() else []
+
     
     def getLocator(self):
         pass
@@ -373,6 +379,7 @@ class IConferenceMetadataWithContribsFossil(_IncludeMaterialFossil, IConferenceM
 # ICTP    
 class IConferenceMetadataWithContribsAndBreaksFossil(_IncludeMaterialFossil, IConferenceMetadataFossil):
 
+    
     def getBreakList(self):
         pass
     getBreakList.result = IBreakMetadataFossil
@@ -384,7 +391,7 @@ class IConferenceMetadataWithContribsAndBreaksFossil(_IncludeMaterialFossil, ICo
     getContributionList.name = 'contributions'
     getContributionList.filterBy = 'access'
 
-
+    
 
 class IConferenceMetadataWithSubContribsFossil(_IncludeMaterialFossil, IConferenceMetadataFossil):
 
