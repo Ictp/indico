@@ -130,7 +130,10 @@
 
 
     //---- chairperson management
+<<<<<<< HEAD
 
+=======
+>>>>>>> 81677a270a4160e7b74b61f85af5a211c1286720
     var uf = new UserListField('VeryShortPeopleListDiv', 'PeopleList',
             null, true, null,
             true, false, false, {"grant-manager": [${ jsonEncode(_("event modification"))}, false], "presenter-grant-submission": [$T("submission rights"), false]},
@@ -139,6 +142,7 @@
 
     $E('chairpersonsContainer').set(uf.draw());
     
+<<<<<<< HEAD
     //---- fieldgrouping management
     var fg = $("#rolesContainer").fieldgrouping();
     
@@ -172,6 +176,8 @@
         $("input[name=roles]").val(JSON.stringify(fix));
     });    
 
+=======
+>>>>>>> 81677a270a4160e7b74b61f85af5a211c1286720
 
     // ----- show concurrent events
     function createDatesDict() {
@@ -261,7 +267,10 @@
     });
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 81677a270a4160e7b74b61f85af5a211c1286720
     //---- fieldgrouping management
     var fg = $("#rolesContainer").fieldgrouping();
     
@@ -280,6 +289,9 @@
         $("input[name=roles]").val(mInfo);        
         
     });    
+<<<<<<< HEAD
 >>>>>>> Implemented Avatar aware
+=======
+>>>>>>> 81677a270a4160e7b74b61f85af5a211c1286720
 
 </script>
