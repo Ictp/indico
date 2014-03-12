@@ -2609,7 +2609,7 @@ border-right: 1px solid #d8d8d8;
 
 
 div.pageHeaderMainPage {
-    background: url('/indico/css/ICTP/images/headerBg6.png') #204594 0px 0px no-repeat;
+    background: url('/css/ICTP/images/headerBg6.png') #204594 0px 0px no-repeat;
     height: 185px;
     clear: both;
 }
@@ -2709,7 +2709,7 @@ div.searchTag { display: none; }
 
 
 .confTitleBox {
-    background: #214694 url('/indico/css/ICTP/images/logo_ictp_v3_img.png') no-repeat !important;
+    background: #214694 url('/css/ICTP/images/logo_ictp_v3_img.png') no-repeat !important;
     min-height: 107px !important;
 }
 .confTitle {
@@ -2826,7 +2826,7 @@ margin-top: 0 !important;
 }
 
 .meetingEventHeader {
-background: #304498 url('/indico/css/ICTP/images/logo_ictp_v3_img.png') no-repeat !important;
+background: #304498 url('/css/ICTP/images/logo_ictp_v3_img.png') no-repeat !important;
 min-height: 107px !important;
 }
 .meetingEventHeader h1 {

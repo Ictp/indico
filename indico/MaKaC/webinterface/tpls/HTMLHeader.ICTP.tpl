@@ -84,18 +84,18 @@
         
         <!-- ICTP specific -->
         <link rel="stylesheet" type="text/css" href="http://www.ictp.it/css/common.css?12">
-        <link rel="stylesheet" type="text/css" href="/indico/css/ICTP/css/Default.css">
+        <link rel="stylesheet" type="text/css" href="/css/ICTP/css/Default.css">
         <script type="text/javascript">
             var isHomepage = true;
             var searchEngineUrl = "";
             var searchPageUrl = "http://www.ictp.it/search.aspx";
         </script>
         <script type="text/javascript" async="" src="http://www.google-analytics.com/ga.js"></script>        
-        <script type="text/javascript" src="/indico/css/ICTP/js/ictp.js?2"></script>
-        <script type="text/javascript" src="/indico/css/ICTP/js/custom_ictp.js"></script>
+        <script type="text/javascript" src="/css/ICTP/js/ictp.js?2"></script>
+        <script type="text/javascript" src="/css/ICTP/js/custom_ictp.js"></script>
         <!-- ICTP specific | timetable customizations -->
-        <script type="text/javascript" src="/indico/css/ICTP/js/timetable/Base.js"></script>
-        <script type="text/javascript" src="/indico/css/ICTP/js/timetable/Draw.js"></script>
+        <script type="text/javascript" src="/css/ICTP/js/timetable/Base.js"></script>
+        <script type="text/javascript" src="/css/ICTP/js/timetable/Draw.js"></script>
         
         
         

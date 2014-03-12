@@ -36,7 +36,7 @@
             corrected if the image cannot be retrieved (i.e. https problems) -->
         <div style="clear: both;">
             <a style="min-height: 107px;" href="${ urlHandlers.UHWelcome.getURL() }">
-                <img class="headerLogo" src="/indico/css/ICTP/images/logo_ictp_v3.png" />
+                <img class="headerLogo" src="/css/ICTP/images/logo_ictp_v3.png" />
             </a>
         </div>
         
