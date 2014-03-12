@@ -21,34 +21,11 @@
 
 @font-face {
     font-family: "icomoon-ultimate";
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-
     src: font-url("fonts/icomoon/icomoon.eot");
     src: font-url("fonts/icomoon/icomoon.eot?#iefix") format("embedded-opentype"),
          font-url("fonts/icomoon/icomoon.svg#icomoon-ultimate") format("svg"),
          font-url("fonts/icomoon/icomoon.woff") format("woff"),
          font-url("fonts/icomoon/icomoon.ttf") format("truetype");
-=======
-    src: font-url("../fonts/icomoon/icomoon.eot");
-    src: font-url("../fonts/icomoon/icomoon.eot?#iefix") format("embedded-opentype"),
-         font-url("../fonts/icomoon/icomoon.svg#icomoon-ultimate") format("svg"),
-         font-url("../fonts/icomoon/icomoon.woff") format("woff"),
-         font-url("../fonts/icomoon/icomoon.ttf") format("truetype");
->>>>>>> Implemented Avatar aware
-=======
-=======
->>>>>>> 81677a270a4160e7b74b61f85af5a211c1286720
-    src: font-url("../indico/static/fonts/icomoon/icomoon.eot");
-    src: font-url("../indico/static/fonts/icomoon/icomoon.eot?#iefix") format("embedded-opentype"),
-         font-url("../indico/static/fonts/icomoon/icomoon.svg#icomoon-ultimate") format("svg"),
-         font-url("../indico/static/fonts/icomoon/icomoon.woff") format("woff"),
-         font-url("../indico/static/fonts/icomoon/icomoon.ttf") format("truetype");
-<<<<<<< HEAD
->>>>>>> fixed remove Avatar from Roles
-=======
->>>>>>> 81677a270a4160e7b74b61f85af5a211c1286720
     font-weight: normal;
     font-style: normal;
 }
@@ -326,7 +303,6 @@ you can use the generic selector below, but it's slower:
 .icon-coins:before {
     content: "\e0d4";
 }
-
 .icon-type:before {
     content: "\e449";
 }
@@ -360,17 +336,17 @@ you can use the generic selector below, but it's slower:
 .icon-collapse:before {
     content: "\e3b0";
 }
-
 .icon-stack:before {
     content: "\e097";
 }
-
 .icon-disk:before {
     content: "\e134";
 }
-
 .icon-projector:before {
     content: "\e604";
+}
+.icon-circle-small:before {
+    content: "\e2ab";
 }
 
 

@@ -159,16 +159,11 @@ indico_jquery = Bundle(
                'actioninput.js',
                'fieldarea.js',
                'multiselect.js',
-               'fieldarea.js',
-               'fieldgrouping.js',
                'realtimefilter.js',
-               'scrollblocker.js'),
-<<<<<<< HEAD
+               'scrollblocker.js',
                'fieldarea.js',
-               'fieldgrouping.js'),
-=======
-
->>>>>>> 81677a270a4160e7b74b61f85af5a211c1286720
+               'fieldgrouping.js'
+               ),
     filters='rjsmin', output='js/indico_jquery_%(version)s.min.js')
 
 indico_jquery_authors = Bundle('js/indico/jquery/authors.js',
@@ -345,6 +340,7 @@ contributions_sass = sass_module_bundle('contributions')
 registrationform_sass = sass_module_bundle('registrationform')
 roombooking_sass = sass_module_bundle('roombooking')
 dashboard_sass = sass_module_bundle('dashboard')
+category_sass = sass_module_bundle('category')
 
 
 screen_sass = Bundle('sass/screen.scss',
@@ -382,7 +378,6 @@ def register_all_css(env, main_css_file):
     base_css = Bundle(
         *namespace('css',
                    main_css_file,
-                   'category_display.css',
                    'calendar-blue.css',
                    'jquery-ui.css',
                    'lib/angular.css',
@@ -404,4 +399,5 @@ def register_all_css(env, main_css_file):
     env.register('roombooking_sass', roombooking_sass)
     env.register('contributions_sass', contributions_sass)
     env.register('dashboard_sass', dashboard_sass)
+    env.register('category_sass', category_sass)
     env.register('screen_sass', screen_sass)
