@@ -50,19 +50,11 @@
     </script>
 
         <!-- Page Specific CSS files-->
-        
         % for cssFile in extraCSS:
             <link rel="stylesheet" type="text/css" href="${cssFile}">
         % endfor
         
 
-
-
-
-
-
-
-        
         <!-- Page Specific, directly inserted Javascript -->
         <script type="text/javascript">
             ${ "\n\n".join(extraJS) }
@@ -81,6 +73,8 @@
 
         <!-- Other Page Specific -->
         ${ page._getHeadContent() }
+        
+        
         
         <!-- ICTP specific -->
         <link rel="stylesheet" type="text/css" href="http://www.ictp.it/css/common.css?12">
