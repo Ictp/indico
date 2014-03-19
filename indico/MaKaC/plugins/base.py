@@ -276,7 +276,12 @@ class RHMap(Persistent):
         except AttributeError:
             blueprints = self.__blueprints = set()
         for module, name in blueprints:
-            yield getattr(import_module(module), name)
+            # Ictp: this is for lettin plugins removal
+            try:
+                yield getattr(import_module(module), name)
+            except:
+                print "Error importing blueprint ",module
+                pass
 
     def hasBlueprint(self, module, name):
         return (module.__name__, name) in self.__blueprints
