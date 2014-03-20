@@ -279,9 +279,8 @@ class RHMap(Persistent):
             # Ictp: this is for lettin plugins removal
             try:
                 yield getattr(import_module(module), name)
-            except:
-                print "Error importing blueprint ",module
-                pass
+            except ImportError:
+                Logger.get('plugins.rhmap').exception('Could not import {0}'.format(module))
 
     def hasBlueprint(self, module, name):
         return (module.__name__, name) in self.__blueprints
