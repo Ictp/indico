@@ -21,7 +21,6 @@
 
 
 
-/* ******************** FROM http://www.ictp.it/css/common.css?12 ******************** */
 
 
 
@@ -52,7 +51,6 @@ div.topSecondLevelMenuWrapper {
 
 div.pageHeaderMainPage {
     background: url('/css/ICTP/images/headerBg6.png') #204594 0px 0px no-repeat;
-    height: 185px;
     clear: both;
 }
 
@@ -289,7 +287,12 @@ width: 840px !important;
     display: none;
 }
 
-
+.subsiteMainTitle {
+    display: none;
+}
+#footerLine .breadcrumb {
+    display: none;
+}
 
 .container {
     margin: 0px 10px 30px 10px;
