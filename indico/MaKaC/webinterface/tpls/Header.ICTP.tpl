@@ -14,7 +14,7 @@
 
 <%
 import urllib2
-response = urllib2.urlopen("http://www.ictp.it/marie-curie-library/headerlibrary.aspx")
+response = urllib2.urlopen("http://www.ictp.it/headercalendar.aspx")
 headers = response.info()
 data = response.read()
 %>
