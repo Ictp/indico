@@ -26,7 +26,7 @@ else:
 
 <%
 import urllib2
-response = urllib2.urlopen("http://www.ictp.it/marie-curie-library/catalogue.aspx")
+response = urllib2.urlopen("http://www.ictp.it/footercalendar.aspx")
 headers = response.info()
 data = response.read()
 %>
