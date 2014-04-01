@@ -12,40 +12,18 @@
 
        
 
+<%
+import urllib2
+response = urllib2.urlopen("http://www.ictp.it/marie-curie-library/headerlibrary.aspx")
+headers = response.info()
+data = response.read()
+%>
 
-                    <div class="serviceMenuWrapper">
-						  
-						  <ul id="quick_links_list">
-						  <li><a href="http://www.ictp.it/homepage.aspx" title="go to ICTP home page">Home</a></li><span class="separator">|</span>
-						  <li><a href="http://library.ictp.it" title="ICTP Library">Marie Curie Library</a></li><span class="separator">|</span>
-						  <li><a href="http://www.ictp.tv/" title="ICTP scientific contents and programs made available throughout the world via electronic, digital, satellite and other information and communication tools. ">ICTP.tv</a></li><span class="separator">|</span>
-						  <li><a href="http://portal.ictp.it" title="For ICTP users">Intranet</a></li><span class="separator">|</span><li><a href="https://webmail.ictp.it/webmail/src/login.php?secure_login=yes" title="Email for ICTP staff">Webmail</a></li><span class="separator">|</span>
-						  <li><a href="http://www.ictp.it/about-ictp/media-centre.aspx" title="Your source for the latest information from ICTP ">Media Centre</a></li>
-						  </ul>
-						  
-					  </div>
-
-
+${ data }
 
         % if searchBox != '':
             ${ searchBox }
-        % endif
-
-        <!--
-            set fixed height on anchor to assure that the height is
-            corrected if the image cannot be retrieved (i.e. https problems) -->
-        <div style="clear: both;">
-            <a style="min-height: 107px;" href="${ urlHandlers.UHWelcome.getURL() }">
-                <img class="headerLogo" src="/css/ICTP/images/logo_ictp_v3.png" />
-            </a>
-        </div>
-        
-        <div class="headerLogosWrapper">
-							  <a class="unesco_ft" href="http://www.unesco.org" title="external link">&nbsp;</a>
-							  <a class="iaea_ft" href="http://www.iaea.org" title="external link">&nbsp;</a>
-							  <div class="clearZero">&nbsp;</div>
-						  </div>
-        
+        % endif        
         
         
  <%include file="SessionBar.tpl" args="dark=False"/>
