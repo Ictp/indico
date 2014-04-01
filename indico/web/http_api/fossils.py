@@ -216,6 +216,14 @@ class IConferenceMetadataFossil(_IncludeMaterialFossil, IFossil):
         pass
     getKeywords.produce = lambda x: x.getKeywords().splitlines() if x.getKeywords().strip() else []
 
+    # ICTP 
+    def getContactInfo(self):
+        pass
+        
+    # ICTP
+    def getSupportInfo(self):
+        pass
+    getSupportInfo.produce = lambda e: e and e.getSupportInfo().getEmail()
     
     def getLocator(self):
         pass
