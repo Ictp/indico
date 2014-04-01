@@ -35,24 +35,26 @@ border-left: 1px solid #d8d8d8;
 border-right: 1px solid #d8d8d8;
 }
 
-div.headerTop {
-    height: 165px;
-}
-#logo {
-    height: 110px;
-}
-fieldset.searchBox {
-    display: none;
-}
+.body.clearfix {
+    background-color: white;
+}    
+.secondLevelMenuLine {
+    display:none;
+}    
+#ictpLogoPrintVersion { display: none; }
 
-div.topSecondLevelMenuWrapper {
-    display: none;
-}
+
+fieldset.searchBox {display: none; }
+div.topSecondLevelMenuWrapper { display: none; }
+.az {display: none; }
 
 div.pageHeaderMainPage {
-    background: url('/css/ICTP/images/headerBg6.png') #204594 0px 0px no-repeat;
-    clear: both;
+    background-color: white;
 }
+div.headerTop {
+    background: url('/css/ICTP/images/headerBg6.png') #204594 0px 0px no-repeat;
+}
+
 
 div.VeryShortPeopleListDiv {
     width: 400px;
@@ -65,19 +67,14 @@ div.wrapper {
     margin-right: auto;
 }
 
-img.headerLogo {
-    margin: 4px 10px 14px;
-    border: none;
-    width: 360px;
-    height: 107px;
-}
+
 
 
 
 
 div#UISearchBox {
     top: 2px;
-    right: 80px;
+    right: 100px;
 }
 
 .searchPublicWarning {
