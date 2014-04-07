@@ -42,7 +42,7 @@ border-right: 1px solid #d8d8d8;
     display:none;
 }    
 #ictpLogoPrintVersion { display: none; }
-
+#logo { padding: 10px 0 0 0; }
 
 fieldset.searchBox {display: none; }
 div.topSecondLevelMenuWrapper { display: none; }
