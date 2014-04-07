@@ -78,6 +78,11 @@ SEARCH_EXTRA_FILTER = "(objectCategory=user)"  # Specific for CERN Active Direct
 MEMBER_ATTR = "member"
 MEMBER_PAGE_SIZE = 1500
 
+# Specific for ICTP Active Directory for user lookup
+RETRIEVED_FIELDS = ["uid","cn","mail","displayName","uidNumber","gidNumber","memberOf","loginShell","msSFU30PosixMemberOf"]
+UID_FIELD = "uid"
+SEARCH_EXTRA_FILTER = "(&(objectclass=person)(|(msSFU30PosixMemberOf=cn=HPCUsersGroup,cn=users,dc=ictp,dc=it)(msSFU30PosixMemberOf=cn=HPCSerialGroup,cn=users,dc=ictp,dc=it)))"  
+MEMBER_ATTR = "memberOf"
 
 class LDAPAuthenticator(Authenthicator, SSOHandler):
     idxName = "LDAPIdentities"
