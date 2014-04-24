@@ -108,7 +108,7 @@ div.sessionBar li {
 
 div.sessionBar .links
 {
-    background: transparent url(../images/sprites.png) repeat-x scroll 0 -60px;
+    background: none;
     margin-left: 25px;
     padding-top: 0px;
     height: 30px;
