@@ -87,9 +87,6 @@
         <script type="text/javascript" async="" src="http://www.google-analytics.com/ga.js"></script>        
         <script type="text/javascript" src="/css/ICTP/js/ictp.js?2"></script>
         <script type="text/javascript" src="/css/ICTP/js/custom_ictp.js"></script>
-        <!-- ICTP specific | timetable customizations -->
-        <script type="text/javascript" src="/css/ICTP/js/timetable/Base.js"></script>
-        <script type="text/javascript" src="/css/ICTP/js/timetable/Draw.js"></script>
         
         
         
