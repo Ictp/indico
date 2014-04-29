@@ -484,6 +484,28 @@ class WConfDisplayFrame(wcomponents.WTemplated):
         p = {"menu": self._menu,
              "support_info": sinfo,
              "event": self._conf}
+             
+        # ICTP specific: if POSTER is present, set var    
+        poster = None
+        for mat in self._conf.getAllMaterialList():
+            for res in mat.getResourceList():
+                if not(res.isProtected()):
+                    try:
+                        ftype = res.getFileType().lower()
+                        fname = res.getName() or res.getFileName()
+                        fpath = res.getFilePath()
+                        fileURL = str(urlHandlers.UHFileAccess.getURL(res))
+                        if fname.lower() in ["web.jpg", "web.png"]:
+                            poster = {  "name":fname , 
+                                        "url": fileURL,
+                                        "folderurl": fileURL+"/../",
+                                    }                
+                            break
+                    except:
+                        pass
+        p["poster"] = poster
+        
+        
         vars["menu"] = WConfDisplayMenu(self._menu).getHTML(p)
 
         dm = displayMgr.ConfDisplayMgrRegistery().getDisplayMgr(self._conf, False)
