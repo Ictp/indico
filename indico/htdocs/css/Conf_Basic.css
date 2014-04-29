@@ -536,3 +536,41 @@ ul.programme li .description {
     font-family: verdana,arial,sans-serif;  
 }
 
+
+
+/*
+    ICTP specific
+*/
+
+
+
+.confheader {
+    margin-top: -32px;
+    float: left;
+    width: 100%;
+}
+.conf_leftMenu {
+    padding-top: 20px;
+}
+div.pageHeader {
+    top: 193px;
+    background: #0b63a5 url(../images/sprites.png) repeat-x scroll 0 0;
+    border-top: 1px solid #999999;
+    border-bottom: 1px solid #999999;
+    height: 30px;
+    width: 100%;
+}
+.eventHeaderButtonBar { padding: 3px 0 !important; }
+
+ul#quick_links_list { margin: 0; padding: 0; }
+
+div#UISearchBox { 
+    right: 30px !important; 
+    float: right; 
+    position: relative;
+}
+
+.serviceMenuWrapper { padding-bottom: 10px; }
+#mainMenuWrapper { clear: none !important; margin-top: 0 !important; }
+div.sessionBar {margin-top: -30px;}
+
