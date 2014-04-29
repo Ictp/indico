@@ -21,7 +21,6 @@ data = response.read()
 
             ${ data }
 
-
         
         % if simpleTextAnnouncement:
             <div class="simpleTextAnnouncement">${ simpleTextAnnouncement }</div>
@@ -31,9 +30,43 @@ data = response.read()
     
     
     
+    
     <div id="confSectionsBox" class="clearfix">
     ${ menu }
+
     ${ body }
+
+    % if organizers or sponsors or cosponsors:
+        <!-- Right menu -->
+        <div class="conf_rightMenu">
+
+            % if organizers:
+            <ul class="organizers_box">
+                <h3>Organizers</h3>
+                <li>
+                    ${organizers}
+                </li>
+            </ul>
+            % endif  
+
+            % if cosponsors:
+            <ul class="cosponsors_box">
+                <h3>Co-sponsors</h3>
+                % for cosp in cosponsors:
+                <li>
+                    <a href="${cosp['url']}" target="_blank"><img src="${cosp['imgurl']}" alt="${cosp['title']}" title="${cosp['title']}" /></a>                    
+                </li>
+                % endfor
+            </ul>
+            % endif
+            
+            
+        </div>
+    % endif  
+
+
+    
+
 
     </div>
 </div>
