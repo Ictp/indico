@@ -1,3 +1,8 @@
+
+<div class="conferencetitlelink blue">
+    ${conf.getTitle()}
+</div>
+
 <div class="conferenceDetails">
   <div itemprop="description" class="description ${'nohtml' if not description_html else ''}">${description}</div>
 
