@@ -296,3 +296,33 @@ width: 840px !important;
     padding-top: 20px;
     overflow: visible;
 }
+
+
+.confheader {
+    background: transparent;
+}
+
+
+
+.headerLogosWrapper {
+    position: relative ;
+    top: 0 !important ;
+    float: right;
+}
+
+
+.poster_box {
+margin-top: 10px !important;
+width: 100%;
+color: #aaa;
+background: #f6f6f6;
+border: 1px solid #ccc;
+}
+.poster_box img {
+    width: 100%;
+}
+
+.blue {
+    color: #1a64a0;
+}    
+
