@@ -1,3 +1,4 @@
+
 <div class="conferencetitlelink blue">
     ${conf.getTitle()}
 </div>
