@@ -548,10 +548,93 @@ ul.programme li .description {
     margin-top: -32px;
     float: left;
     width: 100%;
+    
 }
 .conf_leftMenu {
     padding-top: 20px;
+    vertical-align: top;
+    float: none;
+    display: table-cell;
 }
+
+
+
+.poster_box {
+margin-top: 10px !important;
+width: 100%;
+color: #aaa;
+background: #f6f6f6;
+border: 1px solid #ccc;
+}
+.poster_box img {
+    width: 100%;
+}
+
+.blue {
+    color: #1a64a0;
+    padding-top: 15px;
+}    
+
+.conf_rightMenu {
+    width: 200px;
+    vertical-align: top;
+    padding-top: 10px;
+    display: table-cell;
+}
+
+.support_box h3 { font-size: 1.2em; font-family: verdana,arial,sans-serif; margin: 0 0 5px 0;}
+
+.organizers_box {
+    margin-top: 10px !important;
+    width: 100%;
+    color: #aaa;
+    background: #f6f6f6;
+    border: 1px solid #ccc;
+}
+.organizers_box h3 {
+    color: #f3f3f3;
+    background: #1a64a0;
+    margin: 0 0 5px 0;
+    padding: 5px 5px 5px 10px;
+    font-weight: normal;
+    font-size: 1.2em;
+    font-family: verdana,arial,sans-serif;
+}
+
+.organizers_box li {
+    margin: 0 5px 5px 10px;
+    vertical-align: middle;
+}
+
+
+
+
+.cosponsors_box {
+    margin-top: 10px !important;
+    width: 100%;
+    color: #aaa;
+    background: white;
+    border: 1px solid #ccc;
+}
+.cosponsors_box h3 {
+    color: #f3f3f3;
+    background: #1a64a0;
+    margin: 0 0 5px 0;
+    padding: 5px 5px 5px 10px;
+    font-weight: normal;
+    font-size: 1.2em;
+    font-family: verdana,arial,sans-serif;
+}
+
+.cosponsors_box li {
+    margin: 0 5px 5px 10px;
+    padding: 5px 0 10px 0;
+    vertical-align: middle;
+}
+
+
+
+
 div.pageHeader {
     top: 193px;
     background: #0b63a5 url(../images/sprites.png) repeat-x scroll 0 0;
@@ -574,3 +657,16 @@ div#UISearchBox {
 #mainMenuWrapper { clear: none !important; margin-top: 0 !important; }
 div.sessionBar {margin-top: -30px;}
 
+
+#confSectionsBox { display: table; }
+
+
+.confBodyBox { 
+    margin-left: auto;
+    background: transparent none repeat scroll 0 0;
+    margin-right: auto;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.clearfix:after { clear: none; content: none; display: inline;}
