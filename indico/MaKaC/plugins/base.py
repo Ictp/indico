@@ -913,9 +913,11 @@ class PluginType (PluginBase):
                 else:
                     expected_name = '%s-%s' % (plugin.getOwner().getId().lower(), plugin.getId().lower())
                 if obj.name not in (expected_name, 'compat_' + expected_name):
-                    Logger.get('plugins.rhmap').exception('Blueprint in plugin %s must be named %s, not %s' % (
+                    raise PluginError('Blueprint in plugin %s must be named %s, not %s' % (
                                       plugin.getName(), expected_name, obj.name))
-                    continue
+                    #Logger.get('plugins.rhmap').exception('Blueprint in plugin %s must be named %s, not %s' % (
+                    #                  plugin.getName(), expected_name, obj.name))
+                    #continue
                 rh_map.addBlueprint(smodule, name)
 
     def _updateHandlerInfo(self, plugin, module):
