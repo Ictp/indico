@@ -504,7 +504,49 @@ class WConfDisplayFrame(wcomponents.WTemplated):
                     except:
                         pass
         p["poster"] = poster
+
+        # ICTP specific: roles
+        organizers = None
+        sponsors = []
+        cosponsors = []
+        roles = self._conf.getRoles()
         
+        if roles:
+            try:
+                dict = {}
+                for role in eval(roles.replace("false","False").replace("true","True")):
+                    dict[role["value"]] = role["child"]
+                if "Organizer(s)" in dict.keys():
+                    orgs = dict["Organizer(s)"]
+                    organizers = ", ".join([elem["familyName"].replace("ICTP Local Organizer","<br/>ICTP Local Organizer") for elem in orgs])
+                    
+                if "Cosponsor(s)" in dict.keys():
+                    cosp = dict["Cosponsor(s)"]
+
+                    # Recognized SPONSORS
+                    available = {
+                            "nim":"http://www.nano-initiative-munich.de/",
+                            "cens":"http://www.cens.de/",
+                            "sissa":"http://www.sissa.it/",
+                            "twas":"http://www.twas.org/",
+                            "elettra":"http://www.elettra.trieste.it/",
+                            "sesame":"http://www.sesame.org.jo/",
+                            }
+                    
+                    for elem in cosp:
+                        for av in available.keys():                   
+                            if str(elem["familyName"]).lower().find(av) > -1:
+                                cosponsors.append({
+                                        'imgurl':"/css/ICTP/images/"+av+"_logo.jpg",
+                                        'title': av,
+                                        'url':available[av]
+                                        })
+            except:
+                pass
+                
+        vars["organizers"] = organizers
+        vars["sponsors"] = sponsors
+        vars["cosponsors"] = cosponsors        
         
         vars["menu"] = WConfDisplayMenu(self._menu).getHTML(p)
 
