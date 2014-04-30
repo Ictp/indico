@@ -49,8 +49,19 @@ data = response.read()
             </ul>
             % endif  
 
+            % if sponsors:
+            <ul id="sponsors_box" class="sponsor_box">
+                <h3>Sponsors</h3>
+                % for sp in sponsors:
+                <li>
+                    <a href="${sp['url']}" target="_blank"><img src="${sp['imgurl']}" alt="${sp['title']}" title="${sp['title']}" /></a>                    
+                </li>
+                % endfor
+            </ul>
+            % endif  
+
             % if cosponsors:
-            <ul class="cosponsors_box">
+            <ul id="cosponsors_box" class="sponsor_box">
                 <h3>Co-sponsors</h3>
                 % for cosp in cosponsors:
                 <li>
@@ -59,7 +70,8 @@ data = response.read()
                 % endfor
             </ul>
             % endif
-            
+
+         
             
         </div>
     % endif  
