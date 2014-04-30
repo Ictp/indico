@@ -485,6 +485,8 @@ class WConfDisplayFrame(wcomponents.WTemplated):
              "support_info": sinfo,
              "event": self._conf}
              
+
+
         # ICTP specific: if POSTER is present, set var    
         poster = None
         for mat in self._conf.getAllMaterialList():
@@ -504,13 +506,23 @@ class WConfDisplayFrame(wcomponents.WTemplated):
                     except:
                         pass
         p["poster"] = poster
-
+        
         # ICTP specific: roles
         organizers = None
         sponsors = []
         cosponsors = []
         roles = self._conf.getRoles()
         
+        # Recognized SPONSORS
+        available_sponsors = {
+            "nim":"http://www.nano-initiative-munich.de/",
+            "cens":"http://www.cens.de/",
+            "sissa":"http://www.sissa.it/",
+            "twas":"http://www.twas.org/",
+            "elettra":"http://www.elettra.trieste.it/",
+            "sesame":"http://www.sesame.org.jo/",
+        }
+                                    
         if roles:
             try:
                 dict = {}
@@ -522,32 +534,33 @@ class WConfDisplayFrame(wcomponents.WTemplated):
                     
                 if "Cosponsor(s)" in dict.keys():
                     cosp = dict["Cosponsor(s)"]
-
-                    # Recognized SPONSORS
-                    available = {
-                            "nim":"http://www.nano-initiative-munich.de/",
-                            "cens":"http://www.cens.de/",
-                            "sissa":"http://www.sissa.it/",
-                            "twas":"http://www.twas.org/",
-                            "elettra":"http://www.elettra.trieste.it/",
-                            "sesame":"http://www.sesame.org.jo/",
-                            }
-                    
                     for elem in cosp:
-                        for av in available.keys():                   
+                        for av in available_sponsors.keys():                   
                             if str(elem["familyName"]).lower().find(av) > -1:
                                 cosponsors.append({
                                         'imgurl':"/css/ICTP/images/"+av+"_logo.jpg",
                                         'title': av,
-                                        'url':available[av]
+                                        'url':available_sponsors[av]
                                         })
+                                        
+                if "Sponsor(s)" in dict.keys():
+                    cosp = dict["Sponsor(s)"]
+                    for elem in cosp:
+                        for av in available_sponsors.keys():                   
+                            if str(elem["familyName"]).lower().find(av) > -1:
+                                cosponsors.append({
+                                        'imgurl':"/css/ICTP/images/"+av+"_logo.jpg",
+                                        'title': av,
+                                        'url':available_sponsors[av]
+                                        })
+
             except:
                 pass
                 
         vars["organizers"] = organizers
         vars["sponsors"] = sponsors
-        vars["cosponsors"] = cosponsors        
-        
+        vars["cosponsors"] = cosponsors
+
         vars["menu"] = WConfDisplayMenu(self._menu).getHTML(p)
 
         dm = displayMgr.ConfDisplayMgrRegistery().getDisplayMgr(self._conf, False)
