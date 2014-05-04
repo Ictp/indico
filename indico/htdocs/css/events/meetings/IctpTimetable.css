@@ -1,0 +1,893 @@
+/*
+* -*- mode: text; coding: utf-8; -*-
+
+
+   This file is part of Indico.
+   Copyright (C) 2002 - 2014 European Organization for Nuclear Research (CERN).
+
+   Indico is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License as
+   published by the Free Software Foundation; either version 3 of the
+   License, or (at your option) any later version.
+
+   Indico is distributed in the hope that it will be useful, but
+   WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with Indico; if not, see <http://www.gnu.org/licenses/>.
+*/
+
+body {
+    background: #424242;
+}
+
+.pageHeader {
+    border-bottom: none;
+}
+
+div.meetingEventBody {
+}
+
+div.meetingEventHeader {
+}
+
+div.meetingEventHeader > div.details,  div.meetingEventHeader a{
+    color: #CCC;
+}
+
+
+div.meetingEventHeader > span.chairedBy {
+    color: #CCC;
+}
+
+.eventWrapper {
+    border-radius: 10px 10px 0px 0px;
+    -moz-border-radius: 10px 10px 0px 0px;
+    -webkit-border-radius: 10px 10px 0px 0px;
+    box-shadow: 0px 0px 10px #000;
+    -moz-box-shadow: 0px 0px 10px #000;
+    -webkit-box-shadow: 0px 0px 10px #000;
+}
+
+.details .address {
+    color: #aaa;
+    font-size: 12px;
+    text-shadow: none;
+}
+
+
+
+
+
+
+/* Conf_Basic added */
+/*
+* -*- mode: text; coding: utf-8; -*-
+
+
+   This file is part of Indico.
+   Copyright (C) 2002 - 2014 European Organization for Nuclear Research (CERN).
+
+   Indico is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License as
+   published by the Free Software Foundation; either version 3 of the
+   License, or (at your option) any later version.
+
+   Indico is distributed in the hope that it will be useful, but
+   WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with Indico; if not, see <http://www.gnu.org/licenses/>.
+*/
+
+/*
+		Default Styles and layout for Conf-pages
+		Do not custom this CSS
+	*/
+
+	/* 	------Wrapper------ */
+	/* 	this is the wrapper of whole conference page */
+
+.conf {
+    width: 100%;
+    border: none;
+    margin: 0;
+}
+
+/*
+    Header
+*/
+.confheader {
+	background: #1a64a0;
+}
+
+.confLogoBox {
+	height: 100%;
+	float: left;
+	padding-right: 10px;
+	background: transparent none repeat scroll 0 0;
+}
+
+.confLogo {
+}
+
+.confTitleBox {
+	color: white;
+	min-height: 90px;
+	text-align:left;
+	border-top: 3px solid #234173;
+    border-bottom: 1px solid #0f4c80;
+    background: #1a64a0;
+}
+
+.confTitle {
+	width: 950px;
+	margin: 0 auto;
+}
+
+.confTitle h1 {
+	font-weight: normal;
+	margin: 0;
+}
+
+.conferencetitlelink {
+	font-size:22pt;
+	display: block;
+    padding: 25px 0;
+    color: white;
+}
+
+.confSubTitleBox {
+    min-height: 45px;
+    background: #f5faff;
+    border-bottom: 1px solid #d5e4f1;
+    border-top: 1px solid #d5e4f1;
+}
+
+.confSubTitleContent {
+    width: 950px;
+    margin: 0 auto;
+    font-family: Verdana;
+    font-size: 11pt;
+    color: #24425a;
+}
+
+.confSubTitle {
+    padding-top: 10px;
+}
+
+.confSubTitle a {
+    font-family: Verdana;
+    font-size: 11pt;
+}
+
+.datePlace {
+    font-family: verdana,arial,sans-serif;
+    font-size: 12pt;
+    padding-right: 250px;
+    margin-bottom: 5px;
+}
+
+div.datePlace > div.timezone {
+    font-size: 10px;
+    color: #777;
+}
+
+/* ------Main content------ */
+
+#confSectionsBox {
+	padding-top:30px;
+	width: 950px;
+	margin: 0 auto;
+}
+
+/* ------Menu------ */
+/* here is layout and style for creating default menu for conferences */
+
+
+/* Styles for all menu Items */
+
+#outer {
+    width: 100%;
+    position:relative;
+    background: #f6f6f6;
+
+    border: 1px solid #ccc;
+
+    list-style-image: none;
+    list-style-position: outside;
+    list-style-type: none;
+}
+
+#outer > li.menuConfTitle {
+    display: block;
+}
+
+#outer li a {
+    display: block;
+    text-decoration: none;
+
+    font-family:verdana,arial,sans-serif;
+    font-size: 10pt;
+    /*background: #fff;  IE6 Bug */
+}
+
+#outer li a:hover {
+    background: #e0e0e0;
+}
+
+.conf_leftMenu {
+	float:left;
+	width:200px;
+	background:transparent none repeat scroll 0 0;
+}
+
+
+.menuConfTitle {
+	text-align:left;
+}
+
+.menuConfTitle > a {
+    color: #275C86;
+    padding: 7px 12px;
+}
+
+a.confSection:visited {
+}
+
+a.confSection:link {
+}
+
+	/* sub menu item */
+
+li.menuConfMiddleCell {
+    font-weight: normal;
+}
+
+.sublink {
+        color: #777;
+}
+
+li.menuConfMiddleCell a {
+    padding: 0px 0px 0px 30px;
+}
+
+	/* selected menu item */
+
+.menuConfSelected, .menuConfMiddleCellSelected {
+    color: #BD891A;
+    background: #dadada;
+    border-bottom: 1px solid #d0d0d0;
+    border-top: 1px solid #d0d0d0;
+}
+
+.menuConfBottomCell {
+	border-bottom:0px;
+	border-top:0px;
+	background:transparent none repeat scroll 0 0;
+    display: none;
+}
+
+	/* Support link */
+
+	/*For dynamic menu*/
+
+.inner {
+    font-family: arial,sans-serif;
+    top:0px;
+    position:relative;
+    list-style-image: none;
+    list-style-position: outside;
+    list-style-type: none;
+    margin: 0 0 5px 0;
+    padding:0pt;
+    width:100%;
+}
+
+
+.conf_leftMenu ul {
+	list-style:none;
+	margin: 0px;
+	padding: 0px;
+}
+
+
+/* Fix IE. Hide from IE Mac \*/
+* html ul li { float: left; height: 1%; }
+* html ul li a { height: 1%; }
+/* End */
+
+
+li ul.inner li a {
+    padding: 3px 12px 3px 30px;
+    background: transparent url(../images/conf/left_menu_bullet.png) scroll no-repeat 15px center;
+} /* Sub Menu Styles */
+
+li:hover ul, li.over ul { display: block; } /* For dynamic */
+
+
+	/* ------Content------ */
+
+	/* wrapper of content and bradcrumps */
+
+.confBodyBox {
+	margin-left:230px;
+	background:transparent none repeat scroll 0 0;
+
+}
+
+.breadcrumps {
+    display: none;
+	font-weight: bold;
+}
+
+	/* This is for if someday you have more than one column in content */
+
+.mainContent {
+	width:100%;
+}
+
+
+.col2 {
+	width:100%;
+	float:left;
+	font-family: verdana,arial,sans-serif;;
+}
+
+
+	/* ------Misc------ */
+
+.tablepre {
+
+}
+
+.conferenceDetails .description {
+    color: #777;
+    font-family: Georgia, Times, Serif;
+    font-size: 1.2em;
+    margin: 1em 0 2em 0;
+}
+
+table.conferenceDetails td {
+    font-size: 11pt;
+    color: #444;
+}
+
+table.conferenceDetails .displayField {
+	text-align:left;
+	font-weight: bold;
+	font-size: 10pt;
+	padding-right: 20px;
+	color: #444;
+}
+
+.italic {
+	font-style:italic;
+}
+
+.menuConfTopCell { display: none;}
+
+
+    /* General elements */
+
+pre {
+    margin: 0;
+    color: #444;
+    font-size: 11pt;
+    font-family: verdana,arial,sans-serif;
+}
+
+    /* Styles for the searchbox */
+
+.confSearchBox {
+    width: 250px;
+    float: right;
+    height: 24px;
+    background: transparent url("../images/conf/sprites_blue.png") no-repeat 0 0;
+    margin-top: 10px;
+}
+
+.confSearchBox input {
+    border: none;
+    background: transparent;
+}
+
+.confSearchBox .searchButton {
+    float: right;
+    width: 60px;
+    height: 24px;
+    color: white;
+    font-family: Arial, Verdana;
+    font-size: 9pt;
+    padding-bottom: 2px;
+    font-weight: bold;
+}
+
+.confSearchBox .searchField {
+    color: black;
+    width: 170px;
+    padding: 4px 7px;
+    font-family: Arial, Verdana;
+    font-size: 10pt;
+}
+
+.nowHappening {
+    margin-bottom: 10px;
+}
+
+.nowHappening .nowHappeningText {
+    margin-right: 5px;
+    float: left;
+}
+
+.webcast {
+    margin-bottom: 10px;
+}
+
+.simpleTextAnnouncement {
+    background: #F5FAFF url(../images/conf/sprites_blue.png) repeat-x scroll 0 -400px;
+    border-top: 1px solid #c2d6e7;
+    padding: 8px 0;
+    font-family: Verdana;
+    font-weight: bold;
+    font-size: 10pt;
+    text-align: center;
+    color: #0f283d;
+}
+
+
+/* Elements not part of the conference itself */
+
+.pageHeader {
+    background: #424242;
+}
+
+ul.chair_list {
+    padding: 0px;
+    margin: 0px;
+    list-style-type: none;
+}
+
+.conf_leftMenu .spacer {
+    height: 1em;
+}
+
+.support_box {
+    margin-top: 10px !important;
+    width: 100%;
+    color: #aaa;
+    background: #f6f6f6;
+    border: 1px solid #ccc;
+}
+
+.support_box > h3 {
+    margin: 10px;
+    color: #f3f3f3;
+    background: #1a64a0;
+    margin: 0 0 5px 0;
+    padding: 5px;
+    font-weight: normal;
+}
+
+.support_box > li {
+    white-space: nowrap;
+    margin: 0 5px 5px 10px;
+    vertical-align: middle;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.support_box > li .icon {
+    color: #777;
+    font-size: 1.5em;
+    vertical-align: middle;
+}
+
+.support_box > li > a {
+    margin-left: 5px;
+    line-height: 1.5em;
+    vertical-align: middle;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.programme {
+    font-size: 1.2em;
+    font-family: Georgia, Times, Serif;
+}
+
+ul.programme {
+    margin-top: 4em;
+    list-style-type: none;
+    padding-left: 10px;
+}
+
+ul.programme li {
+    color: #444;
+    margin-top: 2em;
+}
+
+ul.programme li .title {
+    display: block;
+    font-size: 1.3em;
+    margin-bottom: 0.6em;
+}
+
+ul.programme li .description {
+    color: #777;
+}
+
+
+.conferenceDetails .info_line {
+    color: #777;
+    margin-top: 1em;
+    overflow: auto;
+}
+
+.info_line, info_line:after, info_line:before {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.grid:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.info_line {
+    width: 50%;
+    float: left;
+    padding: 5px;
+}
+
+.info_line .text {
+    padding-left: 3rem;
+}
+
+.info_line.location .address {
+    margin-top: 0.5em;
+}
+
+.info_line.material ul {
+    margin: 0;
+    padding: 0 3rem 0 3rem;
+    list-style-type: none;
+}
+
+.info_line.location .place {
+    color: #444;
+    font-size: 1.1em;
+}
+
+.info_line.date .timezone {
+    color: #bbb;
+}
+
+.info_line.date {
+    font-size: 1.1em;
+}
+
+.info_line.date .datetime {
+    color: #444;
+}
+
+.info_line.info {
+    padding: 10px;
+    clear: both;
+    width: 100%;
+    font-family: Georgia, Times, Serif;
+    background: #f4f4f4;
+}
+
+.info_line .icon {
+    font-size: 2rem;
+    color: #aaa;
+    float: left;
+    padding-right: 0.5em;
+}
+
+
+
+.info_line.roles {
+    padding: 10px;
+    width: 100%;
+    font-family: verdana,arial,sans-serif;  
+}
+
+
+
+
+/*
+    ICTP specific
+*/
+
+
+
+.confheader {
+    margin-top: -32px;
+    float: left;
+    width: 100%;
+    
+}
+.conf_leftMenu {
+    padding-top: 20px;
+    vertical-align: top;
+    float: none;
+    display: table-cell;
+}
+
+
+
+.poster_box {
+margin-top: 10px !important;
+width: 100%;
+color: #aaa;
+background: #f6f6f6;
+border: 1px solid #ccc;
+}
+.poster_box img {
+    width: 100%;
+}
+
+.blue {
+    color: #1a64a0;
+    padding-top: 15px;
+}    
+
+.conf_rightMenu {
+    width: 200px;
+    vertical-align: top;
+    padding-top: 10px;
+    display: table-cell;
+}
+
+.support_box h3 { font-size: 1.2em; font-family: verdana,arial,sans-serif; margin: 0 0 5px 0;}
+
+.organizers_box {
+    margin-top: 10px !important;
+    width: 100%;
+    color: #aaa;
+    background: #f6f6f6;
+    border: 1px solid #ccc;
+}
+.organizers_box h3 {
+    color: #f3f3f3;
+    background: #1a64a0;
+    margin: 0 0 5px 0;
+    padding: 5px 5px 5px 10px;
+    font-weight: normal;
+    font-size: 1.2em;
+    font-family: verdana,arial,sans-serif;
+}
+
+.organizers_box li {
+    margin: 0 5px 5px 10px;
+    vertical-align: middle;
+}
+
+
+
+
+.sponsor_box {
+    margin-top: 10px !important;
+    width: 100%;
+    color: #aaa;
+    background: white;
+    border: 1px solid #ccc;
+}
+.sponsor_box h3 {
+    color: #f3f3f3;
+    background: #1a64a0;
+    margin: 0 0 5px 0;
+    padding: 5px 5px 5px 10px;
+    font-weight: normal;
+    font-size: 1.2em;
+    font-family: verdana,arial,sans-serif;
+}
+
+.sponsor_box li {
+    margin: 0 5px 5px 10px;
+    padding: 5px 0 10px 0;
+    vertical-align: middle;
+}
+
+
+
+
+div.pageHeader {
+    top: 193px;
+    background: #0b63a5 url(../images/sprites.png) repeat-x scroll 0 0;
+    border-top: 1px solid #999999;
+    border-bottom: 1px solid #999999;
+    height: 30px;
+    width: 100%;
+}
+.eventHeaderButtonBar { padding: 3px 0 !important; }
+
+ul#quick_links_list { margin: 0; padding: 0; }
+
+div#UISearchBox { 
+    right: 30px !important; 
+    float: right; 
+    position: relative;
+}
+
+.serviceMenuWrapper { padding-bottom: 10px; }
+#mainMenuWrapper { clear: none !important; margin-top: 0 !important; }
+div.sessionBar {margin-top: -30px;}
+
+
+#confSectionsBox { display: table; }
+
+
+.confBodyBox { 
+    margin-left: auto;
+    background: transparent none repeat scroll 0 0;
+    margin-right: auto;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.clearfix:after { clear: none; content: none; display: inline;}
+
+
+
+
+
+
+
+
+
+
+
+/*
+    ICTP specific
+*/
+
+
+
+.confheader {
+    margin-top: -32px;
+    float: left;
+    width: 100%;
+    
+}
+.conf_leftMenu {
+    padding-top: 20px;
+    vertical-align: top;
+    float: none;
+    display: table-cell;
+}
+
+
+
+.poster_box {
+margin-top: 10px !important;
+width: 100%;
+color: #aaa;
+background: #f6f6f6;
+border: 1px solid #ccc;
+}
+.poster_box img {
+    width: 100%;
+}
+
+.blue {
+    color: #1a64a0;
+    padding-top: 15px;
+}    
+
+.conf_rightMenu {
+    width: 200px;
+    vertical-align: top;
+    padding-top: 10px;
+    display: table-cell;
+}
+
+.support_box h3 { font-size: 1.2em; font-family: verdana,arial,sans-serif; margin: 0 0 5px 0;}
+
+.organizers_box {
+    margin-top: 10px !important;
+    width: 100%;
+    color: #aaa;
+    background: #f6f6f6;
+    border: 1px solid #ccc;
+}
+.organizers_box h3 {
+    color: #f3f3f3;
+    background: #1a64a0;
+    margin: 0 0 5px 0;
+    padding: 5px 5px 5px 10px;
+    font-weight: normal;
+    font-size: 1.2em;
+    font-family: verdana,arial,sans-serif;
+}
+
+.organizers_box li {
+    margin: 0 5px 5px 10px;
+    vertical-align: middle;
+}
+
+
+
+
+.sponsor_box {
+    margin-top: 10px !important;
+    width: 100%;
+    color: #aaa;
+    background: white;
+    border: 1px solid #ccc;
+}
+.sponsor_box h3 {
+    color: #f3f3f3;
+    background: #1a64a0;
+    margin: 0 0 5px 0;
+    padding: 5px 5px 5px 10px;
+    font-weight: normal;
+    font-size: 1.2em;
+    font-family: verdana,arial,sans-serif;
+}
+
+.sponsor_box li {
+    margin: 0 5px 5px 10px;
+    padding: 5px 0 10px 0;
+    vertical-align: middle;
+}
+
+
+
+
+div.pageHeader {
+    top: 193px;
+    background: #0b63a5 url(../images/sprites.png) repeat-x scroll 0 0;
+    border-top: 1px solid #999999;
+    border-bottom: 1px solid #999999;
+    height: 30px;
+    width: 100%;
+}
+.eventHeaderButtonBar { padding: 3px 0 !important; }
+
+ul#quick_links_list { margin: 0; padding: 0; }
+
+div#UISearchBox { 
+    right: 30px !important; 
+    float: right; 
+    position: relative;
+}
+
+.serviceMenuWrapper { padding-bottom: 10px; }
+#mainMenuWrapper { clear: none !important; margin-top: 0 !important; }
+div.sessionBar {margin-top: -30px;}
+
+
+#confSectionsBox { display: table; }
+
+
+.confBodyBox { 
+    margin-left: auto;
+    background: transparent none repeat scroll 0 0;
+    margin-right: auto;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.clearfix:after { clear: none; content: none; display: inline;}
+
+
+
+
+
+
+
+
+
+
+div.meetingEventBody { display: table-cell; }
+
