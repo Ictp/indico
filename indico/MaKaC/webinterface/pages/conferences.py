@@ -560,7 +560,7 @@ class WConfDisplayFrame(wcomponents.WTemplated):
         vars["organizers"] = organizers
         vars["sponsors"] = sponsors
         vars["cosponsors"] = cosponsors
-
+        
         vars["menu"] = WConfDisplayMenu(self._menu).getHTML(p)
 
         dm = displayMgr.ConfDisplayMgrRegistery().getDisplayMgr(self._conf, False)
@@ -1033,7 +1033,7 @@ class WPTPLConferenceDisplay(WPXSLConferenceDisplay, object):
         vars["lastDay"] = self._lastDay
         vars["currentUser"] = self._rh._aw.getUser()
         vars["reportNumberSystems"] = Config.getInstance().getReportNumberSystems()
-
+        
         return vars
 
     def _getMaterialFiles(self, material):
@@ -1253,6 +1253,28 @@ class WPTPLConferenceDisplay(WPXSLConferenceDisplay, object):
             vars['getItemType'] = lambda item : self._getItemType(item)
             vars['getLocationInfo'] = MaKaC.common.utils.getLocationInfo
             vars['dumps'] = json.dumps
+            
+            
+            # ICTP
+             
+            self._menu = displayMgr.ConfDisplayMgrRegistery().getDisplayMgr(self._conf).getMenu()
+            #self._menu = Menu(self._conf, self)
+            #self._link = self._menu
+            #self._link = self._menu.getLinkById(linkId)
+            sinfo = self._conf.getSupportInfo()
+
+            p = {"menu": self._menu,
+                "support_info": sinfo,
+                "event": self._conf,
+                "materials": vars["materials"],
+                "types": self._types,
+                "getMaterialFiles": vars['getMaterialFiles']
+                }
+
+            vars["menu"] = WConfDisplayMenu(self._menu).getHTML(p)
+            
+           
+            
         else:
             outGen = outputGenerator(self._rh._aw)
             varsForGenerator = self._getBodyVariables()
@@ -1266,6 +1288,9 @@ class WPTPLConferenceDisplay(WPXSLConferenceDisplay, object):
         else:
             return _("Template could not be found.")
         return body
+
+
+
 
 
 class WPrintPageFrame (wcomponents.WTemplated):
@@ -1389,6 +1414,7 @@ class WConferenceTimeTable(WConfDisplayBodyBase):
             jsonf = ujson.encode
         except ImportError:
             jsonf = json.dumps
+        
         wvars["ttdata"] = jsonf(sf)
         eventInfo = fossilize(self._conf, IConferenceEventInfoFossil, tz=tz)
         eventInfo['isCFAEnabled'] = self._conf.getAbstractMgr().isActive()
