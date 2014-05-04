@@ -57,6 +57,25 @@
     
     
     
+    
+    % if len(materials) > 0:
+<ul class="support_box">
+    <h3>${_("Material")}</h3>
+    <li>
+        <div class="materialList clearfix">
+        % for material in materials:
+            <%include file="events/include/Material.tpl" args="material=material"/>
+        % endfor
+        </div>
+
+    </li>
+</ul>
+% endif
+    
+    
+    
+    
+    
     % if not support_info.isEmpty():
     <ul class="support_box">
       <h3>${support_info.getCaption()}</h3>
