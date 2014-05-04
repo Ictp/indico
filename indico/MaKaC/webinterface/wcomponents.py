@@ -433,7 +433,7 @@ class WConferenceHeader(WHeader):
         vars["showDLMaterial"] = True
         vars["showLayout"] = True
 
-        vars["usingModifKey"]=False
+        vars["usingModifKey"]=False        
         if self._conf.canKeyModify(self._aw):
             vars["usingModifKey"]=True
         vars["displayNavigationBar"] = displayMgr.ConfDisplayMgrRegistery().getDisplayMgr(self._conf, False).getDisplayNavigationBar()
