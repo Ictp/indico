@@ -77,6 +77,8 @@ else:
         % if showFilterButton:
             <%include file="MeetingFilter.tpl"/>
         % endif
+        
+        
         % if showExportToICal and False:
             <a id="exportIcal${self_._conf.getUniqueId()}" href="#" class="exportIcal" data-id="${self_._conf.getUniqueId()}">
                 ${ _("iCal export") }
@@ -84,6 +86,9 @@ else:
             </a>
                 <%include file="ConferenceICalExport.tpl" args="item=self_._conf"/>
         % endif
+
+
+
 
         % if showMoreButton and False:
             <%include file="HeaderMoreMenu.tpl" args="viewoptions = viewoptions,
@@ -95,11 +100,13 @@ else:
 
         <!-- <div class="separator"></div> -->
 
-        <a id="manageEventButton" href="${ urlHandlers.UHConferenceModification.getURL(conf)  if usingModifKey else  urlHandlers.UHConfManagementAccess.getURL(conf) }"
-           style="background-image: url(${ systemIcon('manage') })"></a>
-        % if usingModifKey:
-            <a href="${urlHandlers.UHConfCloseModifKey.getURL(self_._conf)}" style=class="eventHeaderButtonBar"> ${_('exit manage')} <div class="leftCorner"></div></a>
-        % endif
+        % if userLogged:        
+            <a id="manageEventButton" href="${ urlHandlers.UHConferenceModification.getURL(conf)  if usingModifKey else  urlHandlers.UHConfManagementAccess.getURL(conf) }"
+               style="background-image: url(${ systemIcon('manage') })"></a>
+            % if usingModifKey:
+                <a href="${urlHandlers.UHConfCloseModifKey.getURL(self_._conf)}" style=class="eventHeaderButtonBar"> ${_('exit manage')} <div class="leftCorner"></div></a>
+            % endif
+        % endif        
     </div>
 
     <%include file="SessionBar.tpl" args="dark=dark_"/>
