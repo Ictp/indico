@@ -270,7 +270,7 @@ $("input[name=delete]").click(function(event){
             if(confirmed){
                 var killProgress = IndicoUI.Dialogs.Util.progress($T("Deleting the contributions..."));
                 indicoRequest('event.contributions.delete',
-                        { confId: ${self_._conf.id},
+                        { confId: '${self_._conf.id}',
                           contributions: listContribsToDelete },
                           function(result, error){
                               if (!error) {
