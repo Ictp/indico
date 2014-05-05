@@ -58,7 +58,7 @@
     
     
     
-    % if len(materials) > 0:
+    % if materials:
 <ul class="support_box">
     <h3>${_("Material")}</h3>
     <li>
