@@ -760,7 +760,9 @@ div.sessionBar {margin-top: -30px;}
     
 }
 .conf_leftMenu {
+    
     padding-top: 20px;
+    padding-right: 2px;
     vertical-align: top;
     float: none;
     display: table-cell;
@@ -889,5 +891,5 @@ div.sessionBar {margin-top: -30px;}
 
 
 
-div.meetingEventBody { display: table-cell; }
+div.meetingEventBody { display: table-cell; padding: 10px 0px 20px 20px; }
 
