@@ -14,7 +14,7 @@ var videoServiceInfo = {};
 </div>
 
 
-<!-- ${ menu } -->
+
 <div class="conf_leftMenu">
         <ul id="outer" class="clearfix">
             <li id="menuLink_overview" class="menuConfTitle">
