@@ -14,7 +14,55 @@ var videoServiceInfo = {};
 </div>
 
 
-${ menu }
+<!-- ${ menu } -->
+<div class="conf_leftMenu">
+        <ul id="outer" class="clearfix">
+            <li id="menuLink_overview" class="menuConfTitle">
+              <a href="overview">Overview</a>
+
+            <ul class="inner">
+            </ul>
+          </li>
+
+
+            <li id="menuLink_timetable" class="menuConfTitle selected menuConfSelected">
+              <a href="timetable">Programme</a>
+
+            <ul class="inner">
+            </ul>
+          </li>
+
+            <li id="menuLink_contributionList" class="menuConfTitle">
+              <a href="contributions">Contribution List</a>
+
+            <ul class="inner">
+            </ul>
+          </li>
+
+            <li id="menuLink_authorIndex" class="menuConfTitle">
+              <a href="authors">Author List</a>
+
+            <ul class="inner">
+            </ul>
+          </li>
+    </ul>
+    
+    % if materials:
+        <ul class="support_box">
+            <h3>${_("Material")}</h3>
+        <li>
+            <div class="materialList clearfix">
+            % for material in materials:
+                <%include file="Material.tpl" args="material=material"/>
+            % endfor
+            </div>
+
+        </li>
+        </ul>
+    % endif
+    
+    
+  </div>
 
 
 <div class="meetingEventBody">
