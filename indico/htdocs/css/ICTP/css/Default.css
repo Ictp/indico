@@ -311,5 +311,11 @@ width: 840px !important;
     float: right;
 }
 
+.col2 {
+    margin-top: 15px;
+}
 
+.conferencetitlelink {
+    font-size: 18pt;
+}
 
