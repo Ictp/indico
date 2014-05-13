@@ -500,7 +500,7 @@ class WConfDisplayFrame(wcomponents.WTemplated):
                         fname = res.getName() or res.getFileName()
                         fpath = res.getFilePath()
                         fileURL = str(urlHandlers.UHFileAccess.getURL(res))
-                        if fname.lower().find('poster') == 0:
+                        if fname.lower().find('poster') > -1 and ftype == 'pdf' and fname.lower().find('list_of_poster') == -1:
                             img = Image(filename=fpath+'[0]')
                             img.format = 'jpeg'
                             img.transform(resize='245')
