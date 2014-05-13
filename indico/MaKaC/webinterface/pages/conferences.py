@@ -82,6 +82,9 @@ from MaKaC.user import AvatarHolder
 from MaKaC.webinterface.general import WebFactory
 from MaKaC.common.TemplateExec import render
 
+# ICTP: added for generating Poster on the fly
+import base64
+from wand.image import Image
 
 def stringToDate(str):
 
@@ -497,15 +500,21 @@ class WConfDisplayFrame(wcomponents.WTemplated):
                         fname = res.getName() or res.getFileName()
                         fpath = res.getFilePath()
                         fileURL = str(urlHandlers.UHFileAccess.getURL(res))
-                        if fname.lower() in ["web.jpg", "web.png"]:
+                        if fname.lower().find('poster') == 0:
+                            img = Image(filename=fpath+'[0]')
+                            img.format = 'jpeg'
+                            img.transform(resize='245')
                             poster = {  "name":fname , 
-                                        "url": fileURL,
-                                        "folderurl": fileURL+"/../",
-                                    }                
-                            break
-                    except:
+                                         "url": fileURL,
+                                         "folderurl": fileURL+'/../',
+                                         "data":base64.b64encode(img.make_blob())
+                            }  
+                    except Exception as e:
                         pass
+
+
         p["poster"] = poster
+
         
         # ICTP specific: roles
         organizers = None
