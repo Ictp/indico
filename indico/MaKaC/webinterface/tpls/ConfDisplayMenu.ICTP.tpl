@@ -1,6 +1,9 @@
 % if menu:
   <!--Left menu-->
   <div class="conf_leftMenu">
+  
+  
+  
     <ul id="outer" class="clearfix">
       % for link in menu.getEnabledLinkList():
         % if link.isVisible():
@@ -48,18 +51,20 @@
     
     
     % if poster:
-    <ul class="poster_box">
-        <li>
-            <a href="${poster['folderurl']}"><img src="${poster['url']}" title="poster" alt="poster" /></a>
-        </li>
-    </ul>
+        <ul class="poster_box">
+            <li>
+                <a href="${poster['folderurl']}">
+                    <img src="data:image/jpg;base64,${poster['data']}" title="poster" alt="poster" />
+                </a>
+            </li>
+        </ul>
     % endif     
     
     
     
     
     % if materials:
-<ul class="support_box">
+    <ul class="support_box">
     <h3>${_("Material")}</h3>
     <li>
         <div class="materialList clearfix">
@@ -69,9 +74,8 @@
         </div>
 
     </li>
-</ul>
-% endif
-    
+    </ul>
+    % endif
     
     
     
