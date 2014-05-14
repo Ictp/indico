@@ -277,20 +277,19 @@ width: 840px !important;
 
 }
 
-.meetingEventHeader .details {
-    display: none;
-}
+.meetingEventHeader .details { display: none; }
+.eventWrapper #eventDescription { display: none; }
+.subsiteMainTitle { display: none; }
+#footerLine .breadcrumb { display: none; }
 
-.eventWrapper #eventDescription {
-    display: none;
-}
-
-.subsiteMainTitle {
-    display: none;
-}
-#footerLine .breadcrumb {
-    display: none;
-}
+#homeButton { display: none; }
+#firstEventButton { display: none; }
+#previousEventButton { display: none; }
+#upToCategoryButton { display: none; }
+#nextEventButton { display: none; }
+#lastEventButton { display: none; }
+#timezoneSelector { display: none; }
+#languageSelector { display: none; }
 
 .container {
     margin: 0px 10px 30px 10px;
@@ -311,11 +310,5 @@ width: 840px !important;
     float: right;
 }
 
-.col2 {
-    margin-top: 15px;
-}
 
-.conferencetitlelink {
-    font-size: 18pt;
-}
 
