@@ -26,7 +26,7 @@ ${ data }
         % endif        
         
         
- <%include file="SessionBar.tpl" args="dark=False"/>
+ <%include file="SessionBar.ICTP.tpl" args="dark=False"/>
     <div class="globalMenu">
     
         <ul>
