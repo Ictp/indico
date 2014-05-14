@@ -44,7 +44,7 @@ else:
         <a id="homeButton" href="${ urlHandlers.UHWelcome.getURL() }"
            style="background-image: url(${ systemIcon('home') }); margin-left: 10px"></a>
 
-        <div class="separator"></div>
+       <!-- <div class="separator"></div> -->
 
         %if first != None:
             <a id="firstEventButton" href="${ urlHandlers.UHConferenceDisplay.getURL(first) }"
@@ -109,7 +109,7 @@ else:
         % endif        
     </div>
 
-    <%include file="SessionBar.tpl" args="dark=dark_"/>
+    <%include file="SessionBar.ICTP.tpl" args="dark=dark_"/>
 
     <!-- This div is used for inserting content under the header
          such as the filtering optionsfor meetings -->
