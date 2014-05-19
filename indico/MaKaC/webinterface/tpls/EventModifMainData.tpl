@@ -40,6 +40,7 @@ additionalInfo = confObj.getContactInfo()
 
 roles = confObj.getRoles()
 %>
+
 <div class="groupTitle">${ _("General Settings")}</div>
 
 <tr>

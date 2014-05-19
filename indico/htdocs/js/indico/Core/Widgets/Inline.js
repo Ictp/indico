@@ -1862,7 +1862,7 @@ type("GroupingWidget", ["InputEditWidget"],
                 var content = '';
                 if(str(value)!=""){
                     var fg = $('<div></div>').fieldgrouping();
-                    fg.fieldgrouping("setInfo", JSON.parse(this.value));
+                    fg.fieldgrouping("setInfo", JSON.parse(this.value.replace(/'/g, '"')));
                     content = fg.get(0);
                     this.fg = fg;
                 }
@@ -1876,7 +1876,7 @@ type("GroupingWidget", ["InputEditWidget"],
                 var content = "";
                 if(str(value)!=""){
                     var fg = $('<div></div>').fieldgrouping();
-                    fg.fieldgrouping("setInfo", JSON.parse(this.value));
+                    fg.fieldgrouping("setInfo", JSON.parse(this.value.replace(/'/g, '"')));
                     fg.fieldgrouping("getStructuredInfo"); 
                     content = fg.get(0);  
                 }
