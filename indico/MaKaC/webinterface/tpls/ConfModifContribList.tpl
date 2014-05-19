@@ -32,13 +32,14 @@ else:
 
     function selectAll()
     {
-        if (!document.contribsForm.contributions.length)
+        var contributions = document.getElementsByName('contributions')
+        if (!contributions.length)
         {
-            document.contribsForm.contributions.checked=true
+            contributions.checked=true
         }else{
-            for (i = 0; i < document.contribsForm.contributions.length; i++)
+            for (i = 0; i < contributions.length; i++)
             {
-                document.contribsForm.contributions[i].checked=true;
+                contributions[i].checked=true;
             }
         }
         isSelected("contribsItems");
@@ -46,13 +47,14 @@ else:
 
     function deselectAll()
     {
-        if (!document.contribsForm.contributions.length)
+        var contributions = document.getElementsByName('contributions')
+        if (!contributions.length)
         {
-            document.contribsForm.contributions.checked=false
+            contributions.checked=false
         }else{
-            for (i = 0; i < document.contribsForm.contributions.length; i++)
+            for (i = 0; i < contributions.length; i++)
             {
-                document.contribsForm.contributions[i].checked=false;
+                contributions[i].checked=false;
             }
         }
         isSelected("contribsItems");
