@@ -11365,10 +11365,8 @@ class Resource(CommonObjectBase):
         parent = self.getOwner()
         if parent:
             parent.setModificationDate()
-
             # Ictp: added for Indexing
             self._notify('infoChanged')
-
 
         self._p_changed = 1
 
@@ -11452,7 +11450,6 @@ class Resource(CommonObjectBase):
 
     def delete(self):
         if self._owner is not None:
-
             # Ictp: notifiy deleting for indexing
             self._notify('deleted', self._owner)
 
