@@ -10750,6 +10750,10 @@ class Material(CommonObjectBase):
             parent.notifyModification(raiseEvent = False)
         self._p_changed = 1
 
+
+
+
+
     def getLocator( self ):
         if self.owner == None:
             return Locator()
@@ -10951,6 +10955,7 @@ class Material(CommonObjectBase):
             self.removeResource( res )
         self.notify_protection_to_owner(self, delete=True)
         TrashCanManager().add(self)
+
 
     def recover(self):
         TrashCanManager().remove(self)
@@ -11360,6 +11365,11 @@ class Resource(CommonObjectBase):
         parent = self.getOwner()
         if parent:
             parent.setModificationDate()
+
+            # Ictp: added for Indexing
+            self._notify('infoChanged')
+
+
         self._p_changed = 1
 
     def getLocator( self ):
@@ -11442,11 +11452,16 @@ class Resource(CommonObjectBase):
 
     def delete(self):
         if self._owner is not None:
+
+            # Ictp: notifiy deleting for indexing
+            self._notify('deleted', self._owner)
+
             self.notify_protection_to_owner(delete=True)
             self._owner.removeResource(self)
             self.__ac.unlinkAvatars('access')
             self._owner = None
             TrashCanManager().add(self)
+            
 
     def recover(self):
         TrashCanManager().remove(self)
