@@ -887,9 +887,9 @@ div.sessionBar {margin-top: -30px;}
 
 
 
-
-
-
-
 div.meetingEventBody { display: table-cell; padding: 10px 0px 20px 20px; }
 
+
+.materialGroup { max-width: 200px; }
+.materialList a.material { height: auto; }
+span.materialGroup { white-space: initial; }

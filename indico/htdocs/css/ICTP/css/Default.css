@@ -262,6 +262,7 @@ margin-top: 0 !important;
     -webkit-border-radius: 0 !important;
     box-shadow: none !important;
     -webkit-box-shadow: 0 !important;
+    padding-top: 10px;
 }
 
 .meetingEventHeader {
@@ -311,4 +312,5 @@ width: 840px !important;
 }
 
 
-
+div.meetingEventSubHeader { display: none; }
+.col2 { padding-top: 15px; }

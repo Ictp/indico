@@ -67,13 +67,13 @@
   <div class="info_line material">
       <span title="${_("Materials")}" class="icon icon-material-download" aria-hidden="true"></span>
       % if material:
-          <ul class="text" style="float: left; padding: 0">
+          <ul class="text" style="float: left; padding: 0; max-width: 190px;">
             % for mat in material:
-              <li>${mat}</li>
+              <li>${mat.replace('_',' ')}</li>
             % endfor
           </ul>
       % else:
-          <span class="text" style="float: left; font-style: italic; padding: 10px 0px 0px">${_("No material yet")}</span>
+          <span class="text" style="float: left; font-style: italic; padding: 10px 0px 0px">${_("No material")}</span>
       % endif
 
   </div>

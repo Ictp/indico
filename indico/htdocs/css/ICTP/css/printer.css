@@ -1,0 +1,3 @@
+#mainMenuWrapper, .pageHeader, #searchBoxForm { display: none; }
+.conf_leftMenu.timetable { display: none; }
+div.meetingEventBody { padding-top: 0; }

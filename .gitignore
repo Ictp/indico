@@ -10,6 +10,10 @@
 # configs
 /etc/*.conf
 
+# repozer n ictp_xlsimporter
+indico/ext/search/repozer
+indico/ext/importer/ictp_xlsimporter
+
 # python packaging
 /dist
 *.egg-info

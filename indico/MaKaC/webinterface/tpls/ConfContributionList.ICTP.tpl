@@ -5,7 +5,7 @@
 </%block>
 
 <%block name="content">
-    <%include file="ConfContributionListFilters.tpl"/>
+    <%include file="ConfContributionListFilters.ICTP.tpl"/>
     <div id="contributionList">
         % for contrib in contributions:
             <% poster = True if contrib.getSession() and contrib.getSession().getScheduleType() == "poster" else False %>

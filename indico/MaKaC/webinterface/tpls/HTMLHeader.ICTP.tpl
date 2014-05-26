@@ -79,6 +79,9 @@
         <!-- ICTP specific -->
         <link rel="stylesheet" type="text/css" href="http://www.ictp.it/css/common.css?12">
         <link rel="stylesheet" type="text/css" href="/css/ICTP/css/Default.css">
+
+        <link rel="stylesheet" href="/css/ICTP/css/printer.css" type="text/css" media="print" />        
+
         <script type="text/javascript">
             var isHomepage = true;
             var searchEngineUrl = "";

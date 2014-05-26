@@ -15,7 +15,7 @@ var videoServiceInfo = {};
 
 
 
-<div class="conf_leftMenu">
+<div class="conf_leftMenu timetable">
         <ul id="outer" class="clearfix">
             <li id="menuLink_overview" class="menuConfTitle">
               <a href="overview">Overview</a>
@@ -53,7 +53,7 @@ var videoServiceInfo = {};
         <li>
             <div class="materialList clearfix">
             % for material in materials:
-                <%include file="Material.tpl" args="material=material"/>
+                <%include file="Material.ICTP.tpl" args="material=material"/>
             % endfor
             </div>
 
