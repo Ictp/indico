@@ -314,3 +314,5 @@ width: 840px !important;
 
 div.meetingEventSubHeader { display: none; }
 .col2 { padding-top: 15px; }
+
+.category-sidebar { width: auto; }
