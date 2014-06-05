@@ -123,7 +123,12 @@ var videoServiceInfo = {};
                 <ul class="meetingTimetable">
             % endif
 
-            <%include file="${getItemType(item)}.tpl" args="item=item, parent=conf, minutes=minutes"/>
+
+            % if getItemType(item) == 'Session':
+                <%include file="Session.ICTP.tpl" args="item=item, parent=conf, minutes=minutes"/>
+            % else:
+                <%include file="${getItemType(item)}.tpl" args="item=item, parent=conf, minutes=minutes"/>
+            % endif
 
             <% previousDate = date %>
         % endfor
