@@ -673,9 +673,22 @@ class LDAPTools:
         udata= {}
         udata["login"] = ret[UID_FIELD]
         udata["email"] = ret['mail']
-        udata["name"]= ret.get('givenName', '')
-        udata["surName"]= ret.get('sn', '')
-        udata["organisation"] = ret.get('company','')
+
+        # Ictp specific
+        try: name = ' '.join(ret.get('displayName').split(' ')[1:]).strip()
+        except: name = ''
+        try: surname = ret.get('displayName').split(' ')[0]
+        except: surname = ret.get('displayName', '')
+
+        #udata["name"]= ret.get('givenName', '')                
+        udata["name"]= name # Ictp specific
+
+        #udata["surName"]= ret.get('sn', '')
+        udata["surName"]= surname # Ictp AD specific
+
+        #udata["organisation"] = ret.get('company','')
+        udata["organisation"] = 'Ictp' # Ictp specific
+
         udata['address'] = LDAPTools._fromLDAPmultiline(ret['postalAddress']) if 'postalAddress' in ret else ''
         udata["phone"] = ret.get('telephoneNumber','')
         udata["fax"] = ret.get('facsimileTelephoneNumber','')
