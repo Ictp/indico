@@ -166,6 +166,7 @@ class GetPastEventsList(CategoryDisplayBase):
         skip = max(0, self._lastIdx - 100)
         pastEvents = {}
         num = 0
+        currentUser = self.getAW().getUser()
         for event in islice(index.itervalues(), skip, self._lastIdx):
             sd = event.getStartDate()
             key = (sd.year, sd.month)
@@ -176,9 +177,11 @@ class GetPastEventsList(CategoryDisplayBase):
                     'year': sd.year,
                     'month': sd.month
                 }
-            eventHTML = WConferenceListItem(event, self._aw).getHTML()
-            pastEvents[key]['events'].append(eventHTML)
-            num += 1
+            # Ictp: show only Conferences you are allowed to access            
+            if (not event.isProtected()) or (event.isProtected() and event.isAllowedToAccess(currentUser)):            
+                eventHTML = WConferenceListItem(event, self._aw).getHTML()
+                pastEvents[key]['events'].append(eventHTML)
+                num += 1
         for monthData in pastEvents.itervalues():
             monthData['events'].reverse()
         return {

@@ -2656,17 +2656,20 @@ class WConferenceList(WTemplated):
         twoMonthTS = utc_timestamp((today - timedelta(days=60)).replace(day=1))
         future = []
         present = []
-
-
+        
         # currentMonth will be used to ensure that when the OPTIMAL_PRESENT_EVENTS is reached
         # the events of that month are still displayed in the present list
         currentMonth = utctimestamp2date(previousMonthTS)
         for ts, conf in index.iteritems(previousMonthTS):
             if ts < nextMonthTS or len(present) < OPTIMAL_PRESENT_EVENTS or is_same_month(currentMonth, utctimestamp2date(ts)):
-                present.append(conf)
-                currentMonth = utctimestamp2date(ts)
+                # Ictp: show only authorized Confs
+                if (not conf.isProtected()) or (conf.isProtected() and conf.isAllowedToAccess(user)): 
+                    present.append(conf)
+                    currentMonth = utctimestamp2date(ts)
             else:
-                future.append(conf)
+                # Ictp: show only authorized Confs
+                if (not conf.isProtected()) or (conf.isProtected() and conf.isAllowedToAccess(user)): 
+                    future.append(conf)
 
         if len(present) < MIN_PRESENT_EVENTS:
             present = index.values(twoMonthTS, previousMonthTS) + present
