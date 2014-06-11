@@ -26,6 +26,9 @@
     <div>
         <%include file="ConferenceListEvents.tpl" args="items=presentItems, aw=self_._aw, conferenceDisplayURLGen=conferenceDisplayURLGen"/>
     </div>
+    
+    
+  
 
     % if numOfEventsInThePast > 0:
     <div id="pastEvents"></div>

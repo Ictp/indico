@@ -33,6 +33,7 @@ if lItem.getType() == "simple_event":
         eventTitle = "%s, \"%s\"" % (", ".join(speakerList),eventTitle)
 
 %>
+% if (not lItem.isProtected()) or (lItem.isProtected() and lItem.isAllowedToAccess(user)): # Ictp: dont show Protected to anon
 <li itemscope itemtype="http://data-vocabulary.org/Event">
     <span class="ical">
         <a href="${ urlHandlers.UHConferenceToiCal.getURL(lItem) }"><img src="${ systemIcon("ical_grey") }" alt="iCal export" /></a>
@@ -56,3 +57,4 @@ if lItem.getType() == "simple_event":
         </span>
     </span>
 </li>
+% endif

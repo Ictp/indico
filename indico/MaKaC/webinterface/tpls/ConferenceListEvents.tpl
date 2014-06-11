@@ -19,6 +19,7 @@
             if todayDate.year  == itemStartDate.year and todayDate.month  == itemStartDate.month:
                 cls = 'currentMonth'
         %>
+        
         <h4 class="${cls}" id="${'eventList-%d-%d' % (currentYear, currentMonth)}">
         <span>${ datetime(itemStartDate.year, itemStartDate.month, 1).strftime("%B %Y") }</span></h4>
         <ul>
