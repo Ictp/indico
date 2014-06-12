@@ -511,10 +511,33 @@ class WConfDisplayFrame(wcomponents.WTemplated):
                             }  
                     except Exception as e:
                         pass
-
-
         p["poster"] = poster
 
+
+        # ICTP specific: if GROUP PHOTO is present, set var    
+        photo = None
+        for mat in self._conf.getAllMaterialList():
+            matName = mat.getTitle().lower()
+            for res in mat.getResourceList():
+                if not(res.isProtected()):
+                    try:
+                        ftype = res.getFileType().lower()
+                        fname = res.getName() or res.getFileName()
+                        fpath = res.getFilePath()
+                        fileURL = str(urlHandlers.UHFileAccess.getURL(res))
+                        if ftype == 'jpg':
+                            if matName.find('photo') != -1 or matName.find('picture') != -1 or matName.find('group') != -1:
+                                img = Image(filename=fpath+'[0]')
+                                img.format = 'jpeg'
+                                img.transform(resize='245')
+                                photo = {  "name":fname , 
+                                             "url": fileURL,
+                                             "folderurl": fileURL+'/../',
+                                             "data":base64.b64encode(img.make_blob())
+                                }  
+                    except Exception as e:
+                        pass
+        p["photo"] = photo
         
         # ICTP specific: roles
         organizers = None

@@ -102,7 +102,15 @@
     % endif
     
     
-   
+    % if photo:
+        <ul class="poster_box">
+            <li>
+                <a href="${photo['folderurl']}">
+                    <img src="data:image/jpg;base64,${photo['data']}" title="photo" alt="photo" />
+                </a>
+            </li>
+        </ul>
+    % endif      
     
     
     
