@@ -20,8 +20,9 @@
                 cls = 'currentMonth'
         %>
         
-        <h4 class="${cls}" id="${'eventList-%d-%d' % (currentYear, currentMonth)}">
-        <span>${ datetime(itemStartDate.year, itemStartDate.month, 1).strftime("%B %Y") }</span></h4>
+        <h4 class="${cls}" >
+        <span>${ datetime(itemStartDate.year, itemStartDate.month, 1).strftime("%B %Y") }</span>
+        </h4>
         <ul>
     % endif
     <%include file="ConferenceListItem.tpl" args="aw=aw, lItem=item, conferenceDisplayURLGen=conferenceDisplayURLGen"/>
