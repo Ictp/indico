@@ -172,14 +172,17 @@ class LDAPAuthenticator(Authenthicator, SSOHandler):
         criteria = dict((k, ldap.filter.escape_filter_chars(v)) \
                         for k, v in criteria.iteritems() if v.strip() != '')
         lfilter = list((self._operations[k].format(v if exact else ("*%s*" % v))) \
-                       for k, v in criteria.iteritems())
+                       for k, v in criteria.iteritems() if v)
 
         if lfilter == []:
             return {}
         ldapc = LDAPConnector()
         ldapc.open()
         fquery = "(&{0}{1})".format(SEARCH_EXTRA_FILTER, ''.join(lfilter))
-
+        
+        # Ictp custom
+        fquery = ''.join(lfilter)
+        
         d = ldapc.findUsers(fquery)
         ldapc.close()
         return d
@@ -465,12 +468,23 @@ class LDAPConnector(object):
         d = {}
         self.login()
 
-        res = self.l.search_s(self.ldapPeopleDN, ldap.SCOPE_SUBTREE, ufilter)
+        res = self.l.search_s(self.ldapPeopleDN, ldap.SCOPE_SUBTREE, ufilter)                
+        
+        
+        # Ictp fix
         for dn, data in res:
-            if dn:
+            try: 
                 ret = self._objectAttributes(dn, data, RETRIEVED_FIELDS)
                 av = LDAPTools.dictToAv(ret)
                 d[ret['mail']] = av
+            except:
+                pass                    
+        
+#         for dn, data in res:
+#             if dn:
+#                 ret = self._objectAttributes(dn, data, RETRIEVED_FIELDS)
+#                 av = LDAPTools.dictToAv(ret)
+#                 d[ret['mail']] = av
         return d
 
     def _findGroups(self, gfilter):
@@ -671,6 +685,7 @@ class LDAPTools:
     def extractUserDataFromLdapData(ret):
         """extracts user data from a LDAP record as a dictionary, edit to modify for your needs"""
         udata= {}
+        
         udata["login"] = ret[UID_FIELD]
         udata["email"] = ret['mail']
 
@@ -698,7 +713,7 @@ class LDAPTools:
     @staticmethod
     def dictToAv(ret):
         """converts user data obtained from LDAP to the structure expected by Avatar"""
-        av = {}
+        av = {}        
         udata=LDAPTools.extractUserDataFromLdapData(ret)
         av["login"] = udata["login"]
         av["email"] = [udata["email"]]
