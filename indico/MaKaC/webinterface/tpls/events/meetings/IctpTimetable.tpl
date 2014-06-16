@@ -9,6 +9,9 @@ if textColorCode:
 else:
     textColorStyle = ""
 %>
+
+
+
 <%
 import urllib2
 response = urllib2.urlopen("http://www.ictp.it/headercalendar.aspx")
