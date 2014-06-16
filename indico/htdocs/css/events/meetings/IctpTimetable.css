@@ -713,11 +713,6 @@ div.pageHeader {
 
 ul#quick_links_list { margin: 0; padding: 0; }
 
-div#UISearchBox { 
-    right: 30px !important; 
-    float: right; 
-    position: relative;
-}
 
 .serviceMenuWrapper { padding-bottom: 10px; }
 #mainMenuWrapper { clear: none !important; margin-top: 0 !important; }
@@ -858,11 +853,7 @@ div.pageHeader {
 
 ul#quick_links_list { margin: 0; padding: 0; }
 
-div#UISearchBox { 
-    right: 30px !important; 
-    float: right; 
-    position: relative;
-}
+
 
 .serviceMenuWrapper { padding-bottom: 10px; }
 #mainMenuWrapper { clear: none !important; margin-top: 0 !important; }

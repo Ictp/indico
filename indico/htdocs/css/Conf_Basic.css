@@ -649,7 +649,6 @@ div.pageHeader {
 ul#quick_links_list { margin: 0; padding: 0; }
 
 div#UISearchBox { 
-    right: 30px !important; 
     float: right; 
     position: relative;
 }
