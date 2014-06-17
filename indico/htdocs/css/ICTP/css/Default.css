@@ -316,3 +316,8 @@ div.meetingEventSubHeader { display: none; }
 .col2 { padding-top: 15px; }
 
 .category-sidebar { width: auto; }
+
+.category-content-wrapper { padding: 0.2em 0.2em; }
+.category-content { max-width: none; }
+.eventList h4 { margin-bottom: 0.5em; }
+.eventList li .today { padding-left: 0px; }
