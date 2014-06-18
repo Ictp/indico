@@ -37,7 +37,7 @@ data = response.read()
     ${ body }
 
 
-    % if (organizers or sponsors or cosponsors) and ('overview' in currentURL.split('/')):
+    % if (organizers or sponsors or cosponsors) and (currentURL.split(confId)[1] in ['/','/overview']):
         <!-- Right menu -->
         <div class="conf_rightMenu">
 
