@@ -111,7 +111,7 @@
                                             <ul>
                                             % for resource in material.getResourceList():
                                                 <li class="icon-file">
-                                                    <a href="${urlHandlers.UHFileAccess.getURL(resource)}" target="_blank" title="${resource.getDescription()}">
+                                                    <a href="${urlHandlers.UHFileAccess.getURL(resource)}" target="_self" title="${resource.getDescription()}">
                                                         ${getResourceName(resource)}
                                                     </a>
                                                 </li>
