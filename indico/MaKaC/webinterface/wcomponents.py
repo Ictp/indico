@@ -2657,6 +2657,11 @@ class WConferenceList(WTemplated):
         future = []
         present = []
         
+        # This is SLOOOOOW, but I get the correct count
+        cn = 0
+        for conf in index.values():
+            if (not conf.isProtected()) or (conf.isProtected() and conf.isAllowedToAccess(user)):
+                cn+=1    
         # currentMonth will be used to ensure that when the OPTIMAL_PRESENT_EVENTS is reached
         # the events of that month are still displayed in the present list
         currentMonth = utctimestamp2date(previousMonthTS)
@@ -2678,8 +2683,11 @@ class WConferenceList(WTemplated):
             maxDT = timezone('UTC').localize(datetime.utcfromtimestamp(index.maxKey())).astimezone(timezone(tz))
             prevMonthTS = utc_timestamp(maxDT.replace(day=1))
             present = index.values(prevMonthTS)
-        numPast = self._categ.getNumConferences() - len(present) - len(future)
+        # Ictp: getNumConferences() returns wrong values within MANY conferences
+        #numPast = self._categ.getNumConferences() - len(present) - len(future)
+        numPast = cn - len(present) - len(future)
         return present, future, len(future), numPast
+
 
     def getVars( self ):
         vars = WTemplated.getVars( self )
