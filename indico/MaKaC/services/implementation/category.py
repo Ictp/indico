@@ -166,24 +166,31 @@ class GetPastEventsList(CategoryDisplayBase):
         skip = max(0, self._lastIdx - 100)
         pastEvents = {}
         num = 0
+        # Ictp
         currentUser = self.getAW().getUser()
+
         for event in islice(index.itervalues(), skip, self._lastIdx):
-            sd = event.getStartDate()
-            key = (sd.year, sd.month)
-            if key not in pastEvents:
-                pastEvents[key] = {
-                    'events': [],
-                    'title': datetime(sd.year, sd.month, 1).strftime("%B %Y"),
-                    'year': sd.year,
-                    'month': sd.month
-                }
+            
             # Ictp: show only Conferences you are allowed to access            
-            if (not event.isProtected()) or (event.isProtected() and event.isAllowedToAccess(currentUser)):            
+            #if (not event.isProtected()) or (event.isProtected() and event.isAllowedToAccess(currentUser)): 
+            if 1:
+            
+                sd = event.getStartDate()
+                key = (sd.year, sd.month)
+                if key not in pastEvents:
+                    pastEvents[key] = {
+                        'events': [],
+                        'title': datetime(sd.year, sd.month, 1).strftime("%B %Y"),
+                        'year': sd.year,
+                        'month': sd.month
+                    }
+                       
                 eventHTML = WConferenceListItem(event, self._aw).getHTML()
                 pastEvents[key]['events'].append(eventHTML)
                 num += 1
         for monthData in pastEvents.itervalues():
             monthData['events'].reverse()
+
         return {
             'num': num,
             'events': [v for k, v in sorted(pastEvents.iteritems(), reverse=True)]

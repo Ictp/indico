@@ -2657,23 +2657,27 @@ class WConferenceList(WTemplated):
         future = []
         present = []
         
-        # This is SLOOOOOW, but I get the correct count
-        cn = 0
-        for conf in index.values():
-            if (not conf.isProtected()) or (conf.isProtected() and conf.isAllowedToAccess(user)):
-                cn+=1    
+        # Ictp: This is SLOOOOOW, but I get the correct count
+        #cn = 0
+        #for conf in index.values():
+        #    if (not conf.isProtected()) or (conf.isProtected() and conf.isAllowedToAccess(user)):
+        #        cn+=1    
+
+
         # currentMonth will be used to ensure that when the OPTIMAL_PRESENT_EVENTS is reached
         # the events of that month are still displayed in the present list
         currentMonth = utctimestamp2date(previousMonthTS)
         for ts, conf in index.iteritems(previousMonthTS):
             if ts < nextMonthTS or len(present) < OPTIMAL_PRESENT_EVENTS or is_same_month(currentMonth, utctimestamp2date(ts)):
                 # Ictp: show only authorized Confs
-                if (not conf.isProtected()) or (conf.isProtected() and conf.isAllowedToAccess(user)): 
+                #if (not conf.isProtected()) or (conf.isProtected() and conf.isAllowedToAccess(user)): 
+                if 1:
                     present.append(conf)
                     currentMonth = utctimestamp2date(ts)
             else:
                 # Ictp: show only authorized Confs
-                if (not conf.isProtected()) or (conf.isProtected() and conf.isAllowedToAccess(user)): 
+                #if (not conf.isProtected()) or (conf.isProtected() and conf.isAllowedToAccess(user)): 
+                if 1:
                     future.append(conf)
 
         if len(present) < MIN_PRESENT_EVENTS:
@@ -2685,7 +2689,8 @@ class WConferenceList(WTemplated):
             present = index.values(prevMonthTS)
         # Ictp: getNumConferences() returns wrong values within MANY conferences
         #numPast = self._categ.getNumConferences() - len(present) - len(future)
-        numPast = cn - len(present) - len(future)
+        numPast = len(index.values()) - len(present) - len(future)
+        #numPast = cn - len(present) - len(future)
         return present, future, len(future), numPast
 
 

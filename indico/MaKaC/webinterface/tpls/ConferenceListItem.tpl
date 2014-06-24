@@ -33,7 +33,7 @@ if lItem.getType() == "simple_event":
         eventTitle = "%s, \"%s\"" % (", ".join(speakerList),eventTitle)
 
 %>
-% if (not lItem.isProtected()) or (lItem.isProtected() and lItem.isAllowedToAccess(user)): # Ictp: dont show Protected to anon
+% if 1 or (not lItem.isProtected()) or (lItem.isProtected() and lItem.isAllowedToAccess(user)): # Ictp: dont show Protected to anon
 <li itemscope itemtype="http://data-vocabulary.org/Event">
     <div style="display: table;"  class="listName">
         <div style="min-width: 145px;display: table-cell;" class="date ${ happeningNowClass }">
