@@ -33,37 +33,26 @@ if lItem.getType() == "simple_event":
         eventTitle = "%s, \"%s\"" % (", ".join(speakerList),eventTitle)
 
 %>
-% if 1 or (not lItem.isProtected()) or (lItem.isProtected() and lItem.isAllowedToAccess(user)): # Ictp: dont show Protected to anon
 <li itemscope itemtype="http://data-vocabulary.org/Event">
-    <div style="display: table;"  class="listName">
-        <div style="min-width: 145px;display: table-cell;" class="date ${ happeningNowClass }">
-            <span class="ical">
-                <a href="${ urlHandlers.UHConferenceToiCal.getURL(lItem) }"><img src="${ systemIcon("ical_grey") }" alt="iCal export" /></a>
-            </span>
-            ${ evtDate } <time itemprop="startDate" datetime="${ startDate.strftime("%Y-%m-%d") }" />
-        </div>
-        <div style="display: table-cell;padding-left: 10px;">
-        
-            <a href="${ conferenceDisplayURLGen(lItem)}" itemprop="url" >
-                <span itemprop="summary">${ eventTitle }</span>
-            </a>
+    <span class="ical">
+        <a href="${ urlHandlers.UHConferenceToiCal.getURL(lItem) }"><img src="${ systemIcon("ical_grey") }" alt="iCal export" /></a>
+    </span>
+    <span class="listName">
+        <span class="date ${ happeningNowClass }">${ evtDate }<time itemprop="startDate" datetime="${ startDate.strftime("%Y-%m-%d") }" /></span><a href="${ conferenceDisplayURLGen(lItem)}" itemprop="url" ><span itemprop="summary">${ eventTitle }</span></a>
 
-
-              <span class="protected">
-                <% prot = getProtection(lItem) %>
-                % if prot[0]:
-                    % if prot[0] == "domain":
-                        <span data-type="domain" data-domain="${prot[1] | n, j, h}">(${_("protected: ") + ", ".join(prot[1])})</span>
-                    % else:
-                        <span data-type="restricted">(${_("protected")})</span>
-                    % endif
+          <span class="protected">
+            <% prot = getProtection(lItem) %>
+            % if prot[0]:
+                % if prot[0] == "domain":
+                    <span data-type="domain" data-domain="${prot[1] | n, j, h}">(${_("protected: ") + ", ".join(prot[1])})</span>
+                % else:
+                    <span data-type="restricted">(${_("protected")})</span>
                 % endif
+            % endif
 
-                % if creatDate > nowutc() - timedelta(weeks = 1):
-                       <img src="${ systemIcon('new') }" style="vertical-align:middle" alt="New" title="${ _("This event is New")}" />
-                % endif
-            </span>
-        </div>
-    </div>
+            % if creatDate > nowutc() - timedelta(weeks = 1):
+                   <img src="${ systemIcon('new') }" style="vertical-align:middle" alt="New" title="${ _("This event is New")}" />
+            % endif
+        </span>
+    </span>
 </li>
-% endif

@@ -2646,6 +2646,7 @@ class WConferenceList(WTemplated):
         self._aw = aw
         return WTemplated.getHTML( self, params )
 
+
     def getEventTimeline(self, tz):
         # Getting current and previous at the beggining
         index = Catalog.getIdx('categ_conf_sd').getCategory(self._categ.getId())
@@ -2656,12 +2657,6 @@ class WConferenceList(WTemplated):
         twoMonthTS = utc_timestamp((today - timedelta(days=60)).replace(day=1))
         future = []
         present = []
-        
-        # Ictp: This is SLOOOOOW, but I get the correct count
-        #cn = 0
-        #for conf in index.values():
-        #    if (not conf.isProtected()) or (conf.isProtected() and conf.isAllowedToAccess(user)):
-        #        cn+=1    
 
 
         # currentMonth will be used to ensure that when the OPTIMAL_PRESENT_EVENTS is reached
@@ -2669,16 +2664,10 @@ class WConferenceList(WTemplated):
         currentMonth = utctimestamp2date(previousMonthTS)
         for ts, conf in index.iteritems(previousMonthTS):
             if ts < nextMonthTS or len(present) < OPTIMAL_PRESENT_EVENTS or is_same_month(currentMonth, utctimestamp2date(ts)):
-                # Ictp: show only authorized Confs
-                #if (not conf.isProtected()) or (conf.isProtected() and conf.isAllowedToAccess(user)): 
-                if 1:
-                    present.append(conf)
-                    currentMonth = utctimestamp2date(ts)
+                present.append(conf)
+                currentMonth = utctimestamp2date(ts)
             else:
-                # Ictp: show only authorized Confs
-                #if (not conf.isProtected()) or (conf.isProtected() and conf.isAllowedToAccess(user)): 
-                if 1:
-                    future.append(conf)
+                future.append(conf)
 
         if len(present) < MIN_PRESENT_EVENTS:
             present = index.values(twoMonthTS, previousMonthTS) + present
@@ -2687,10 +2676,11 @@ class WConferenceList(WTemplated):
             maxDT = timezone('UTC').localize(datetime.utcfromtimestamp(index.maxKey())).astimezone(timezone(tz))
             prevMonthTS = utc_timestamp(maxDT.replace(day=1))
             present = index.values(prevMonthTS)
+            
         # Ictp: getNumConferences() returns wrong values within MANY conferences
         #numPast = self._categ.getNumConferences() - len(present) - len(future)
         numPast = len(index.values()) - len(present) - len(future)
-        #numPast = cn - len(present) - len(future)
+        
         return present, future, len(future), numPast
 
 
