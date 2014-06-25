@@ -55,7 +55,7 @@ data = response.read()
                 <h3>Sponsors</h3>
                 % for sp in sponsors:
                 <li>
-                    <a href="${sp['url']}" target="_blank"><img src="${sp['imgurl']}" alt="${sp['title']}" title="${sp['title']}" /></a>                    
+                    <a href="${sp['url']}" target="_blank"><img src="data:image/jpg;base64,${sp['data']}" alt="${sp['title']}" title="${sp['title']}" /></a>                    
                 </li>
                 % endfor
             </ul>
@@ -66,7 +66,7 @@ data = response.read()
                 <h3>Co-sponsors</h3>
                 % for cosp in cosponsors:
                 <li>
-                    <a href="${cosp['url']}" target="_blank"><img src="${cosp['imgurl']}" alt="${cosp['title']}" title="${cosp['title']}" /></a>                    
+                    <a href="${cosp['url']}" target="_blank"><img src="data:image/jpg;base64,${cosp['data']}" alt="${cosp['title']}" title="${cosp['title']}" /></a>                    
                 </li>
                 % endfor
             </ul>
