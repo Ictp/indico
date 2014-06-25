@@ -55,7 +55,17 @@ data = response.read()
                 <h3>Sponsors</h3>
                 % for sp in sponsors:
                 <li>
-                    <a href="${sp['url']}" target="_blank"><img src="data:image/jpg;base64,${sp['data']}" alt="${sp['title']}" title="${sp['title']}" /></a>                    
+                    % if sp['url']:
+                        <a href="${sp['url']}" target="_blank">
+                    % endif
+                    % if sp['data']:
+                            <img src="data:image/jpg;base64,${sp['data']}" alt="${sp['title']}" title="${sp['title']}" />
+                    % else:
+                        <span>${sp['title']}</span>
+                    % endif
+                    % if sp['url']:
+                        </a>  
+                    % endif                  
                 </li>
                 % endfor
             </ul>
@@ -66,7 +76,17 @@ data = response.read()
                 <h3>Co-sponsors</h3>
                 % for cosp in cosponsors:
                 <li>
-                    <a href="${cosp['url']}" target="_blank"><img src="data:image/jpg;base64,${cosp['data']}" alt="${cosp['title']}" title="${cosp['title']}" /></a>                    
+                    % if cosp['url']:
+                        <a href="${cosp['url']}" target="_blank">
+                    % endif
+                    % if cosp['data']:
+                            <img src="data:image/jpg;base64,${cosp['data']}" alt="${cosp['title']}" title="${cosp['title']}" />
+                    % else:
+                        <span>${cosp['title']}</span>
+                    % endif
+                    % if cosp['url']:
+                        </a>  
+                    % endif                  
                 </li>
                 % endfor
             </ul>
