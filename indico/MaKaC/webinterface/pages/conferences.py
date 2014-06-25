@@ -873,7 +873,7 @@ class WConfDisplayFrame(wcomponents.WTemplated):
 "miras":{"url":"http://www.mi.ras.ru/?l=1","country":"Russia","title":"Steklov Mathematical Institute of the Russian Academy of Science"},
 "recherche scientifique":{"url":"http://www.recherche.gouv.sn/","country":"Senegal","title":"Minist&egrave;re de l&apos;Enseignement sup&eacute;rieur et de la Recherche"},
 "university of science and technology of china":{"url":"en.ustc.edu.cn/","country":"China","title":""},
-"svmf":{"url":"","country":"","title":"VenezuelanSociety of Fluid Mechanics"}, 
+"svmf":{"url":"","country":"","title":"Venezuelan Society of Fluid Mechanics"}, 
 
 }
                                     
