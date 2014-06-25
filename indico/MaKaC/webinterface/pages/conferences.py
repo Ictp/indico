@@ -576,11 +576,11 @@ class WConfDisplayFrame(wcomponents.WTemplated):
                                         })
                                         
                 if "Sponsor(s)" in dict.keys():
-                    cosp = dict["Sponsor(s)"]
-                    for elem in cosp:
+                    sp = dict["Sponsor(s)"]
+                    for elem in sp:
                         for av in available_sponsors.keys():                   
                             if str(elem["familyName"]).lower().find(av) > -1:
-                                cosponsors.append({
+                                sponsors.append({
                                         'imgurl':"/css/ICTP/images/"+av+"_logo.jpg",
                                         'title': av,
                                         'url':available_sponsors[av]
