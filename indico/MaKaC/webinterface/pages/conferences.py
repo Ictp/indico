@@ -461,7 +461,7 @@ class WConfDisplayFrame(wcomponents.WTemplated):
     # Ictp: this will return correct logo path
     def getLogoPath(self, key):
         htdocsDir = Config.getInstance().getHtdocsDir()
-        fname = key.replace(" ","").replace("-","").replace("_","").replace("/","").replace("'","")
+        fname = key.replace(" ","").replace("-","").replace("_","").replace("/","").replace("'","").replace(".","")
         p = htdocsDir + "/css/ICTP/images/sponsor-logo/" + fname
         if os.path.isfile(p + "_logo.jpg"):
             return p + "_logo.jpg"
@@ -572,7 +572,6 @@ class WConfDisplayFrame(wcomponents.WTemplated):
 "sesame":{"url":"http://www.sesame.org.jo/","country":"","title":""}, 
 "infm":{"url":"http://www.cnr.it/sitocnr/IlCNR/Organizzazione/RiformadelCNR/EnticonfluitiCNR/Infm.html","country":"italy","title":""}, 
 "volkswagenstiftung":{"url":"http://www.volkswagenstiftung.de/","country":"germany","title":""}, 
-"exystence":{"url":"http://www.complexityscience.org","country":"","title":""}, 
 "iisi":{"url":"http://www.cs.cornell.edu/annual_report/00-01/www.cis.cornell.edu/iisi","country":"usa","title":""}, 
 "cornell university":{"url":"http://www.cornell.edu/","country":"usa","title":""}, 
 "european commission":{"url":"http://ec.europa.eu/index_en.htm","country":"europe","title":""}, 
@@ -737,7 +736,6 @@ class WConfDisplayFrame(wcomponents.WTemplated):
 "ipm-grid":{"url":"http://cagrid.ipm.ac.ir/","country":"Iran","title":""}, 
 "apctp":{"url":"https://www.apctp.org/main/","country":"Korea","title":""}, 
 "iqoqi":{"url":"http://iqoqi.at/en/","country":"Austria","title":""}, 
-"wrcp":{"url":"http://www.wcrp-climate.org/","country":"Switzerland","title":""}, 
 "start":{"url":"http://start.org/","country":"USA","title":""}, 
 "adglass":{"url":"http://www.adglass.eu/","country":"Germany","title":""}, 
 "intelbiomat":{"url":"http://www.esf.org/index.php?id=4929","country":"France","title":""}, 
@@ -874,6 +872,7 @@ class WConfDisplayFrame(wcomponents.WTemplated):
 "recherche scientifique":{"url":"http://www.recherche.gouv.sn/","country":"Senegal","title":"Minist&egrave;re de l&apos;Enseignement sup&eacute;rieur et de la Recherche"},
 "university of science and technology of china":{"url":"en.ustc.edu.cn/","country":"China","title":""},
 "svmf":{"url":"","country":"","title":"Venezuelan Society of Fluid Mechanics"}, 
+"exystence":{"url":"http://www.complexityscience.org","country":"","title":"EXYSTENCE EC Network of Excellence"}, 
 
 }
                                     
