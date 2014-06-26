@@ -26,7 +26,7 @@ class Serializer(object):
 
     registry = {}
 
-    def __init__(self, pretty=False, **kwargs):
+    def __init__(self, pretty=False, **kwargs):        
         self.pretty = pretty
         self._fileName = None
         self._lastModified = None

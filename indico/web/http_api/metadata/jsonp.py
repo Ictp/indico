@@ -28,7 +28,13 @@ class JSONPSerializer(JSONSerializer):
     _mime = 'application/javascript'
 
     def __init__(self, jsonp='read', **kwargs):
-        super(JSONPSerializer, self).__init__(**kwargs)
+
+        # Ictp: workaround cause jsonp parameter does not work
+        for k in kwargs:
+            if k.find('jQuery') > -1:
+                jsonp = k        
+
+        super(JSONPSerializer, self).__init__(**kwargs)  
         self._prefix = jsonp
 
     def _execute(self, results):
