@@ -29,7 +29,7 @@ class JSONPSerializer(JSONSerializer):
 
     def __init__(self, jsonp='read', **kwargs):
 
-        # Ictp: workaround cause jsonp parameter does not work
+        
         for k in kwargs:
             if k.find('jQuery') > -1:
                 jsonp = k        
@@ -38,6 +38,13 @@ class JSONPSerializer(JSONSerializer):
         self._prefix = jsonp
 
     def _execute(self, results):
-        return "// fetched from Indico\n%s(%s);" % \
+
+        # Ictp: workaround cause jsonp parameter does not work       
+        if self._obj['url'].find('jsonp=') > -1:
+            import urlparse
+            parsed = urlparse.urlparse(self._obj['url'])
+            self._prefix = urlparse.parse_qs(parsed.query)['jsonp'][0]
+
+        return "%s(%s);" % \
                (self._prefix,
                 super(JSONPSerializer, self)._execute(results))

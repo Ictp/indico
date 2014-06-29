@@ -6,6 +6,7 @@
     <head>
         <title>${ page._getTitle() }${ area }</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="author" content=”Giorgio Pieretti, pieretti@ictp.it”>
         <link rel="shortcut icon" type="image/x-icon" href="${ systemIcon('addressBarIcon') }">
 
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
