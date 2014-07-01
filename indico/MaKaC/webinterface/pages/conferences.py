@@ -857,6 +857,7 @@ class WConfDisplayFrame(wcomponents.WTemplated):
 "robert bosch foundation":{"url":"http://www.bosch-stiftung.de/content/language2/html/index.asp","country":"Germany","title":""}, 
 "ugc":{"url":"www.ugc.ac.in/","country":"India","title":""}, 
 
+
 # ONLY TITLES from here.... no logos
 
 "cec":{"url":"http://www.cnr.it","country":"Italy","title":"Gruppo Nazionale Elettronica Quantistica e Plasmi del CNR"}, 
@@ -869,11 +870,10 @@ class WConfDisplayFrame(wcomponents.WTemplated):
 "dyneurbraz":{"url":"http://lmba.math.univ-brest.fr/perso/renaud.leplaideur/dyneurbraz.html","country":"","title":"DynEurBraz"},
 "modphysfrict":{"url":"","country":"","title":"Modeling the Physics of (Nano) Friction"},
 "miras":{"url":"http://www.mi.ras.ru/?l=1","country":"Russia","title":"Steklov Mathematical Institute of the Russian Academy of Science"},
-"recherche scientifique":{"url":"http://www.recherche.gouv.sn/","country":"Senegal","title":"Minist&egrave;re de l&apos;Enseignement sup&eacute;rieur et de la Recherche"},
+"recherchescientifique":{"url":"http://www.recherche.gouv.sn/","country":"Senegal","title":"Minist&egrave;re de l&apos;Enseignement sup&eacute;rieur et de la Recherche"},
 "university of science and technology of china":{"url":"en.ustc.edu.cn/","country":"China","title":""},
 "svmf":{"url":"","country":"","title":"Venezuelan Society of Fluid Mechanics"}, 
 "exystence":{"url":"http://www.complexityscience.org","country":"","title":"EXYSTENCE EC Network of Excellence"}, 
-
 }
                                     
         if roles:
