@@ -506,52 +506,88 @@ class WConfDisplayFrame(wcomponents.WTemplated):
 
 
         # ICTP specific: if POSTER is present, set var    
+        tempDir = Config.getInstance().getSharedTempDir()
+
+        postersDir = tempDir+"/posters"
         poster = None
-        for mat in self._conf.getAllMaterialList():
-            for res in mat.getResourceList():
-                if not(res.isProtected()):
-                    try:
-                        ftype = res.getFileType().lower()
-                        fname = res.getName() or res.getFileName()
-                        fpath = res.getFilePath()
-                        fileURL = str(urlHandlers.UHFileAccess.getURL(res))
-                        if fname.lower().find('poster') > -1 and ftype == 'pdf' and fname.lower().find('list_of_poster') == -1:
-                            img = Image(filename=fpath+'[0]')
-                            img.format = 'jpeg'
-                            img.transform(resize='245')
-                            poster = {  "name":fname , 
-                                         "url": fileURL,
-                                         "folderurl": fileURL+'/../',
-                                         "data":base64.b64encode(img.make_blob())
-                            }  
-                    except Exception as e:
-                        pass
+        if not os.path.isdir(postersDir):
+            os.makedirs(postersDir)
+                    
+        if 1:       
+            for mat in self._conf.getAllMaterialList():
+                for res in mat.getResourceList():
+                    if not(res.isProtected()):
+                        try:
+                            ftype = res.getFileType().lower()
+                            fname = res.getName() or res.getFileName()
+                            fpath = res.getFilePath()
+                            fileURL = str(urlHandlers.UHFileAccess.getURL(res))
+                            if fname.lower().find('poster') > -1 and ftype == 'pdf' and fname.lower().find('list_of_poster') == -1:
+                                ppath = postersDir + "/poster_" + str(self._conf.getId())                                
+                                if os.path.isfile(ppath):
+                                    file = open(ppath, "r")
+                                    data = file.read()
+                                    file.close()
+                                else:
+                                    img = Image(filename=fpath+'[0]')
+                                    img.format = 'jpeg'
+                                    img.transform(resize='245')
+                                    file = open(ppath, "w")
+                                    
+                                    data = base64.b64encode(img.make_blob())
+                                    file.write(data)
+                                    file.close()
+                                poster = {  "name":fname , 
+                                             "url": fileURL,
+                                             "folderurl": fileURL+'/../',
+                                             "data":data
+                                }    
+
+                        except Exception as e:
+                            pass
         p["poster"] = poster
 
 
-        # ICTP specific: if GROUP PHOTO is present, set var    
+        # ICTP specific: if GROUP PHOTO is present, set var
+        photosDir = tempDir+"/photos"
+        if not os.path.isdir(photosDir):
+            os.makedirs(photosDir)   
+             
         photo = None
-        for mat in self._conf.getAllMaterialList():
-            matName = mat.getTitle().lower()
-            for res in mat.getResourceList():
-                if not(res.isProtected()):
-                    try:
-                        ftype = res.getFileType().lower()
-                        fname = res.getName() or res.getFileName()
-                        fpath = res.getFilePath()
-                        fileURL = str(urlHandlers.UHFileAccess.getURL(res))
-                        if ftype == 'jpg':
-                            if matName.find('photo') != -1 or matName.find('picture') != -1 or matName.find('group') != -1:
-                                img = Image(filename=fpath+'[0]')
-                                img.format = 'jpeg'
-                                img.transform(resize='245')
-                                photo = {  "name":fname , 
-                                             "url": fileURL,
-                                             "folderurl": fileURL+'/../',
-                                             "data":base64.b64encode(img.make_blob())
-                                }  
-                    except Exception as e:
-                        pass
+        if 1:
+            for mat in self._conf.getAllMaterialList():
+                matName = mat.getTitle().lower()
+                for res in mat.getResourceList():
+                    if not(res.isProtected()):
+                        try:
+                            ftype = res.getFileType().lower()
+                            fname = res.getName() or res.getFileName()
+                            fpath = res.getFilePath()
+                            fileURL = str(urlHandlers.UHFileAccess.getURL(res))
+                            if ftype == 'jpg':
+                                if matName.find('photo') != -1 or matName.find('picture') != -1 or matName.find('group') != -1:
+                                
+                                    ppath = photosDir + "/photo_" + str(self._conf.getId())                                
+                                    if os.path.isfile(ppath):
+                                        file = open(ppath, "r")
+                                        data = file.read()
+                                        file.close()
+                                    else:
+                                        img = Image(filename=fpath+'[0]')
+                                        img.format = 'jpeg'
+                                        img.transform(resize='245')
+                                        file = open(ppath, "w")
+                                    
+                                        data = base64.b64encode(img.make_blob())
+                                        file.write(data)
+                                        file.close()
+                                    photo = {  "name":fname , 
+                                                 "url": fileURL,
+                                                 "folderurl": fileURL+'/../',
+                                                 "data":data
+                                    }                                   
+                        except Exception as e:
+                            pass
         p["photo"] = photo
         
         # ICTP specific: roles
