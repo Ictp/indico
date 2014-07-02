@@ -83,7 +83,7 @@ from MaKaC.webinterface.general import WebFactory
 from MaKaC.common.TemplateExec import render
 
 # ICTP: added for generating Poster on the fly
-import base64
+import base64, hashlib
 from wand.image import Image, Color
 
 def stringToDate(str):
@@ -470,6 +470,35 @@ class WConfDisplayFrame(wcomponents.WTemplated):
         if os.path.isfile(p + "_logo.gif"):
             return p + "_logo.gif"
         return None    
+        
+        
+    # Ictp: return img cached or save it
+    def getCachedImage(self,cachedFilePath,imgFilePath, format, size):
+        actualMd5 = hashlib.md5(open(imgFilePath, 'rb').read(65535)).hexdigest()                                
+        if os.path.isfile(cachedFilePath):
+            file = open(cachedFilePath, "r")
+            md5 = file.readline()
+            data = file.readline()
+            file.close()
+            if md5.strip() != actualMd5:                                    
+                img = Image(filename=imgFilePath)
+                img.format = format
+                img.transform(resize=size)
+                file = open(cachedFilePath, "w")                                    
+                data = base64.b64encode(img.make_blob())
+                file.write(actualMd5+"\n")
+                file.write(data)
+                file.close()
+        else:
+            img = Image(filename=imgFilePath)
+            img.format = format
+            img.transform(resize=size)
+            file = open(cachedFilePath, "w")                                    
+            data = base64.b64encode(img.make_blob())
+            file.write(actualMd5+"\n")
+            file.write(data)
+            file.close()
+        return data
 
     def getVars(self):
         vars = wcomponents.WTemplated.getVars( self )
@@ -523,24 +552,11 @@ class WConfDisplayFrame(wcomponents.WTemplated):
                             fpath = res.getFilePath()
                             fileURL = str(urlHandlers.UHFileAccess.getURL(res))
                             if fname.lower().find('poster') > -1 and ftype == 'pdf' and fname.lower().find('list_of_poster') == -1:
-                                ppath = postersDir + "/poster_" + str(self._conf.getId())                                
-                                if os.path.isfile(ppath):
-                                    file = open(ppath, "r")
-                                    data = file.read()
-                                    file.close()
-                                else:
-                                    img = Image(filename=fpath+'[0]')
-                                    img.format = 'jpeg'
-                                    img.transform(resize='245')
-                                    file = open(ppath, "w")
-                                    
-                                    data = base64.b64encode(img.make_blob())
-                                    file.write(data)
-                                    file.close()
+                                cachedFilePath = postersDir + "/poster_" + str(self._conf.getId())
                                 poster = {  "name":fname , 
                                              "url": fileURL,
                                              "folderurl": fileURL+'/../',
-                                             "data":data
+                                             "data":self.getCachedImage(cachedFilePath,fpath,'jpeg','245')
                                 }    
 
                         except Exception as e:
@@ -565,27 +581,13 @@ class WConfDisplayFrame(wcomponents.WTemplated):
                             fpath = res.getFilePath()
                             fileURL = str(urlHandlers.UHFileAccess.getURL(res))
                             if ftype == 'jpg':
-                                if matName.find('photo') != -1 or matName.find('picture') != -1 or matName.find('group') != -1:
-                                
-                                    ppath = photosDir + "/photo_" + str(self._conf.getId())                                
-                                    if os.path.isfile(ppath):
-                                        file = open(ppath, "r")
-                                        data = file.read()
-                                        file.close()
-                                    else:
-                                        img = Image(filename=fpath+'[0]')
-                                        img.format = 'jpeg'
-                                        img.transform(resize='245')
-                                        file = open(ppath, "w")
-                                    
-                                        data = base64.b64encode(img.make_blob())
-                                        file.write(data)
-                                        file.close()
+                                if matName.find('photo') != -1 or matName.find('picture') != -1 or matName.find('group') != -1:                                
+                                    cachedFilePath = photosDir + "/photo_" + str(self._conf.getId())  
                                     photo = {  "name":fname , 
                                                  "url": fileURL,
                                                  "folderurl": fileURL+'/../',
-                                                 "data":data
-                                    }                                   
+                                                 "data":self.getCachedImage(cachedFilePath,fpath,'jpeg','245')
+                                    }                                      
                         except Exception as e:
                             pass
         p["photo"] = photo
