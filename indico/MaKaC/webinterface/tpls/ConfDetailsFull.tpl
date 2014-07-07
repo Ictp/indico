@@ -70,7 +70,7 @@
   </div>
   % endif
   
-  % if str(rolesData) != '[]':
+  % if str(rolesData) != []:
   <div class="info_line roles">   
       <span title="${_("Roles")}" class="icon icon-list" aria-hidden="true"></span>
       <div class="rolesContainer"></div>
@@ -87,7 +87,7 @@ ${ actions }
 <script type="text/javascript">
                 
       var fg = $('div.rolesContainer').fieldgrouping();
-      fg.fieldgrouping("setInfo", ${conf.getRoles()});
+      fg.fieldgrouping("setInfo", ${conf.getRolesJS()});
       fg.fieldgrouping("getStructuredInfo");     
 
       $('.chair_list .nomail').qtip({

@@ -917,7 +917,7 @@ class WConfDisplayFrame(wcomponents.WTemplated):
         if roles:
             try:
                 dict = {}
-                for role in eval(roles.replace("false","False").replace("true","True")):
+                for role in roles:
                     dict[role["value"]] = role["child"]
                 if "Organizer(s)" in dict.keys():
                     orgs = dict["Organizer(s)"]
@@ -1156,7 +1156,7 @@ class WConfDetailsBase( wcomponents.WTemplated ):
         vars["conf"] = self._conf
         
         # Ictp       
-        vars["rolesData"] = self._conf.getRoles()
+        vars["rolesData"] = self._conf.getRolesJS()
         
         info = self._conf.getContactInfo()
         vars["moreInfo_html"] = isStringHTML(info)

@@ -311,7 +311,7 @@ class outputGenerator(Observable):
             out.writeTag("organiser", conf.getOrgText())
 
         # ICTP
-        out.writeTag("roles", conf.getRoles())
+        out.writeTag("roles", conf.getRolesJS())
         
         out.openTag("announcer")
         chair = conf.getCreator()
@@ -506,7 +506,7 @@ class outputGenerator(Observable):
             out.writeTag("description","")
 
             # ICTP
-            out.writeTag("roles", conf.getRoles())
+            out.writeTag("roles", conf.getRolesJS())
             
             out.writeTag("type","")
             out.writeTag("displayURL",url)
@@ -517,7 +517,7 @@ class outputGenerator(Observable):
             out.writeTag("title","forthcoming webcast")
 
             # ICTP
-            out.writeTag("roles", conf.getRoles())
+            out.writeTag("roles", conf.getRolesJS())
             
             out.writeTag("description","")
             out.writeTag("type","")

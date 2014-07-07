@@ -165,10 +165,10 @@ class ConferenceRolesModification(ConferenceTextModificationBase):
     Conference roles modification
     """
     def _handleSet(self):
-        self._target.setRoles(self._value)
+        self._target.setRolesJS(self._value)
 
     def _handleGet(self):
-        return self._target.getRoles()
+        return self._target.getRolesJS()
 
 class ConferenceDescriptionModification(ConferenceHTMLModificationBase):
     """
