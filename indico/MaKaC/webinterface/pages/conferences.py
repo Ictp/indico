@@ -821,7 +821,7 @@ class WConfDisplayFrame(wcomponents.WTemplated):
 "cbpf":{"url":"http://portal1.cbpf.br/","country":"Brazil","title":""}, 
 "claf":{"url":"http://www.claffisica.org.br/","country":"Brazil","title":""}, 
 "faperj":{"url":"http://www.faperj.br/","country":"Brazil","title":""}, 
-"american physical society":{"url":"www.aps.org/","country":"USA","title":""}, 
+"american physical society":{"url":"http://www.aps.org/","country":"USA","title":""}, 
 "beijing computational science research center":{"url":"http://www.csrc.ac.cn/","country":"China","title":""}, 
 "chepkoilel university college":{"url":"http://www.mu.ac.ke/index.php/quality-assurance/103-schools-campuses-and-colleges/190-chep-university-college","country":"Kenya","title":""}, 
 "icsu":{"url":"http://www.icsu.org/","country":"France","title":""}, 
