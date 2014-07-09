@@ -1154,10 +1154,7 @@ class WConfDetailsBase( wcomponents.WTemplated ):
         vars["chairs"] = self._conf.getChairList()
         vars["material"] = self._getMaterialHTML()
         vars["conf"] = self._conf
-        
-        # Ictp       
-        vars["rolesData"] = self._conf.getRolesJS()
-        
+                
         info = self._conf.getContactInfo()
         vars["moreInfo_html"] = isStringHTML(info)
         vars["moreInfo"] = info

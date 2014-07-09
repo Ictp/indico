@@ -86,7 +86,7 @@
   </div>
   % endif
   
-  % if str(rolesData) != []:
+  % if conf.getRoles() != []:
   <div class="info_line roles">   
       <span title="${_("Roles")}" class="icon icon-list" aria-hidden="true"></span>
       <div class="rolesContainer"></div>
