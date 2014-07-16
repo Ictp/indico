@@ -291,6 +291,9 @@ width: 840px !important;
 #lastEventButton { display: none; }
 #timezoneSelector { display: none; }
 #languageSelector { display: none; }
+#menuLink_contributionList { display: none !important; }
+
+
 
 .container {
     margin: 0px 10px 30px 10px;

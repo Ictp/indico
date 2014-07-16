@@ -32,15 +32,10 @@ var videoServiceInfo = {};
             </ul>
           </li>
 
-            <li id="menuLink_contributionList" class="menuConfTitle">
-              <a href="contributions">Contribution List</a>
 
-            <ul class="inner">
-            </ul>
-          </li>
 
             <li id="menuLink_authorIndex" class="menuConfTitle">
-              <a href="authors">Author List</a>
+              <a href="authors">Speakers</a>
 
             <ul class="inner">
             </ul>

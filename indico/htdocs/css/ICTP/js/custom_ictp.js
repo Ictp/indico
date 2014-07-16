@@ -1,7 +1,7 @@
 
-$(function(){   
-    $('#menuLink_timetable').find("a").text('Programme');
-});
+// $(function(){   
+//     $('#menuLink_timetable').find("a").text('Programme');
+// });
     
   
 $(window).load(function(){
