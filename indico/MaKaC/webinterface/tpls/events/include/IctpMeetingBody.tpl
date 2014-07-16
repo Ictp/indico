@@ -26,7 +26,7 @@ var videoServiceInfo = {};
 
 
             <li id="menuLink_timetable" class="menuConfTitle selected menuConfSelected">
-              <a href="timetable">Programme</a>
+              <a href="timetable">Program</a>
 
             <ul class="inner">
             </ul>
