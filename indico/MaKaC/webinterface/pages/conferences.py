@@ -481,7 +481,8 @@ class WConfDisplayFrame(wcomponents.WTemplated):
             data = file.readline()
             file.close()
             if md5.strip() != actualMd5:                                    
-                img = Image(filename=imgFilePath)
+                img = Image(filename=imgFilePath, resolution=72)
+                img.compression_quality = 99
                 img.format = format
                 img.transform(resize=size)
                 file = open(cachedFilePath, "w")                                    
@@ -490,7 +491,8 @@ class WConfDisplayFrame(wcomponents.WTemplated):
                 file.write(data)
                 file.close()
         else:
-            img = Image(filename=imgFilePath)
+            img = Image(filename=imgFilePath, resolution=72)
+            img.compression_quality = 99
             img.format = format
             img.transform(resize=size)
             file = open(cachedFilePath, "w")                                    
@@ -931,10 +933,14 @@ class WConfDisplayFrame(wcomponents.WTemplated):
                                 data = None
                                 fn = self.getLogoPath(av)
                                 if fn:
-                                    img = Image(filename=fn)
+                                    ftype = fn.split(".")[-1]
+                                    img = Image(filename=fn, resolution=72)
+                                    img.compression_quality = 99
                                     img.alpha_channel = True
                                     img.background_color = Color('white')
-                                    #img.format = 'jpeg'
+                                    format = 'jpeg'
+                                    if ftype == 'gif': format = 'png'
+                                    img.format = format
                                     img.transform(resize='170')
                                     data = base64.b64encode(img.make_blob())
                                 cosponsors.append({
@@ -952,10 +958,12 @@ class WConfDisplayFrame(wcomponents.WTemplated):
                                 data = None
                                 fn = self.getLogoPath(av)
                                 if fn:
-                                    img = Image(filename=fn)
+                                    ftype = fn.split(".")[-1]
+                                    img = Image(filename=fn, resolution=72)
                                     img.alpha_channel = True
                                     img.background_color = Color('white')
-                                    #img.format = 'jpeg'
+                                    format = 'jpeg'
+                                    if ftype == 'gif': format = 'png'
                                     img.transform(resize='170')
                                     data = base64.b64encode(img.make_blob())
                                 sponsors.append({
