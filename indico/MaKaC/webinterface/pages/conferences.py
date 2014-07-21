@@ -889,7 +889,7 @@ class WConfDisplayFrame(wcomponents.WTemplated):
                             fname = res.getName() or res.getFileName()
                             fpath = res.getFilePath()
                             fileURL = str(urlHandlers.UHFileAccess.getURL(res))
-                            if fname.lower().find('poster') > -1 and ftype == 'pdf' and fname.lower().find('list_of_poster') == -1 and not poster:
+                            if fname.lower().find('poster') > -1 and ftype == 'pdf' and fname.lower().find('list_of_poster') == -1 and fname.lower().find('session') == -1:
                                 cachedFilePath = postersDir + "/poster_" + str(self._conf.getId())
                                 poster = {  "name":fname , 
                                              "url": fileURL,
