@@ -83,7 +83,7 @@ from MaKaC.webinterface.general import WebFactory
 from MaKaC.common.TemplateExec import render
 
 # ICTP: added for generating Poster on the fly
-import base64, hashlib
+import base64
 from wand.image import Image, Color
 import re
 
@@ -474,30 +474,6 @@ class WConfDisplayFrame(wcomponents.WTemplated):
         
         
     # Ictp: return img cached or save it
-#     def getCachedImage(self,cachedFilePath,imgFilePath, format, size):
-#         actualMd5 = hashlib.md5(open(imgFilePath, 'rb').read(65535)).hexdigest()                                
-#         if os.path.isfile(cachedFilePath):
-#             print "FILE CACHE C'E'"
-#             file = open(cachedFilePath, "r")
-#             md5 = file.readline()
-#             data = file.readline()
-#             file.close()
-#             print "MD5 = ",md5.strip()
-#             print "ACTUAL = ",actualMd5
-#             if md5.strip() != actualMd5: 
-#                 print "GENERO......"
-#                 data = self.resizeImage(imgFilePath,size)
-#                 file = open(cachedFilePath, "w")                                                    
-#                 file.write(actualMd5+"\n")
-#                 file.write(data)
-#                 file.close()
-#         else:
-#             data = self.resizeImage(imgFilePath,size)
-#             file = open(cachedFilePath, "w")                                    
-#             file.write(actualMd5+"\n")
-#             file.write(data)
-#             file.close()
-#         return data
     def getCachedImage(self,cachedFilePath,imgFilePath, format, size):
         if os.path.isfile(cachedFilePath):
             file = open(cachedFilePath, "r")
@@ -913,7 +889,7 @@ class WConfDisplayFrame(wcomponents.WTemplated):
                             fname = res.getName() or res.getFileName()
                             fpath = res.getFilePath()
                             fileURL = str(urlHandlers.UHFileAccess.getURL(res))
-                            if fname.lower().find('poster') > -1 and ftype == 'pdf' and fname.lower().find('list_of_poster') == -1:
+                            if fname.lower().find('poster') > -1 and ftype == 'pdf' and fname.lower().find('list_of_poster') == -1 and not poster:
                                 cachedFilePath = postersDir + "/poster_" + str(self._conf.getId())
                                 poster = {  "name":fname , 
                                              "url": fileURL,
