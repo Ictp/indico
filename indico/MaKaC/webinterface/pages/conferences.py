@@ -474,26 +474,43 @@ class WConfDisplayFrame(wcomponents.WTemplated):
         
         
     # Ictp: return img cached or save it
+#     def getCachedImage(self,cachedFilePath,imgFilePath, format, size):
+#         actualMd5 = hashlib.md5(open(imgFilePath, 'rb').read(65535)).hexdigest()                                
+#         if os.path.isfile(cachedFilePath):
+#             print "FILE CACHE C'E'"
+#             file = open(cachedFilePath, "r")
+#             md5 = file.readline()
+#             data = file.readline()
+#             file.close()
+#             print "MD5 = ",md5.strip()
+#             print "ACTUAL = ",actualMd5
+#             if md5.strip() != actualMd5: 
+#                 print "GENERO......"
+#                 data = self.resizeImage(imgFilePath,size)
+#                 file = open(cachedFilePath, "w")                                                    
+#                 file.write(actualMd5+"\n")
+#                 file.write(data)
+#                 file.close()
+#         else:
+#             data = self.resizeImage(imgFilePath,size)
+#             file = open(cachedFilePath, "w")                                    
+#             file.write(actualMd5+"\n")
+#             file.write(data)
+#             file.close()
+#         return data
     def getCachedImage(self,cachedFilePath,imgFilePath, format, size):
-        actualMd5 = hashlib.md5(open(imgFilePath, 'rb').read(65535)).hexdigest()                                
         if os.path.isfile(cachedFilePath):
             file = open(cachedFilePath, "r")
-            md5 = file.readline()
             data = file.readline()
             file.close()
-            if md5.strip() != actualMd5: 
-                data = self.resizeImage(imgFilePath,size)
-                file = open(cachedFilePath, "w")                                                    
-                file.write(actualMd5+"\n")
-                file.write(data)
-                file.close()
         else:
             data = self.resizeImage(imgFilePath,size)
             file = open(cachedFilePath, "w")                                    
-            file.write(actualMd5+"\n")
             file.write(data)
             file.close()
         return data
+
+
 
 
     # Ictp :resize img
@@ -975,14 +992,22 @@ class WConfDisplayFrame(wcomponents.WTemplated):
         vars["sponsors"] = sponsors
         vars["cosponsors"] = cosponsors
 
+        vars['searchBox']= ""
+
         vars["menu"] = WConfDisplayMenu(self._menu).getHTML(p)
 
         dm = displayMgr.ConfDisplayMgrRegistery().getDisplayMgr(self._conf, False)
         format = dm.getFormat()
         vars["bgColorCode"] = format.getFormatOption("titleBgColor")["code"].replace("#","")
         vars["textColorCode"] = format.getFormatOption("titleTextColor")["code"].replace("#","")
+        # Ictp: show searchBox in the left column
+        #vars['searchBox']= ""
 
-        vars['searchBox']= ""
+        
+
+
+
+
         vars["confId"] = self._conf.getId()
         vars["dm"] = dm
         extension_point("fillConferenceHeader", vars)

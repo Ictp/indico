@@ -2,7 +2,9 @@
   <!--Left menu-->
   <div class="conf_leftMenu">
   
-  
+    % if searchBox != '':
+        
+    % endif    
   
     <ul id="outer" class="clearfix">
       % for link in menu.getEnabledLinkList():
