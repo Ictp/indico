@@ -44,7 +44,7 @@ border-right: 1px solid #d8d8d8;
 #ictpLogoPrintVersion { display: none; }
 #logo { padding: 10px 0 0 0; float: left; }
 
-fieldset.searchBox {display: none; }
+
 div.topSecondLevelMenuWrapper { display: none; }
 .az {display: none; }
 
@@ -142,7 +142,32 @@ div.main { padding-bottom: 0; }
 
 .searchBox { margin: 0px 100px 0 0; }
 div#UISearchBox #extraOptions input { width: 138px; }
-div.searchTag { display: none; }
+.searchBox input.button { top: 5px; }
+.searchBox input.textBox { width: 230px; }
+
+div#UISearchBox {
+float: right;
+position: relative;
+}
+div#UISearchLeftBox .searchButton {
+float: right;
+border-left: 1px solid #888;
+width: 28px;
+height: 21px;
+background: #888 url('../images/search.png') 5px 3px no-repeat;
+cursor: pointer;
+}
+div#UISearchLeftBox #searchControls input {
+
+font-weight: normal;
+color: #333;
+}
+div#UISearchLeftBox #searchText {
+width: auto;
+margin-right: 22px;
+height: 21px;
+}
+
 
 .mainNoBreadcrumb { display: none; }
 

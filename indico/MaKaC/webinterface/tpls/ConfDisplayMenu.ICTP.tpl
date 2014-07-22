@@ -1,10 +1,53 @@
+
+
+
 % if menu:
   <!--Left menu-->
   <div class="conf_leftMenu">
   
-    % if searchBox != '':
-        
-    % endif    
+
+  
+
+
+
+
+
+<ul class="search_box">
+      <h3>Search</h3>
+
+        <li>Search in Conferences:</li>
+
+        <li>
+        <form method="get" action="/search" id="searchBoxForm" >
+            <div id="UISearchLeftBox">
+                <div id="searchControls">
+                    <div class="searchButton">
+                    </div>
+                    <input name="p" id="searchText" autocomplete="off" type="text" style="outline: none; background-color: transparent;">
+                    <input type="hidden" name="f" value="title_description">
+            </div>
+
+            </div>
+        </form>
+
+
+        </li>
+    </ul>
+
+    <script type="text/javascript">
+    $(function() {
+        $('.searchButton').click(function() {
+                $('#searchBoxForm').submit();
+        })
+    });
+    </script>
+
+
+
+
+
+
+
   
     <ul id="outer" class="clearfix">
       % for link in menu.getEnabledLinkList():

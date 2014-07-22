@@ -864,6 +864,9 @@ class WConfDisplayFrame(wcomponents.WTemplated):
         vars["supportEmail"] = ""
         vars["supportTelephone"] = ""
 
+
+        vars["searchBox"] = ""
+
         sinfo = self._conf.getSupportInfo()
 
         p = {"menu": self._menu,
@@ -879,26 +882,25 @@ class WConfDisplayFrame(wcomponents.WTemplated):
         poster = None
         if not os.path.isdir(postersDir):
             os.makedirs(postersDir)
-                    
-        if 1:       
-            for mat in self._conf.getAllMaterialList():
-                for res in mat.getResourceList():
-                    if not(res.isProtected()):
-                        try:
-                            ftype = res.getFileType().lower()
-                            fname = res.getName() or res.getFileName()
-                            fpath = res.getFilePath()
-                            fileURL = str(urlHandlers.UHFileAccess.getURL(res))
-                            if fname.lower().find('poster') > -1 and ftype == 'pdf' and fname.lower().find('list_of_poster') == -1 and fname.lower().find('session') == -1:
-                                cachedFilePath = postersDir + "/poster_" + str(self._conf.getId())
-                                poster = {  "name":fname , 
-                                             "url": fileURL,
-                                             "folderurl": fileURL+'/../',
-                                             "data":self.getCachedImage(cachedFilePath,fpath,'jpeg','245')
-                                }    
+                          
+        for mat in self._conf.getAllMaterialList():
+            for res in mat.getResourceList():
+                if not(res.isProtected()):
+                    try:
+                        ftype = res.getFileType().lower()
+                        fname = res.getName() or res.getFileName()
+                        fpath = res.getFilePath()
+                        fileURL = str(urlHandlers.UHFileAccess.getURL(res))
+                        if fname.lower().find('poster') > -1 and ftype == 'pdf' and fname.lower().find('list_of_poster') == -1 and fname.lower().find('session') == -1:
+                            cachedFilePath = postersDir + "/poster_" + str(self._conf.getId())
+                            poster = {  "name":fname , 
+                                         "url": fileURL,
+                                         "folderurl": fileURL+'/../',
+                                         "data":self.getCachedImage(cachedFilePath,fpath,'jpeg','245')
+                            }    
 
-                        except Exception as e:
-                            pass
+                    except Exception as e:
+                        pass
         p["poster"] = poster
 
 
@@ -908,26 +910,25 @@ class WConfDisplayFrame(wcomponents.WTemplated):
             os.makedirs(photosDir)   
              
         photo = None
-        if 1:
-            for mat in self._conf.getAllMaterialList():
-                matName = mat.getTitle().lower()
-                for res in mat.getResourceList():
-                    if not(res.isProtected()):
-                        try:
-                            ftype = res.getFileType().lower()
-                            fname = res.getName() or res.getFileName()
-                            fpath = res.getFilePath()
-                            fileURL = str(urlHandlers.UHFileAccess.getURL(res))
-                            if ftype == 'jpg':
-                                if matName.find('photo') != -1 or matName.find('picture') != -1 or matName.find('group') != -1:                                
-                                    cachedFilePath = photosDir + "/photo_" + str(self._conf.getId())  
-                                    photo = {  "name":fname , 
-                                                 "url": fileURL,
-                                                 "folderurl": fileURL+'/../',
-                                                 "data":self.getCachedImage(cachedFilePath,fpath,'jpeg','245')
-                                    }                                      
-                        except Exception as e:
-                            pass
+        for mat in self._conf.getAllMaterialList():
+            matName = mat.getTitle().lower()
+            for res in mat.getResourceList():
+                if not(res.isProtected()):
+                    try:
+                        ftype = res.getFileType().lower()
+                        fname = res.getName() or res.getFileName()
+                        fpath = res.getFilePath()
+                        fileURL = str(urlHandlers.UHFileAccess.getURL(res))
+                        if ftype == 'jpg':
+                            if matName.find('photo') != -1 or matName.find('picture') != -1 or matName.find('group') != -1:                                
+                                cachedFilePath = photosDir + "/photo_" + str(self._conf.getId())  
+                                photo = {  "name":fname , 
+                                             "url": fileURL,
+                                             "folderurl": fileURL+'/../',
+                                             "data":self.getCachedImage(cachedFilePath,fpath,'jpeg','245')
+                                }                                      
+                    except Exception as e:
+                        pass
         p["photo"] = photo
         
         # ICTP specific: roles
@@ -968,7 +969,8 @@ class WConfDisplayFrame(wcomponents.WTemplated):
         vars["sponsors"] = sponsors
         vars["cosponsors"] = cosponsors
 
-        vars['searchBox']= ""
+        #p['searchBox']= "DEBUG"
+        #vars["searchBox"] = ""
 
         vars["menu"] = WConfDisplayMenu(self._menu).getHTML(p)
 

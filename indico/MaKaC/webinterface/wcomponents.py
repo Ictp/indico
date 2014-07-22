@@ -572,6 +572,7 @@ class WMenuConferenceHeader( WConferenceHeader ):
         vars["matPackURL"]=quoteattr(str(urlMatPack))
         vars["zipIMG"]=quoteattr(str(Configuration.Config.getInstance().getSystemIconURL( "smallzip" )))
 
+
         return vars
 
 class WMenuMeetingHeader( WConferenceHeader ):

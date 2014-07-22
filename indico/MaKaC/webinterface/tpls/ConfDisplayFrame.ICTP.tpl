@@ -32,6 +32,7 @@ data = response.read()
     
     
     <div id="confSectionsBox" class="clearfix">
+
     ${ menu }
 
     ${ body }

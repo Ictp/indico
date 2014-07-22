@@ -27,9 +27,7 @@ else:
 % endif
 <%include file="Announcement.tpl"/>
 
-        % if searchBox != '':
-            ${ searchBox }
-        % endif
+
 
 
 <div class="pageHeader ${"pageHeaderDark" if dark_ else ""}">

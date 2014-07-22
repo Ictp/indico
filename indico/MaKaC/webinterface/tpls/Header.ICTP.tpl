@@ -21,9 +21,7 @@ data = response.read()
 
 ${ data }
 
-        % if searchBox != '':
-            ${ searchBox }
-        % endif        
+        
         
         
  <%include file="SessionBar.ICTP.tpl" args="dark=False"/>
