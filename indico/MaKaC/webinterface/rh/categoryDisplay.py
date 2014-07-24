@@ -394,7 +394,10 @@ class UtilsConference:
         
         # Ictp
         if confData.has_key('roles'):
-            c.setRoles( confData["roles"] )
+            if confData["roles"] == '[]' or not confData["roles"]:
+                c.setRoles([])
+            else:
+                c.setRolesJS( confData["roles"] )
             
         if "shortURLTag" in confData.keys():
             tag = confData["shortURLTag"].strip()

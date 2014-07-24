@@ -711,7 +711,6 @@ class WConfDisplayFrame(wcomponents.WTemplated):
             "scuola normale superiore di pisa":{"url":"http://www.sns.it/","country":"Italy","title":""}, 
             "iugg":{"url":"http://www.iugg.org/","country":"Germany","title":""}, 
             "iitm":{"url":"http://www.tropmet.res.in/","country":"India","title":""}, 
-            "ministry of earth sciences":{"url":"http://dod.nic.in/","country":"India","title":""}, 
             "intel biomat":{"url":"http://www.esf.org/home.html","country":"France","title":""}, 
             "university of tokyo":{"url":"http://www.u-tokyo.ac.jp/en/","country":"Japan","title":""}, 
             "nanjing university":{"url":"http://www.nju.edu.cn/html/eng/1.html","country":"China","title":""}, 
@@ -829,6 +828,8 @@ class WConfDisplayFrame(wcomponents.WTemplated):
                     data = None
                     fn = self.getLogoPath(av)
                     if fn: data = self.resizeImage(fn,'170')
+                    #dd_url = [dd[k]['url'] for k in dd.keys() ]
+                    #if available_sponsors[av]["url"] not in dd_url:
                     dd[pos] = {
                             "data": data,
                             'title': available_sponsors[av]["title"],

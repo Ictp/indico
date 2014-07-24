@@ -3212,26 +3212,32 @@ class Conference(CommonObjectBase, Locatable):
     # Ictp: return only values for indexing
     def getRolesVal( self ):
         val = ''
-        for r in self.getRoles():
-            for c in r['child']:
-                for k in c.keys():
-                    if k != 'id':
-                        val += ' ' + c[k]
+        if self.getRoles():
+            for r in self.getRoles():
+                for c in r['child']:
+                    for k in c.keys():
+                        if k != 'id':
+                            val += ' ' + c[k]
+        else:
+            return ''
         try:
-            return unicode(val)
+            return unicode(val).encode('ascii', 'xmlcharrefreplace')
         except:
             return ''
 
     # Ictp            
     def setRoles( self, roles ):
         """ save roles """
+        if type(roles).__name__ == 'str':
+            roles = eval(roles)
         self._roles = roles
 
     # Ictp            
     def setRolesJS( self, roles ):
         """ save roles as string """
         r = unicode(roles.replace('true','True').replace('false','False'), "UTF-8")       
-        self.setRoles(eval(r.encode('ascii', 'xmlcharrefreplace')))
+        ev = eval(r.encode('ascii', 'xmlcharrefreplace'))
+        self.setRoles(ev)
 
 
     def appendChairmanText( self, newText ):

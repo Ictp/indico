@@ -85,7 +85,7 @@ class RHRolesManagement( admins.RHAdminBase ):
         if 'roles' in self._params:
             # save Roles in default Conference
             dconf = conference.CategoryManager().getDefaultConference()   
-            dconf.setRoles(self._params['roles']) 
+            dconf.setRolesJS(self._params['roles']) 
             minfo = info.HelperMaKaCInfo.getMaKaCInfoInstance()    
             minfo.setDefaultConference(dconf)
         p = adminPages.WPRoleManagement( self, self._params )
