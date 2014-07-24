@@ -6,7 +6,7 @@
   
 $(function(){  
 
-    $('#menuLink_timetable').find("a").text('Program');
+    $('#menuLink_timetable').find("a").text('Programme');
     $('#menuLink_authorIndex').find("a").text('Speakers');
 
     // search for APPLICATION FORM 
