@@ -349,3 +349,5 @@ div.meetingEventSubHeader { display: none; }
 .category-content { max-width: none; }
 .eventList h4 { margin-bottom: 0.5em; }
 .eventList li .today { padding-left: 0px; }
+
+a.material { height: auto !important; }

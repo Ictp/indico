@@ -121,6 +121,8 @@ var videoServiceInfo = {};
 
             % if getItemType(item) == 'Session':
                 <%include file="Session.ICTP.tpl" args="item=item, parent=conf, minutes=minutes"/>
+            % elif getItemType(item) == 'Contribution':
+                <%include file="Contribution.ICTP.tpl" args="item=item, parent=conf, minutes=minutes"/>    
             % else:
                 <%include file="${getItemType(item)}.tpl" args="item=item, parent=conf, minutes=minutes"/>
             % endif
