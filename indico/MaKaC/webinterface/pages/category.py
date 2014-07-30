@@ -54,6 +54,13 @@ from indico.modules import ModuleHolder
 from indico.modules.upcoming import WUpcomingEvents
 from MaKaC.user import Group
 
+# ICTP: import availableKeywords:
+try:
+    from indico.ext.search.repozer.options import availableKeywords
+except:
+    availableKeywords = [] 
+    
+
 class WPCategoryBase ( main.WPMainBase ):
 
     def __init__( self, rh, categ ):
@@ -1119,6 +1126,9 @@ class WConferenceCreation( wcomponents.WTemplated ):
         # Ictp
         dconf = conference.CategoryManager().getDefaultConference()  
         vars["rolesData"] = dconf.getRoles()
+        
+        # ICTP: add predefined keywords to select from
+        vars["availableKeywords"] = availableKeywords
         
         return vars
 

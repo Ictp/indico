@@ -1914,7 +1914,8 @@ class WConfModifMainData(wcomponents.WTemplated):
 
         # Ictp
         vars["rolesData"] = self._conf.getRoles()
-        loc = self._conf.getLocation()
+        loc = self._conf.getLocation()       
+        
         
         room = self._conf.getRoom()
         vars["currentLocation"] = { 'location': loc.getName() if loc else "",

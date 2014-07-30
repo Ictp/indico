@@ -351,3 +351,10 @@ div.meetingEventSubHeader { display: none; }
 .eventList li .today { padding-left: 0px; }
 
 a.material { height: auto !important; }
+
+.addKeywordButton {
+    font-size: 8pt; 
+    color: rgb(255, 255, 255); 
+    font-family: verdana; 
+    background-color: rgb(0, 102, 153);
+}
