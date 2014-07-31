@@ -34,10 +34,13 @@
                     % else:
                         <div>
                         % if resource.getFileType() == 'mp4':
-                            <video class="materialVideo" > 
-                              <source src="${fileAccessURLGen(resource)}" type="video/mp4">
-                                "Your browser does not support HTML5 video."
-                            </video>
+                            <div style="display: inline-block;">
+                                <video id="${resource.getFileName()}" class="materialVideo" > 
+                                  <source src="${fileAccessURLGen(resource)}" type="video/mp4">
+                                    "Your browser does not support HTML5 video."
+                                </video>
+                                <br/><a id="resize_${resource.getFileName()}" href="javascript:resizeVideo('${resource.getFileName()}')" style="float:right;">Bigger size</a>
+                            </div>    
                         % endif
 
                             <div class="materialData">
@@ -75,12 +78,25 @@
      });
 
 
-$(".materialVideo").mouseenter(function() {
-    $('.materialVideo').attr('controls',true);
-}).mouseleave(function(){
-   $('.materialVideo').attr('controls',false);
-});
+    $(".materialVideo").mouseenter(function() {
+        $('.materialVideo').attr('controls',true);
+    }).mouseleave(function(){
+       $('.materialVideo').attr('controls',false);
+    });
 
+    function resizeVideo(name) {
+        v = document.getElementById(name);
+        l = document.getElementById('resize_'+name);
+        var width = v.offsetWidth;
+        if (width == 250) {
+            v.style.width = '100%';
+            l.innerHTML = "Smaller size";
+        } else {
+            v.style.width = '250px';
+            l.innerHTML = "Bigger size";
+        };
+            
+    };
 </script>
 
 
