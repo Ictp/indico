@@ -481,7 +481,36 @@ class WConfDisplayFrame(wcomponents.WTemplated):
         if os.path.isfile(p + "_logo.gif"):
             return p + "_logo.gif"
         return None    
+    
+    # Ictp
+    def getSponsorData(self, key):
+        img = None
+        title = ''
+        url = ''
+        record = available_sponsors[key]
+        if record.has_key('title'): title = record["title"]
+        if record.has_key('url'): title = record["url"]
+        img = self.getLogoPath(key)
+        # check for specific date-related logos info
+        if record.has_key('logos'):
+            htdocsDir = Config.getInstance().getHtdocsDir()
+            today = int(time.strftime("%Y%m%d"))
+            for logo in record['logos']:
+                try:
+                    sdate = int(logo['sdate'])
+                    edate = int(logo['edate'])
+                    fname = str(logo['filename'])
+                    if sdate <= today and edate >=today:
+                        new_img = htdocsDir + "/css/ICTP/images/sponsor-logo/" + fname   
+                        if os.path.isfile(new_img): img = new_img
+                except:
+                    pass
+                
+            
+        return img, title, url
         
+
+          
         
     # Ictp: return img cached or save it
     def getCachedImage(self,cachedFilePath,imgFilePath, format, size):
@@ -521,15 +550,12 @@ class WConfDisplayFrame(wcomponents.WTemplated):
             for av in available_sponsors.keys(): 
                 pos = str(elem["familyName"]).lower().find(av)                  
                 if pos != -1:
-                    data = None
-                    fn = self.getLogoPath(av)
-                    if fn: data = self.resizeImage(fn,'170')
-                    #dd_url = [dd[k]['url'] for k in dd.keys() ]
-                    #if available_sponsors[av]["url"] not in dd_url:
+                    img, title, url = self.getSponsorData(av)
+                    if img: img = self.resizeImage(img,'170')
                     dd[pos] = {
-                            "data": data,
-                            'title': available_sponsors[av]["title"],
-                            'url': available_sponsors[av]["url"]
+                            "data": img,
+                            'title': title,
+                            'url': url
                     }
         return dd
 
