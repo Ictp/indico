@@ -361,3 +361,10 @@ a.material { height: auto !important; }
 
 
 .sis { color: red; }
+
+.materialMainContent { width: auto; }
+.materialVideo { width: 250px; }
+.materialData { display: inline-block; margin-top:0px;padding-left: 20px; vertical-align: top;}
+
+.materialItem li { border-bottom: 1px solid lightgrey; padding-bottom: 10px; padding-top: 10px; }
+.resourceDetail li { border: none; padding: 0;}

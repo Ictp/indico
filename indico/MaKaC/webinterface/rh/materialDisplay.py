@@ -55,25 +55,29 @@ class RHMaterialDisplayCommon:
         # material pages should not be cached, since protection can change
         self._disableCaching()
 
-        if len(self._material.getResourceList()) == 1:
-            res = self._material.getResourceList()[0]
 
-            self._notify('materialDownloaded', res)
+        # Ictp: I want the same behavior on Material display
+        return self._processManyMaterials()
 
-            if isinstance(res, conference.Link):
-                url = res.getURL()
-                if url.find(".wmv") != -1:
-                    urlwmv = urlHandlers.UHVideoWmvAccess().getURL(res)
-                    self._redirect( urlwmv )
-                elif url.find(".flv") != -1 or url.find(".f4v") != -1 or url.find("rtmp://") != -1:
-                    urlflash = urlHandlers.UHVideoFlashAccess().getURL(res)
-                    self._redirect(urlflash)
-                else:
-                    self._redirect(res.getURL())
-            elif isinstance(res, conference.LocalFile):
-                self._redirect(urlHandlers.UHFileAccess.getURL( res ))
-        else:
-            return self._processManyMaterials()
+#         if len(self._material.getResourceList()) == 1:
+#             res = self._material.getResourceList()[0]
+# 
+#             self._notify('materialDownloaded', res)
+# 
+#             if isinstance(res, conference.Link):
+#                 url = res.getURL()
+#                 if url.find(".wmv") != -1:
+#                     urlwmv = urlHandlers.UHVideoWmvAccess().getURL(res)
+#                     self._redirect( urlwmv )
+#                 elif url.find(".flv") != -1 or url.find(".f4v") != -1 or url.find("rtmp://") != -1:
+#                     urlflash = urlHandlers.UHVideoFlashAccess().getURL(res)
+#                     self._redirect(urlflash)
+#                 else:
+#                     self._redirect(res.getURL())
+#             elif isinstance(res, conference.LocalFile):
+#                 self._redirect(urlHandlers.UHFileAccess.getURL( res ))
+#         else:
+#             return self._processManyMaterials()
 
 
 class RHMaterialDisplay( RHMaterialDisplayBase, RHMaterialDisplayCommon ):
