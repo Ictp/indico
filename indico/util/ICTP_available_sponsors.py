@@ -17,7 +17,7 @@ available_sponsors = {
 "infn":{"url":"http://www.infn.it","country":"italy"}, 
 "(nim)":{"url":"http://www.nano-initiative-munich.de/","country":"germany"}, 
 "(cens)":{"url":"http://www.cens.de/","country":"germany"}, 
-"sissa":{"url":"http://www.sissa.it/","country":"italy","logos":[{"filename":"icmr_logo.jpg","sdate":"20140701","edate":"20140710"},{"filename":"ictp_logo.jpg","sdate":"20140720","edate":"20140810"}] }, 
+"sissa":{"url":"http://www.sissa.it/","country":"italy"}, 
 "twas":{"url":"http://www.twas.org/","country":"italy"}, 
 "(elettra)":{"url":"http://www.elettra.trieste.it/","country":"italy"}, 
 "sesame":{"url":"http://www.sesame.org.jo/","country":""}, 
