@@ -34,7 +34,7 @@
           ${location}
         </div>
       % if room:
-        <div class="room text">${room}</div>
+        <div class="room text nohtml">${room}</div>
       % endif
       % if address:
         <div class="address text nohtml">${address}</div>
