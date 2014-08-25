@@ -15,11 +15,12 @@
  * along with Indico; if not, see <http://www.gnu.org/licenses/>.
  */
 
-
+% if (IndicoGlobalVars.isUserAuthenticated)
 if(!window.indicoOfflineSite) {
     include(ScriptRoot + "ckeditor/add_url.patch.js");
     include(ScriptRoot + "ckeditor/ckeditor.js");
 }
+% endif
 
 var indicoSource = null;
 var indicoRequest = null;

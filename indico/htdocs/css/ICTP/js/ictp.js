@@ -44,7 +44,8 @@ jQuery.extend({
     }
   });
 
-$(function(){   
+$(function(){ 
+  
   var deobfuscateEmails = function(context){
     var nodes = context == null? $("a.js_emailLink"): $("a.js_emailLink", context);
     nodes.each(function(e){
@@ -112,6 +113,8 @@ $(function(){
       }
   }
   
+  
+  
   /* toggler definition */ 
   if(typeof $.toggler != 'undefined'){   
     $.toggler({
@@ -132,55 +135,9 @@ $(function(){
       imageHidden: "http://www.ictp.it/images/arrow_bottom.png",    
       effectTime: 500
     }); 
-    /*
-    
-    $.toggler({
-      selector: "#thirdLevelMenu li.selected > a, #thirdLevelMenu li.selectedParent > a",
-      showText: "Show links",
-      hideText: "Close links",
-      useImage: true,
-      imagePosition: "left",
-      imageShown: "/images/menuArrowBottom.png",
-      imageHidden: "/images/menuArrowRight.png",    
-      effectTime: 500,
-      hideByDefault: false      
-    });  
-*/    
   }
 
-  /* scrollers definition */
-  /*if(typeof $.scroller != 'undefined'){
-    
-    $.scroller({
-      autoScroll: true,
-      selectorId: "js_scrollNews-",
-      disabledNavClass: "last",
-      fixBoxesHeight: 100,
-      hideByDefault: false,
-      transitionMethod: function(itemToHide, itemToShow, effectTime, cb){
-        var area   = itemToHide.parents('.newsToolArea');
-        area.css({
-          position: 'relative',
-          top: 0,
-          left: 0,
-          overflow: 'hidden',
-          height: 100 + 'px',
-          width: '100%'
-        });
-        var slider = itemToHide.parents('.newsToolSlide');
-        slider.css({
-          position: 'absolute',
-          height: 1000
-        });        
-        
-        slider.animate({
-          top: -(itemToShow.outerHeight(true) * itemToShow.data('index')) + 'px',
-          left: 0     
-        }, effectTime, cb);
-      }      
-    });  
-  }*/
-	
+
 	  if(typeof $('.newsToolArea').newsScroller != 'undefined'){
 		  $('.newsToolArea').newsScroller({    
 			outerContainerClass: 'newsToolArea',
@@ -437,6 +394,30 @@ $(function(){
       $("#js_searchButton").click();
     }
   }  
+  
+  
+  
+    $('#menuLink_timetable').find("a").text('Programme');
+    $('#menuLink_authorIndex').find("a").text('Speakers');
+
+    // search for APPLICATION FORM 
+    var af = $('a:contains("application form")').attr('href');
+    if (af) {
+        $("#menuLink_authorIndex").append('<li id="menuLink_applyHere" class="menuConfTitle"><a href="'+af+'">Apply here</a></li>');
+    }
+
+    // search for PARTICIPANT LIST
+    var pl = $('a:contains("participant")').attr('href');
+    if (pl) {
+        $("#menuLink_authorIndex").append('<li id="menuLink_participantsList" class="menuConfTitle"><a href="'+pl+'">Participants list</a></li>');
+    }
+
+    // add PRACTICAL INFO
+    $("ul#outer").append('<li id="menuLink_Practical info" class="menuConfTitle"><a href="http://www.ictp.it/visit-ictp/pre-arrival-guide.aspx" target="_blank">Practical info</a></li>');
+
+
+  
+  
 });
     
 // fixes webkit dialog positioning    

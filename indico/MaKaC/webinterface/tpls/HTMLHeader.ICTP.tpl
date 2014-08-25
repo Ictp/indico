@@ -88,9 +88,7 @@
             var searchEngineUrl = "";
             var searchPageUrl = "http://www.ictp.it/search.aspx";
         </script>
-        <script type="text/javascript" async="" src="http://www.google-analytics.com/ga.js"></script>        
         <script type="text/javascript" src="/css/ICTP/js/ictp.js?2"></script>
-        <script type="text/javascript" src="/css/ICTP/js/custom_ictp.js"></script>
         
         
         
