@@ -12,27 +12,23 @@
 
 
 
-<ul class="search_box">
-      <h3>Search</h3>
-
-        <li>Search in Conferences:</li>
-
-        <li>
+<div class="search_box type1_box">
+    <h3>Search</h3>
+    <div class="type1_box_content">
+        <div>Search in Conferences:</div>
+    
         <form method="get" action="/search" id="searchBoxForm" >
             <div id="UISearchLeftBox">
                 <div id="searchControls">
-                    <div class="searchButton">
-                    </div>
                     <input name="p" id="searchText" autocomplete="off" type="text" style="outline: none; background-color: transparent;">
-                    <input type="hidden" name="f" value="title_description">
+                    <div class="searchButton"></div>
+
             </div>
 
             </div>
         </form>
-
-
-        </li>
-    </ul>
+    </div>
+</div>
 
     <script type="text/javascript">
     $(function() {
@@ -126,15 +122,19 @@
     
     
     % if not support_info.isEmpty():
-    <ul class="support_box">
+    <div class="type1_box">
       <h3>${support_info.getCaption()}</h3>
       % if support_info.hasEmail():
+      <div class="type1_box_content">
         % for email in support_info.getEmail().split(','):
+          <ul>
           <li>
             <span class="icon icon-mail" aria-hidden="true"></span>
             <a href="mailto:${email}?subject=${event.getTitle() | h}"> ${email}</a>
           </li>
+          </ul>
         % endfor
+      </div>
       % endif
 
       % if support_info.hasTelephone():
@@ -143,7 +143,7 @@
           <a href="tel:${support_info.getTelephone().replace(' ', '')}"> ${support_info.getTelephone()}</a>
         </li>
       % endif
-    </ul>
+    </div>
     % endif
     
     

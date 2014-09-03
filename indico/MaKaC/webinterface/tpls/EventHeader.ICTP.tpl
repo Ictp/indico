@@ -33,6 +33,10 @@ else:
 <div class="pageHeader ${"pageHeaderDark" if dark_ else ""}">
 
     
+  <div id="belowHeaderBar">
+    
+    
+    
 
     <div class="eventHeaderButtonBar" >
 
@@ -61,9 +65,7 @@ else:
                style="background-image: url(${ systemIcon('last_arrow') })"></a>
         % endif
 
-        % if showPrintButton or showMoreButton or showFilterButton:
-            <div class="separator"></div>
-        % endif
+
 
     % endif
 
@@ -122,6 +124,7 @@ else:
         </script>
     % endif
 
+  </div>
 </div>
 
 

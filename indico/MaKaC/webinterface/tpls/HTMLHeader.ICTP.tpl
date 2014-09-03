@@ -78,22 +78,44 @@
         
         
         <!-- ICTP specific -->
-        <link rel="stylesheet" type="text/css" href="http://www.ictp.it/css/common.css?12">
-        <link rel="stylesheet" type="text/css" href="/css/ICTP/css/Default.css">
-
+        <link rel="stylesheet" type="text/css" href="/css/ICTP/css/Default.css" />
         <link rel="stylesheet" href="/css/ICTP/css/printer.css" type="text/css" media="print" />        
 
-        <script type="text/javascript">
-            var isHomepage = true;
-            var searchEngineUrl = "";
-            var searchPageUrl = "http://www.ictp.it/search.aspx";
-        </script>
-        <script type="text/javascript" src="/css/ICTP/js/ictp.js?2"></script>
+        <link rel="stylesheet" type="text/css" href="http://ictp3.promoscience.com/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="http://ictp3.promoscience.com/css/bootstrap-theme.css" />
+        <link rel="stylesheet" type="text/css" href="http://ictp3.promoscience.com/css/ictp.css" />
+        <link rel="stylesheet" type="text/css" href="/css/ICTP/css/font-awesome.min.css" />                                                                 
+        <style>.nav>li { float: left; }</style>
+        
+        
+        <script type="text/javascript" src="http://ictp3.promoscience.com/scripts/jquery.mobile.touch.min.custom.js"></script>
+        
+
+
+        <script type="text/javascript" src="/css/ICTP/js/ictp.js"></script>
+
+        
+        
         
         
         
     </head>
     <body data-user-id="${ user.getId() if user else 'null' }">
+    
+        <%
+import urllib2
+response = urllib2.urlopen("http://ictp3.promoscience.com/headercalendar.aspx")
+headers = response.info()
+data = response.read()
+#<img src="http://indico-int-2.ictp.it/css/ICTP/images/header_test.png"  style="display:block;"  />
+%>
+
+
+
+        
+
+  ${ data }    
+    
         ${ page._getWarningMessage() }
     % if analyticsActive and analyticsCodeLocation == "body":
         ${analyticsCode}

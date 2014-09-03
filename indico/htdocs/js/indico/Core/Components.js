@@ -15,11 +15,9 @@
  * along with Indico; if not, see <http://www.gnu.org/licenses/>.
  */
 
-if($("#userSettings").length > 0) { // If logged in
-    if(!window.indicoOfflineSite) {
-        include(ScriptRoot + "ckeditor/add_url.patch.js");
-        include(ScriptRoot + "ckeditor/ckeditor.js");
-    }
+if(!window.indicoOfflineSite) {
+    include(ScriptRoot + "ckeditor/add_url.patch.js");
+    include(ScriptRoot + "ckeditor/ckeditor.js");
 }
 
 var indicoSource = null;

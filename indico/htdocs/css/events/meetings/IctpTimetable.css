@@ -180,9 +180,8 @@ div.datePlace > div.timezone {
 /* ------Main content------ */
 
 #confSectionsBox {
-	padding-top:30px;
-	width: 950px;
-	margin: 0 auto;
+	padding-top: 30px;
+
 }
 
 /* ------Menu------ */
@@ -719,7 +718,7 @@ ul#quick_links_list { margin: 0; padding: 0; }
 div.sessionBar {margin-top: -30px;}
 
 
-#confSectionsBox { display: table; }
+
 
 
 .confBodyBox { 
@@ -788,55 +787,7 @@ border: 1px solid #ccc;
     display: table-cell;
 }
 
-.support_box h3 { font-size: 1.2em; font-family: verdana,arial,sans-serif; margin: 0 0 5px 0;}
-
-.organizers_box {
-    margin-top: 10px !important;
-    width: 100%;
-    color: #aaa;
-    background: #f6f6f6;
-    border: 1px solid #ccc;
-}
-.organizers_box h3 {
-    color: #f3f3f3;
-    background: #1a64a0;
-    margin: 0 0 5px 0;
-    padding: 5px 5px 5px 10px;
-    font-weight: normal;
-    font-size: 1.2em;
-    font-family: verdana,arial,sans-serif;
-}
-
-.organizers_box li {
-    margin: 0 5px 5px 10px;
-    vertical-align: middle;
-}
-
-
-
-
-.sponsor_box {
-    margin-top: 10px !important;
-    width: 100%;
-    color: #aaa;
-    background: white;
-    border: 1px solid #ccc;
-}
-.sponsor_box h3 {
-    color: #f3f3f3;
-    background: #1a64a0;
-    margin: 0 0 5px 0;
-    padding: 5px 5px 5px 10px;
-    font-weight: normal;
-    font-size: 1.2em;
-    font-family: verdana,arial,sans-serif;
-}
-
-.sponsor_box li {
-    margin: 0 5px 5px 10px;
-    padding: 5px 0 10px 0;
-    vertical-align: middle;
-}
+.material_box { padding-top: 10px; }
 
 
 
@@ -860,7 +811,6 @@ ul#quick_links_list { margin: 0; padding: 0; }
 div.sessionBar {margin-top: -30px;}
 
 
-#confSectionsBox { display: table; }
 
 
 .confBodyBox { 
@@ -884,4 +834,4 @@ div.meetingEventBody { display: table-cell; padding: 10px 0px 20px 20px; }
 
 .materialGroup { max-width: 200px; }
 .materialList a.material { height: auto; }
-span.materialGroup { white-space: initial; }
+span.materialGroup { white-space: initial; float: none; display: inline-block;}

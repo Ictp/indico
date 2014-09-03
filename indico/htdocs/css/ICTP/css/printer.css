@@ -1,3 +1,12 @@
 #mainMenuWrapper, .pageHeader, #searchBoxForm { display: none; }
 .conf_leftMenu.timetable { display: none; }
+.search_box, #outer { display: none; }
 div.meetingEventBody { padding-top: 0; }
+
+.list-inline.main-menu, ul.nav.navbar-nav { display:none; }
+.header-logo, .icon1, .icon2 {display: none !important; }
+.visible-print.iconLogo { display: block !important;}
+.visible-print.icon1link, .visible-print.icon2link { display: block !important; float: right !important;}
+
+
+a:link:after, a:visited:after { content: "" !important; }  

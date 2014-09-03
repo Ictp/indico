@@ -559,33 +559,6 @@ ul.programme li .description {
 }
 
 
-.search_box {
-    margin-top: 0px !important;
-    margin-bottom: 10px !important;
-    width: 100%;
-    color: #aaa;
-    background: #f6f6f6;
-    border: 1px solid #ccc;
-}
-
-.search_box > h3 {
-    margin: 10px;
-    color: #f3f3f3;
-    background: #1a64a0;
-    margin: 0 0 5px 0;
-    padding: 5px;
-    font-weight: normal;
-    font-size: 1.2em; 
-    font-family: verdana,arial,sans-serif;
-}
-
-.search_box > li {
-    white-space: nowrap;
-    margin: 0 5px 5px 10px;
-    vertical-align: middle;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
 
 
 
@@ -607,67 +580,9 @@ border: 1px solid #ccc;
     width: 100%;
 }
 
-.blue {
-    color: #1a64a0;
-    padding-top: 15px;
-}    
-
-.conf_rightMenu {
-    width: 200px;
-    vertical-align: top;
-    padding-top: 10px;
-    display: table-cell;
-}
-
-.support_box h3 { font-size: 1.2em; font-family: verdana,arial,sans-serif; margin: 0 0 5px 0;}
-
-.organizers_box {
-    margin-top: 10px !important;
-    width: 100%;
-    color: #aaa;
-    background: #f6f6f6;
-    border: 1px solid #ccc;
-}
-.organizers_box h3 {
-    color: #f3f3f3;
-    background: #1a64a0;
-    margin: 0 0 5px 0;
-    padding: 5px 5px 5px 10px;
-    font-weight: normal;
-    font-size: 1.2em;
-    font-family: verdana,arial,sans-serif;
-}
-
-.organizers_box li {
-    margin: 0 5px 5px 10px;
-    vertical-align: middle;
-}
 
 
 
-
-.sponsor_box {
-    margin-top: 10px !important;
-    width: 100%;
-    color: #aaa;
-    background: white;
-    border: 1px solid #ccc;
-}
-.sponsor_box h3 {
-    color: #f3f3f3;
-    background: #1a64a0;
-    margin: 0 0 5px 0;
-    padding: 5px 5px 5px 10px;
-    font-weight: normal;
-    font-size: 1.2em;
-    font-family: verdana,arial,sans-serif;
-}
-
-.sponsor_box li {
-    margin: 0 5px 5px 10px;
-    padding: 5px 0 10px 0;
-    vertical-align: middle;
-}
 
 
 
@@ -680,7 +595,6 @@ div.pageHeader {
     height: 30px;
     width: 100%;
 }
-.eventHeaderButtonBar { padding: 3px 0 !important; }
 
 ul#quick_links_list { margin: 0; padding: 0; }
 

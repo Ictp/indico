@@ -16,16 +16,16 @@ headers = response.info()
 data = response.read()
 %>
 
-<div class="conf clearfix" itemscope itemtype="http://schema.org/Event">
-    <div class="confheader clearfix" ${ bgColorStyle }>
+<div class="conf" itemscope itemtype="http://schema.org/Event">
+    <div class="confheader" ${ bgColorStyle }>
 
-            ${ data }
+            
 
         
         % if simpleTextAnnouncement:
             <div class="simpleTextAnnouncement">${ simpleTextAnnouncement }</div>
         % endif
-    </div>
+
 
     
     
@@ -43,17 +43,19 @@ data = response.read()
         <div class="conf_rightMenu">
 
             % if organizers:
-            <ul class="organizers_box">
+            <div class="type1_box">
                 <h3>Organizers</h3>
-                <li>
+                <div class="type1_box_content">
                     ${organizers}
-                </li>
-            </ul>
+                </div>
+            </div>
             % endif  
 
             % if sponsors:
-            <ul id="sponsors_box" class="sponsor_box">
+            <div id="sponsors_box" class="type1_box">
                 <h3>Sponsors</h3>
+                <div class="type1_box_content">
+                <ul>
                 % for sp in sponsors:
                 <li>
                     % if sp['url']:
@@ -69,12 +71,16 @@ data = response.read()
                     % endif                  
                 </li>
                 % endfor
-            </ul>
+                </ul>
+                </div>
+            </div>
             % endif  
 
             % if cosponsors:
-            <ul id="cosponsors_box" class="sponsor_box">
+            <div id="cosponsor_box" class="type1_box">
                 <h3>Co-sponsors</h3>
+                <div class="type1_box_content">
+                <ul>
                 % for cosp in cosponsors:
                 <li>
                     % if cosp['url']:
@@ -90,7 +96,9 @@ data = response.read()
                     % endif                  
                 </li>
                 % endfor
-            </ul>
+                </ul>
+                </div>
+            </div>
             % endif
 
          
@@ -103,4 +111,8 @@ data = response.read()
 
 
     </div>
+    
+    
+    </div>    
+    
 </div>

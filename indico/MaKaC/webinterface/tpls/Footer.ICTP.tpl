@@ -26,12 +26,13 @@ else:
 
 <%
 import urllib2
-response = urllib2.urlopen("http://www.ictp.it/footercalendar.aspx")
+response = urllib2.urlopen("http://ictp3.promoscience.com/footercalendar.aspx")
 headers = response.info()
 data = response.read()
+#<img src="http://indico-int-2.ictp.it/css/ICTP/images/footer_test.png"  style="display:block;"  />
 %>
 
-${ data }
+ ${ data }
 
 
 

@@ -26,7 +26,7 @@
 
 body {
 margin: 0;
-background: transparent;
+background: transparent !important;
 overflow-y: scroll;
 color: #696969;
 }
@@ -49,11 +49,10 @@ div.topSecondLevelMenuWrapper { display: none; }
 .az {display: none; }
 
 div.pageHeaderMainPage {
-    background-color: white;
+    background-image: none;
+    background-color: #2556a2;
 }
-div.headerTop {
-    background: url('/css/ICTP/images/headerBg6.png') #204594 0px 0px no-repeat;
-}
+
 
 
 div.VeryShortPeopleListDiv {
@@ -65,9 +64,10 @@ div.wrapper {
     min-height: inherit;
     margin-left: auto;
     margin-right: auto;
+    
 }
 
-
+.banner * { box-sizing: content-box; }
 
 
 
@@ -93,23 +93,24 @@ div.serviceMenuWrapper #quick_links_list {
 }
 div.sessionBar {
     height: 30px;
+    margin-top: 0px; 
 }
 
 div.sessionBar a:link, div.sessionBar .fakeLink {
 text-align: right;
-    color: white;
+    color: #2556a2 !important;
 }
 
 div.sessionBar li {
-    border-right: 0;
-    border-left: 1px solid #C7C7C7;
-    padding: 4px 17px;
-    height: 23px;
+    border: none;
+
 }
 
 div.sessionBar .links
 {
-    background: transparent url(../images/sprites.png) repeat-x scroll 0 0px;
+    background-image: none;
+    background-color: transparent;
+    border: none;
     margin-left: 25px;
     padding-top: 0px;
     height: 30px;
@@ -125,19 +126,22 @@ div.corner { display: none; }
 
 .category-container { overflow: visible; }
 
-div.main { padding-bottom: 0; }
+div.main { padding-bottom: 0;}
 
 #footer {
-    width: 950px;
+    #width: 950px;
     height: auto;
-    background: #214694;
+    #background: #214694;
+    background: transparent;
     color: white;
+    padding: 0;
 }
 
 .content {
-    width: 918px;
+    #width: 918px;
     border: 0;
 }
+.topBar { padding-left: 10px; padding-right: 10px; }
 .sideBar .content { background: none; }
 
 .searchBox { margin: 0px 100px 0 0; }
@@ -150,22 +154,21 @@ float: right;
 position: relative;
 }
 div#UISearchLeftBox .searchButton {
-float: right;
-border-left: 1px solid #888;
-width: 28px;
-height: 21px;
-background: #888 url('../images/search.png') 5px 3px no-repeat;
-cursor: pointer;
+    border-left: 1px solid #888;
+    width: 28px;
+    height: 21px;
+    background: #888 url('../images/search.png') 5px 3px no-repeat;
+    cursor: pointer;
+    display: flex;
 }
 div#UISearchLeftBox #searchControls input {
-
-font-weight: normal;
-color: #333;
+    float: left;
+    font-weight: normal;
+    color: #333;
 }
 div#UISearchLeftBox #searchText {
-width: auto;
-margin-right: 22px;
-height: 21px;
+    width: 145px;
+    height: 21px;
 }
 
 
@@ -321,7 +324,7 @@ width: 840px !important;
 
 
 .container {
-    margin: 0px 10px 30px 10px;
+    margin: 0px 10px 0px 10px;
     padding-top: 20px;
     overflow: visible;
 }
@@ -339,11 +342,12 @@ width: 840px !important;
     float: right;
 }
 
+.header { background-image: none; }
 
 div.meetingEventSubHeader { display: none; }
-.col2 { padding-top: 15px; }
+.col2 { padding-top: 0px; }
 
-.category-sidebar { width: auto; }
+.category-sidebar { width: auto; background: none; border: none; }
 
 .category-content-wrapper { padding: 0.2em 0.2em; }
 .category-content { max-width: none; }
@@ -368,3 +372,146 @@ a.material { height: auto !important; }
 
 .materialItem li { border-bottom: 1px solid lightgrey; padding-bottom: 10px; padding-top: 10px; }
 .resourceDetail li { border: none; padding: 0;}
+
+.blue {
+    color: #1a64a0;
+    padding-top: 5px;
+}    
+
+div.globalMenu { 
+    background-image: none;
+    background-color: #2556a2;
+    border: none;
+}
+
+div.globalMenu a, div.globalMenu span { 
+    font-weight: normal;
+}
+
+div.pageHeader {
+    #top: 175px !important;
+    top: inherit;
+    background-image: none;
+    background-color: transparent;
+    border: none;
+    height: auto;
+    height: 0;
+}
+
+
+
+.conf_rightMenu {
+    min-width: 200px;
+    max-width: 200px;
+    vertical-align: top;
+    padding-top: 10px;
+    display: table-cell;
+}
+
+
+
+.sponsors_box h3, .cosponsors_box h3 {
+    color: white;
+    background-color: #2556a2;
+    border: none;
+}
+.support_box { margin-top: 10px; border: none; background: none;}
+
+#confSectionsBox {
+    width: 960px;
+}
+
+
+.type1_box {
+    margin-top: 0px;
+    margin-bottom: 20px;
+    width: 100%;
+    color: #aaa;
+    
+}
+
+.type1_box h3 {
+    color: white;
+    background-color: #2556a2;
+    border: none;
+    margin: 10px 0 5px 0;
+    padding: 5px;
+    font-weight: normal;
+    font-size: 1.2em; 
+    font-family: verdana,arial,sans-serif;
+}
+
+.type1_box_content {
+    #white-space: nowrap;
+    margin: 0 5px 5px 0;
+    vertical-align: middle;
+    #text-overflow: ellipsis;
+    #overflow: hidden;
+    border-left: 2px solid #dcdcdc;
+    padding-left: 7px;
+
+}
+
+#login_link { color: #2556a2; }
+
+
+
+div.eventHeaderButtonBar { float: left; padding-top: 1px !important; }
+.conf_leftMenu { padding-top: 10px; min-width: 200px;}
+
+
+.category-header {
+    border-top: 1px solid #E6E6E6;
+}
+ul.category-list { border: 0; }
+
+ul.category-list li {
+    background-color: transparent;
+    background-image: none;
+}
+
+#belowHeaderBar {
+    background-color: #ECECEC;
+    height: 26px;
+    border-bottom: 1px solid #AAAAAA;
+}
+
+#outer {  background:none; border: none; border-left: 2px solid #dcdcdc; }
+.category-info { visibility: hidden; }
+.category-list { padding-left: 20px; }
+
+
+
+
+
+.quickLinksMenu .container {
+background: #2556a2;
+margin: 0;
+}
+
+.footer .ictp-details .container {
+    background: #505050;
+    width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.footer .ictp-details .blue { 
+    color: white; 
+    padding: 20px 15px 15px 15px;
+}
+
+
+.container.mainContainer, .container-fluid { max-width: 960px !important; }
+
+div.eventHeaderButtonBar a { -webkit-box-sizing: inherit; height: 24px; width: 48px; }
+
+
+#hits { font-size: 12px; color: #C03021;line-height: 17px;}
+.Search {padding: 10px;}
+
+.page_title { padding-top: 10px; }
+
+.main .dropdown { position: absolute; }
+.main .dropdown * { -webkit-box-sizing: content-box; }
+.main dt { font-weight: normal; }
+.main dt, dd { line-height: auto; }

@@ -31,11 +31,11 @@ protection = getProtection(target) if target else None
                 </li>
             % endif
             % if currentUser:
-                <%include file="SettingsWidget.tpl" args="Languages = Languages"/>
+                <%include file="SettingsWidget.ICTP.tpl" args="Languages = Languages"/>
             % else:
                 <%include file="LanguageSelector.tpl" args="Languages = Languages, IsHeader = False, dark=dark_"/>
                 <li class="loginHighlighted" style="border-right: none;">
-                    <a href="${ loginURL }"><strong style="color: white">${ _("Login")}</strong></a>
+                    <a href="${ loginURL }"><span id="login_link">${ _("Login")}</span></a>
                 </li>
             % endif
         </ul>

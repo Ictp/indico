@@ -43,8 +43,10 @@ var videoServiceInfo = {};
     </ul>
     
     % if materials:
-        <ul class="support_box">
+        <div class="material_box type1_box">
             <h3>${_("Material")}</h3>
+        <div class="type1_box_content">
+        <ul>
         <li>
             <div class="materialList clearfix">
             % for material in materials:
@@ -54,6 +56,8 @@ var videoServiceInfo = {};
 
         </li>
         </ul>
+        </div>
+        </div>
     % endif
     
     
