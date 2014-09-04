@@ -489,7 +489,7 @@ class WConfDisplayFrame(wcomponents.WTemplated):
         url = ''
         record = available_sponsors[key]
         if record.has_key('title'): title = record["title"]
-        if record.has_key('url'): title = record["url"]
+        if record.has_key('url'): url = record["url"]
         img = self.getLogoPath(key)
         # check for specific date-related logos info
         if record.has_key('logos'):

@@ -374,7 +374,7 @@ a.material { height: auto !important; }
 .resourceDetail li { border: none; padding: 0;}
 
 .blue {
-    color: #1a64a0;
+    color: #2556a2;
     padding-top: 5px;
 }    
 
@@ -471,7 +471,7 @@ ul.category-list li {
 }
 
 #belowHeaderBar {
-    background-color: #ECECEC;
+    background-color: transparent;
     height: 26px;
     border-bottom: 1px solid #AAAAAA;
 }
@@ -515,3 +515,7 @@ div.eventHeaderButtonBar a { -webkit-box-sizing: inherit; height: 24px; width: 4
 .main .dropdown * { -webkit-box-sizing: content-box; }
 .main dt { font-weight: normal; }
 .main dt, dd { line-height: auto; }
+
+
+
+.category-title { color: #ff8200; }
