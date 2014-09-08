@@ -14,6 +14,13 @@
 indico/ext/search/repozer
 indico/ext/importer/ictp_xlsimporter
 
+
+# ICTP sponsors logo's
+indico/htdocs/css/ICTP/images/sponsor-logo
+
+# ICTP sponsors dictionary
+indico/util/ICTP_available_sponsors.py 
+
 # python packaging
 /dist
 *.egg-info
