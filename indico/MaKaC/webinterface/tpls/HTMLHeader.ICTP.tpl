@@ -104,6 +104,12 @@
     
         <%
 import urllib2
+
+# external website: I must use proxy
+proxy = urllib2.ProxyHandler({'http': 'proxy.ictp.it:3128'})
+opener = urllib2.build_opener(proxy)
+urllib2.install_opener(opener)
+
 response = urllib2.urlopen("http://ictp3.promoscience.com/headercalendar.aspx")
 headers = response.info()
 data = response.read()
