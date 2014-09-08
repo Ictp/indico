@@ -88,9 +88,10 @@ from wand.image import Image, Color
 import re
 # Import available_sponsors dictionary
 try:
-    from indico.util.ICTP_available_sponsors import available_sponsors
+    from indico.util.ICTP_available_sponsors import available_sponsors, custom_replace
 except:
     available_sponsors = {}
+    custom_confs = {}
 
 
 
@@ -551,6 +552,16 @@ class WConfDisplayFrame(wcomponents.WTemplated):
                 pos = str(elem["familyName"]).lower().find(av)                  
                 if pos != -1:
                     img, title, url = self.getSponsorData(av)
+                    # check if in custom cases
+                    confId = str(self._conf.getId())
+                    if confId in custom_replace.keys():
+                        custom_conf = custom_replace[confId]
+                        if av in custom_replace.keys():
+                            htdocsDir = Config.getInstance().getHtdocsDir()
+                            img = htdocsDir + "/css/ICTP/images/sponsor-logo/" + custom_replace[av]['filename']
+                            title = custom_replace[av]['title']
+                            url = custom_replace[av]['url']
+                    
                     if img: img = self.resizeImage(img,'170')
                     dd[pos] = {
                             "data": img,

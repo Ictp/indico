@@ -104,7 +104,19 @@ containsCategories = len(categ.getSubCategoryList()) > 0
             <div class="category-info">
 
             % if isRootCategory:
-                ${_("Welcome to Indico. The Indico tool allows you to manage complex conferences, workshops and meetings.<br/> In order to start browsing, please select one of the categories below.")}
+
+                <form method="get" action="/search" id="searchBoxForm">
+                    Search in Indico:
+                    <div id="UISearchLeftBox">
+                        <div id="searchControls">
+                             <input name="p" id="searchText" autocomplete="off" type="text" style="outline: none; background-color: transparent;">
+                            <div class="searchButton"></div>
+
+                    </div>
+
+                    </div>
+                </form>
+                
             % elif description:
                 ${description}
             % endif
