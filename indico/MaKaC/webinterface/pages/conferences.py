@@ -88,10 +88,11 @@ from wand.image import Image, Color
 import re
 # Import available_sponsors dictionary
 try:
-    from indico.util.ICTP_available_sponsors import available_sponsors, custom_replace
+    from indico.util.ICTP_available_sponsors import available_sponsors, custom_replace, custom_add
 except:
     available_sponsors = {}
-    custom_confs = {}
+    custom_replace = {}
+    custom_add = {}
 
 
 
@@ -547,20 +548,23 @@ class WConfDisplayFrame(wcomponents.WTemplated):
     # Ictp: get Sponsors - Cosponsosrs
     def getSponsors(self, sp):
         dd = {}
+        confId = str(self._conf.getId())
+        htdocsDir = Config.getInstance().getHtdocsDir()
         for elem in sp:
             for av in available_sponsors.keys(): 
                 pos = str(elem["familyName"]).lower().find(av)                  
                 if pos != -1:
                     img, title, url = self.getSponsorData(av)
-                    # check if in custom cases
-                    confId = str(self._conf.getId())
-                    if confId in custom_replace.keys():
-                        custom_conf = custom_replace[confId]
-                        if av in custom_replace.keys():
-                            htdocsDir = Config.getInstance().getHtdocsDir()
-                            img = htdocsDir + "/css/ICTP/images/sponsor-logo/" + custom_replace[av]['filename']
-                            title = custom_replace[av]['title']
-                            url = custom_replace[av]['url']
+                    # check if in custom REPLACE cases                    
+                    if confId in custom_replace.keys():                                        
+                        cconf = custom_replace[confId]
+                        if av in cconf.keys():
+                            v = cconf[av]
+                            
+                            img = htdocsDir + "/css/ICTP/images/sponsor-logo/" + v['filename']
+                            title = v['title']
+                            url = v['url']
+                            
                     
                     if img: img = self.resizeImage(img,'170')
                     dd[pos] = {
@@ -568,6 +572,20 @@ class WConfDisplayFrame(wcomponents.WTemplated):
                             'title': title,
                             'url': url
                     }
+                    
+            # check for custom ADD cases
+            if confId in custom_add.keys():
+                i = 100000     
+                for logo in custom_add[confId]:
+                    i += 1
+                    img = htdocsDir + "/css/ICTP/images/sponsor-logo/" + logo['filename']
+                    if img: img = self.resizeImage(img,'170')
+                    dd[i] = {
+                        "data": img,
+                        'title': logo['title'],
+                        'url': logo['url']
+                    }
+
         return dd
 
 

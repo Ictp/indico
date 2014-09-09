@@ -452,6 +452,9 @@ div.pageHeader {
 
 }
 
+
+.type1_box_content ul { -webkit-padding-start: 10px; }
+.type1_box_content ul li { list-style-type: none; }
 #login_link { color: #2556a2; }
 
 
