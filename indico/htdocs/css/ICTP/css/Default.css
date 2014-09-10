@@ -523,3 +523,4 @@ div.eventHeaderButtonBar a { -webkit-box-sizing: inherit; height: 24px; width: 4
 
 .category-title { color: #ff8200; }
 div.mainBreadcrumb { background-color: transparent; }
+logo { display: none; }

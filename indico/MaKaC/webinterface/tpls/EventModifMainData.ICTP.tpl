@@ -261,7 +261,7 @@ var userCaption = "speaker";
 % if evtType == 'conference':
     $E('inPlaceEditAdditionalInfo').set(new RichTextInlineEditWidget('event.main.changeAdditionalInfo', ${ jsonEncode(dict(conference="%s"%conferenceId)) }, ${ jsonEncode(additionalInfo) }, 600, 45, "${_('No additional info')}").draw());
     userCaption = "chairperson";    
-    $E('inPlaceEditRoles').set(new GroupingWidget('event.main.changeRoles', {'conference':'${ conferenceId }'}, ${ jsonEncode(confObj.getRolesJS()) }, true, null, null, null).draw());
+    $E('inPlaceEditRoles').set(new GroupingWidget('event.main.changeRoles', {'conference':'${ conferenceId }'}, ${ jsonEncode(confObj.getRolesJS()) }, true, null, false, null).draw());
 % endif
 
 $E('inPlaceEditShortURL').set(new URLPathEditWidget('event.main.changeShortURL',

@@ -160,7 +160,7 @@ class ConferenceTitleModification(ConferenceTextModificationBase):
         return self._target.getTitle()
 
 # Ictp
-class ConferenceRolesModification(ConferenceTextModificationBase):
+class ConferenceRolesModification(ConferenceHTMLModificationBase):
     """
     Conference roles modification
     """

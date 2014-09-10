@@ -88,11 +88,12 @@ from wand.image import Image, Color
 import re
 # Import available_sponsors dictionary
 try:
-    from indico.util.ICTP_available_sponsors import available_sponsors, custom_replace, custom_add
+    from indico.util.ICTP_available_sponsors import available_sponsors, custom_replace, custom_add, ocirne_dictionary
 except:
     available_sponsors = {}
     custom_replace = {}
     custom_add = {}
+    ocirne_dictionary = {}
 
 
 
@@ -544,47 +545,79 @@ class WConfDisplayFrame(wcomponents.WTemplated):
         return data
 
 
+    def getFromNewVocab(self, sp):
+        htdocsDir = Config.getInstance().getHtdocsDir()
+        vocab = {}
+        pos = 0
+        print "SP=",sp
+        for elem in sp:
+            print "-",elem
+            rex = re.compile(r'<logo>(.*?)</logo>',re.S|re.M)
+            match = rex.match(elem['familyName'])
+            print "MATCH=",match
+            if match:
+                text = match.groups()[0].strip()
+                # check if extracted key exists in vocabulary
+                if text in ocirne_dictionary.keys():
+                    print "text=",text
+                    pos += 1
+                    el = ocirne_dictionary[text]
+                    img = htdocsDir + "/css/ICTP/images/sponsor-logo/" + el['logo']
+                    if img: img = self.resizeImage(img,'170')
+                    vocab[pos] = {
+                                "data": img,
+                                'title': el['title'],
+                                'url': el['url']
+                    }
+                
+            
+        return vocab
+
 
     # Ictp: get Sponsors - Cosponsosrs
     def getSponsors(self, sp):
         dd = {}
         confId = str(self._conf.getId())
         htdocsDir = Config.getInstance().getHtdocsDir()
-        for elem in sp:
-            for av in available_sponsors.keys(): 
-                pos = str(elem["familyName"]).lower().find(av)                  
-                if pos != -1:
-                    img, title, url = self.getSponsorData(av)
-                    # check if in custom REPLACE cases                    
-                    if confId in custom_replace.keys():                                        
-                        cconf = custom_replace[confId]
-                        if av in cconf.keys():
-                            v = cconf[av]
+        if str(sp).lower().find('<logo>') > -1:
+            # new vocabulary:
+            dd = self.getFromNewVocab(sp)
+        else:
+            for elem in sp:
+                for av in available_sponsors.keys(): 
+                    pos = str(elem["familyName"]).lower().find(av)                  
+                    if pos != -1:
+                        img, title, url = self.getSponsorData(av)
+                        # check if in custom REPLACE cases                    
+                        if confId in custom_replace.keys():                                        
+                            cconf = custom_replace[confId]
+                            if av in cconf.keys():
+                                v = cconf[av]
                             
-                            img = htdocsDir + "/css/ICTP/images/sponsor-logo/" + v['filename']
-                            title = v['title']
-                            url = v['url']
+                                img = htdocsDir + "/css/ICTP/images/sponsor-logo/" + v['filename']
+                                title = v['title']
+                                url = v['url']
                             
                     
-                    if img: img = self.resizeImage(img,'170')
-                    dd[pos] = {
+                        if img: img = self.resizeImage(img,'170')
+                        dd[pos] = {
+                                "data": img,
+                                'title': title,
+                                'url': url
+                        }
+                    
+                # check for custom ADD cases
+                if confId in custom_add.keys():
+                    i = 100000     
+                    for logo in custom_add[confId]:
+                        i += 1
+                        img = htdocsDir + "/css/ICTP/images/sponsor-logo/" + logo['filename']
+                        if img: img = self.resizeImage(img,'170')
+                        dd[i] = {
                             "data": img,
-                            'title': title,
-                            'url': url
-                    }
-                    
-            # check for custom ADD cases
-            if confId in custom_add.keys():
-                i = 100000     
-                for logo in custom_add[confId]:
-                    i += 1
-                    img = htdocsDir + "/css/ICTP/images/sponsor-logo/" + logo['filename']
-                    if img: img = self.resizeImage(img,'170')
-                    dd[i] = {
-                        "data": img,
-                        'title': logo['title'],
-                        'url': logo['url']
-                    }
+                            'title': logo['title'],
+                            'url': logo['url']
+                        }
 
         return dd
 

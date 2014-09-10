@@ -1312,12 +1312,11 @@ type("InlineEditWidget", ["InlineRemoteWidget"],
          },
 
          _save: function() {
-             this._savedValue = this._getNewValue();
+             this._savedValue = this._getNewValue();            
              this.source.set(this._savedValue);
          },
 
          _handleContentEdit: function() {
-
              var self = this;
 
              this.saveButton = Widget.button(command(function() {
@@ -1892,6 +1891,12 @@ type("GroupingWidget", ["InputEditWidget"],
                 return mInfo;
             },
 
+
+
+
+
+
+
         },
         
         function(method, attributes, initValue, allowEmpty, successHandler, validation, errorMsg, helpMsg, beforeEdit) {
@@ -1901,6 +1906,6 @@ type("GroupingWidget", ["InputEditWidget"],
             this.validation = validation;
             this.errorMsg = errorMsg;
             this.helpMsg = helpMsg;
-            this.InputEditWidget(method, attributes, initValue, true, null, null, null);
+            this.InputEditWidget(method, attributes, initValue, true, null, false, null);
         }        
     );
