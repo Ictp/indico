@@ -35,8 +35,8 @@
                         <div>
                         % if resource.getFileType() == 'mp4':
                             <div style="display: inline-block;">
-                                <video id="${resource.getFileName()}" class="materialVideo" > 
-                                  <source src="${fileAccessURLGen(resource)}" type="video/mp4">
+                                <video id="${resource.getFileName()}" class="materialVideo"> 
+                                  <source src="${fileAccessURLGen(resource)}" type="video/mp4" />
                                     "Your browser does not support HTML5 video."
                                 </video>
                                 <br/><a id="resize_${resource.getFileName()}" href="javascript:resizeVideo('${resource.getFileName()}')" style="float:right;">Bigger size</a>
