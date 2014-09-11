@@ -552,14 +552,19 @@ class WConfDisplayFrame(wcomponents.WTemplated):
         print "SP=",sp
         for elem in sp:
             print "-",elem
-            rex = re.compile(r'<logo>(.*?)</logo>',re.S|re.M)
-            match = rex.match(elem['familyName'])
-            print "MATCH=",match
-            if match:
-                text = match.groups()[0].strip()
+            #rex = re.compile(r'(.*)<logo>(.*?)</logo>(.*)',re.S|re.M)
+            #match = rex.match(elem['familyName'])
+            
+            #rex = re.search('<logo>.*</logo>', elem['familyName'])
+            pattern = r'<logo>(.*?)</logo>'
+            rex = re.findall(pattern, elem['familyName'], re.DOTALL)
+            print "REX=",rex
+            match = []
+            for g in rex:
+                text = g.lower().strip()
+                print "text=",text
                 # check if extracted key exists in vocabulary
                 if text in ocirne_dictionary.keys():
-                    print "text=",text
                     pos += 1
                     el = ocirne_dictionary[text]
                     img = htdocsDir + "/css/ICTP/images/sponsor-logo/" + el['logo']
