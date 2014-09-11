@@ -96,6 +96,8 @@ def configure_app(app, set_path=False):
 
 def extend_url_map(app):
     app.url_map.converters['list'] = ListConverter
+    # Ictp: added to avoid slashes errors
+    app.url_map.strict_slashes = False
 
 
 def add_handlers(app):
