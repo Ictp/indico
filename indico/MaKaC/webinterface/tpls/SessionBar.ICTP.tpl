@@ -35,7 +35,7 @@ protection = getProtection(target) if target else None
             % else:
                 <%include file="LanguageSelector.tpl" args="Languages = Languages, IsHeader = False, dark=dark_"/>
                 <li class="loginHighlighted" style="border-right: none;">
-                    <a href="${ loginURL }"><span id="login_link">${ _("Login")}</span></a>
+                    <a href="${ loginURL }"><span id="login_link">Administration</span></a>
                 </li>
             % endif
         </ul>
