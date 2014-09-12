@@ -33,7 +33,7 @@ else:
     ${ body }
 
 
-    % if (organizers or sponsors or cosponsors) and (currentURL.split(confId)[1] in ['/','/overview']):
+    % if (organizers or sponsors or cosponsors) :
         <!-- Right menu -->
         <div class="conf_rightMenu">
 

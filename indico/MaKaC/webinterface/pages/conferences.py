@@ -549,33 +549,29 @@ class WConfDisplayFrame(wcomponents.WTemplated):
         htdocsDir = Config.getInstance().getHtdocsDir()
         vocab = {}
         pos = 0
-        print "SP=",sp
         for elem in sp:
-            print "-",elem
-            #rex = re.compile(r'(.*)<logo>(.*?)</logo>(.*)',re.S|re.M)
-            #match = rex.match(elem['familyName'])
-            
-            #rex = re.search('<logo>.*</logo>', elem['familyName'])
             pattern = r'<logo>(.*?)</logo>'
             rex = re.findall(pattern, elem['familyName'], re.DOTALL)
-            print "REX=",rex
             match = []
             for g in rex:
                 text = g.lower().strip()
-                print "text=",text
                 # check if extracted key exists in vocabulary
                 if text in ocirne_dictionary.keys():
                     pos += 1
                     el = ocirne_dictionary[text]
-                    img = htdocsDir + "/css/ICTP/images/sponsor-logo/" + el['logo']
-                    if img: img = self.resizeImage(img,'170')
+                    img = None
+                    url = None
+
+                    if el.has_key('logo'):
+                        img = self.resizeImage(htdocsDir + "/css/ICTP/images/sponsor-logo/" + el['logo'],'170')                        
+
+                    if el.has_key('url'): url = el['url']
+
                     vocab[pos] = {
                                 "data": img,
-                                'title': el['title'],
-                                'url': el['url']
+                                "title": el['title'],
+                                "url": url
                     }
-                
-            
         return vocab
 
 
@@ -746,12 +742,12 @@ class WConfDisplayFrame(wcomponents.WTemplated):
                     cosponsors.append(dc[k])                    
                                         
                 if "Sponsor(s)" in dict.keys():
-                    dd = self.getSponsors(dict["Sponsor(s)"])
+                    ds = self.getSponsors(dict["Sponsor(s)"])
                 # sort
-                keylist = dd.keys()
+                keylist = ds.keys()
                 keylist.sort()
                 for k in keylist:
-                    sponsors.append(dd[k]) 
+                    sponsors.append(ds[k]) 
             except:
                 pass
                 

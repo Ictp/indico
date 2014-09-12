@@ -60,7 +60,8 @@ div.VeryShortPeopleListDiv {
 }
 
 div.wrapper {
-    width: 960px;
+    max-width: 1200px;
+    min-width: 960px;
     min-height: inherit;
     margin-left: auto;
     margin-right: auto;
@@ -134,7 +135,7 @@ div.main { padding-bottom: 0;}
     #background: #214694;
     background: transparent;
     color: white;
-    padding: 0;
+    padding: 10px 0;
 }
 
 .content {
@@ -275,9 +276,6 @@ div.timetableBlockContribs {
 
 
 /* Indico Style customization */
-.eventWrapper {
-    width: 960px !important;
-}
 
 div.meetingEventHeader {
     background-color: #204594;
@@ -285,7 +283,8 @@ div.meetingEventHeader {
     border-radius: 0 !important;
 }
 .eventWrapper {
-margin-top: 0 !important;
+    width: 100% !important;
+    margin-top: 0 !important;
     border-radius: 0 !important;
     -webkit-border-radius: 0 !important;
     box-shadow: none !important;
@@ -401,8 +400,7 @@ div.pageHeader {
 
 
 .conf_rightMenu {
-    min-width: 200px;
-    max-width: 200px;
+    width: 200px;
     vertical-align: top;
     padding-top: 10px;
     display: table-cell;
@@ -418,7 +416,7 @@ div.pageHeader {
 .support_box { margin-top: 10px; border: none; background: none;}
 
 #confSectionsBox {
-    width: 960px;
+    width: 100%;
 }
 
 
@@ -454,7 +452,7 @@ div.pageHeader {
 
 
 .type1_box_content ul { -webkit-padding-start: 10px; }
-.type1_box_content ul li { list-style-type: none; }
+.type1_box_content ul li { list-style-type: none; margin-bottom: 20px;}
 #login_link { color: #2556a2; }
 
 
@@ -494,7 +492,6 @@ margin: 0;
 
 .footer .ictp-details .container {
     background: #505050;
-    width: 960px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -504,7 +501,7 @@ margin: 0;
 }
 
 
-.container.mainContainer, .container-fluid { max-width: 960px !important; }
+
 
 div.eventHeaderButtonBar a { -webkit-box-sizing: inherit; height: 24px; width: 48px; }
 
@@ -524,3 +521,6 @@ div.eventHeaderButtonBar a { -webkit-box-sizing: inherit; height: 24px; width: 4
 .category-title { color: #ff8200; }
 div.mainBreadcrumb { background-color: transparent; }
 logo { display: none; }
+
+.contribItem ul li { list-style-type: none; }
+
