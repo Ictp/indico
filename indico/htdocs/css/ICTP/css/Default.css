@@ -33,6 +33,7 @@ color: #696969;
 .body {
 border-left: 1px solid #d8d8d8;
 border-right: 1px solid #d8d8d8;
+border-top: 1px solid #d8d8d8;
 }
 
 .body.clearfix {
@@ -284,6 +285,7 @@ div.meetingEventHeader {
 }
 .eventWrapper {
     width: 100% !important;
+    max-width: 1200px;
     margin-top: 0 !important;
     border-radius: 0 !important;
     -webkit-border-radius: 0 !important;
@@ -457,7 +459,7 @@ div.pageHeader {
 
 
 
-div.eventHeaderButtonBar { float: left; padding-top: 1px !important; }
+div.eventHeaderButtonBar { float: left; padding-top: 0 !important; }
 .conf_leftMenu { padding-top: 10px; min-width: 200px;}
 
 
