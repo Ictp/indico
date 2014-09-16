@@ -351,7 +351,7 @@ div.meetingEventSubHeader { display: none; }
 .category-sidebar { width: auto; background: none; border: none; }
 
 .category-content-wrapper { padding: 0.2em 0.2em; }
-.category-content { max-width: none; }
+.category-content { max-width: none; padding: 1em 1em 0 1em; }
 .eventList h4 { margin-bottom: 0.5em; }
 .eventList li .today { padding-left: 0px; }
 
@@ -466,6 +466,7 @@ div.eventHeaderButtonBar { float: left; padding-top: 0 !important; }
 .category-header {
     border-top: 1px solid #E6E6E6;
 }
+.category-info { padding-left: 1em; }
 ul.category-list { border: 0; }
 
 ul.category-list li {
@@ -520,7 +521,7 @@ div.eventHeaderButtonBar a { -webkit-box-sizing: inherit; height: 24px; width: 4
 
 
 
-.category-title { color: #ff8200; }
+.category-title { color: #ff8200; max-width: none; }
 div.mainBreadcrumb { background-color: transparent; }
 logo { display: none; }
 
