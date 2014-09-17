@@ -282,9 +282,12 @@ li:hover ul, li.over ul { display: block; } /* For dynamic */
 
 .conferenceDetails .description {
     color: #777;
-    font-family: Georgia, Times, Serif;
     font-size: 1.2em;
+
+    /* ICTP
+    font-family: Georgia, Times, Serif;
     margin: 1em 0 2em 0;
+    */
 }
 
 table.conferenceDetails td {
