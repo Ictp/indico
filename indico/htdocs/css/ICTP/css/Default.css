@@ -404,7 +404,7 @@ div.pageHeader {
 .conf_rightMenu {
     width: 200px;
     vertical-align: top;
-    padding-top: 10px;
+    padding-top: 0;
     display: table-cell;
 }
 
@@ -460,7 +460,7 @@ div.pageHeader {
 
 
 div.eventHeaderButtonBar { float: left; padding-top: 0 !important; }
-.conf_leftMenu { padding-top: 10px; min-width: 200px;}
+.conf_leftMenu { padding-top: 0; min-width: 200px;}
 
 
 .category-header {
