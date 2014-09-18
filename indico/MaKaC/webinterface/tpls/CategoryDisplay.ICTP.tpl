@@ -24,20 +24,12 @@ containsCategories = len(categ.getSubCategoryList()) > 0
                     <a id="exportIcal${categ.getUniqueId()}" class="i-button icon-calendar arrow exportIcal" data-id="${categ.getUniqueId()}" title="${_("Export to scheduling tool")}"></a>
                     <span><%include file="CategoryICalExport.tpl" args="item=categ"/></span>
                 % endif
-                <a id="moreLink" class="i-button icon-eye arrow" data-toggle="dropdown" title="${_("View")}"></a>
-                <ul class="dropdown">
-                    <li><a href="${urlHandlers.UHCategoryOverview.getURL(categ)}">${_("Today's events")}</a></li>
-                    <li><a href="${urlHandlers.UHCategoryOverview.getWeekOverviewUrl(categ)}">${_("Week's events")}</a></li>
-                    <li><a href="${urlHandlers.UHCalendar.getURL([categ])}">${_("Calendar")}</a></li>
-                    <li><a href="${urlHandlers.UHCategoryMap.getURL(categ)}">${_("Category map")}</a></li>
-                    <li><a href="${urlHandlers.UHCategoryStatistics.getURL(categ)}">${_("Category statistics")}</a></li>
-                </ul>
+                % if isLoggedIn and not isRootCategory:
                 <a id="createEventLink" class="i-button icon-plus arrow" data-toggle="dropdown" title="${_("Create new event")}"></a>
                 <ul class="dropdown">
-                    <!--<li><a href="${urlLecture}">${_("Lecture")}</a></li>-->
-                    <!--<li><a href="${urlMeeting}">${_("Meeting")}</a></li>-->
                     <li><a href="${urlConference}">${_("Conference")}</a></li>
                 </ul>
+                % endif
                 % if allowUserModif:
                 <a id="manageLink" class="i-button icon-edit arrow" data-toggle="dropdown" title="${_("Management options")}"></a>
                 <ul class="dropdown">
