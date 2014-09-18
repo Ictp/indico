@@ -30,13 +30,7 @@
     </div>
 </div>
 
-    <script type="text/javascript">
-    $(function() {
-        $('.searchButton').click(function() {
-                $('#searchBoxForm').submit();
-        })
-    });
-    </script>
+
 
 
 

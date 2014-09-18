@@ -375,6 +375,11 @@ $(function(){
 
 
   
+
+        $('.searchButton').click(function() {
+                $('#searchBoxForm').submit();
+        })
+
   
   
   /* toggler definition */ 
