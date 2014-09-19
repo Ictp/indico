@@ -7713,7 +7713,9 @@ class _AuthIdx(Persistent):
         if auth.getContribution() is None:
             raise MaKaCError( _("Cannot index an author of a contribution which has not been included in a Conference"), _("Author Index"))
         if auth.getContribution().getConference()!=self._conf:
-            raise MaKaCError( _("cannot index an author of a contribution which does not belong to this Conference"), _("Author Index"))
+            # Ictp
+            #raise MaKaCError( _("cannot index an author of a contribution which does not belong to this Conference"), _("Author Index"))
+            pass
         key=self._getKey(auth)
         contribId=str(auth.getContribution().getId())
         if not self._idx.has_key(key):
