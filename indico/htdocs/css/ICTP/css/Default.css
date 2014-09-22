@@ -529,3 +529,8 @@ logo { display: none; }
 
 div.sessionBar .protectionBarRestricted { height: auto; }
 
+#timetableDiv div { max-width: 950px; }
+
+.timetableBlock.timetableSession.ui-draggable.ui-resizable.ui-droppable {
+    max-width: 90% !important;
+}
