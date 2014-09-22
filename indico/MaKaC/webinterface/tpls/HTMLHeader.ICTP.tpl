@@ -103,11 +103,17 @@
         
         
     </head>
-    % if page._conf:
-    <body data-user-id="${ user.getId() if user else 'null' }" section="${page._conf.getOwner().getId()}">
-    % else:
-    <body data-user-id="${ user.getId() if user else 'null' }" section="${page._target.id}">
-    % endif
+    <%
+        section = ''
+        try:
+            if hasattr(page,'_conf') and page._conf:
+                section=page._conf.getOwner().getId()
+            if hasattr(page,'_target'):
+                section=page._target.id
+        except:
+            pass
+    %>
+    <body data-user-id="${ user.getId() if user else 'null' }" section="${section}">
     
         <%
 import urllib2
