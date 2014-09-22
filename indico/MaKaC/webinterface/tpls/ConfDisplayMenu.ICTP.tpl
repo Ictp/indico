@@ -118,25 +118,27 @@
     % if not support_info.isEmpty():
     <div class="type1_box">
       <h3>${support_info.getCaption()}</h3>
-      % if support_info.hasEmail():
-      <div class="type1_box_content">
-        <ul>
-        % for email in support_info.getEmail().split(','):
-          <li>
-            <span class="icon icon-mail" aria-hidden="true"></span>
-            <a href="mailto:${email}?subject=${event.getTitle() | h}"> ${email}</a>
-          </li>
-          % if support_info.hasTelephone():
-            <li>
-              <span class="icon icon-phone" aria-hidden="true"></span>
-              <a href="tel:${support_info.getTelephone().replace(' ', '')}"> ${support_info.getTelephone()}</a>
-            </li>
-          % endif
-        % endfor
-        </ul>
 
-      </div>
-      % endif
+          <div class="type1_box_content">
+            <ul>
+            % for email in support_info.getEmail().split(','):
+              <li>
+                <span class="icon icon-mail" aria-hidden="true"></span>
+                <a href="mailto:${email}?subject=${event.getTitle() | h}"> ${email}</a>
+              </li>
+            % endfor
+
+            % if support_info.hasTelephone():
+                % for tel in support_info.getTelephone().split(','):
+                  <li>
+                    <span class="icon icon-phone" aria-hidden="true"></span>
+                    <a href="tel:${tel}"> ${tel}</a>
+                  </li>
+                % endfor
+            % endif
+        
+            </ul>
+          </div>
 
     </div>
     % endif
