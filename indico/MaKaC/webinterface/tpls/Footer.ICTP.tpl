@@ -26,10 +26,15 @@ else:
 
 <%
 import urllib2
-response = urllib2.urlopen("http://ictp3.promoscience.com/footercalendar.aspx")
-headers = response.info()
-data = response.read()
-#<img src="http://indico-int-2.ictp.it/css/ICTP/images/footer_test.png"  style="display:block;"  />
+
+
+try:
+    response = urllib2.urlopen("http://wwwnew.ictp.it/footercalendar.aspx")
+    headers = response.info()
+    data = response.read()
+except:
+    data = ''
+#<img src="http://indico.ictp.it/css/ICTP/images/logo_ictp_v3_50th.png"  style="display:block;"  />
 %>
 
  ${ data }

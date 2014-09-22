@@ -12,7 +12,7 @@
       <div class="text">
         
         
-        % if dateInterval[1] == '00:00':
+        % if dateInterval[1] == '01:00':
             <div class="date_start">${_('Starts <span class="datetime">{0}</span>').format(dateInterval[0])}</div>
         % else:
             <div class="date_start">${_('Starts <span class="datetime">{0} {1}</span>').format(dateInterval[0], dateInterval[1])}</div>

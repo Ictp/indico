@@ -81,14 +81,14 @@
         <link rel="stylesheet" type="text/css" href="/css/ICTP/css/Default.css" />
         <link rel="stylesheet" href="/css/ICTP/css/printer.css" type="text/css" media="print" />        
 
-        <link rel="stylesheet" type="text/css" href="http://ictp3.promoscience.com/css/bootstrap.min.css" />
-        <link rel="stylesheet" type="text/css" href="http://ictp3.promoscience.com/css/bootstrap-theme.css" />
-        <link rel="stylesheet" type="text/css" href="http://ictp3.promoscience.com/css/ictp.css" />
+        <link rel="stylesheet" type="text/css" href="http://wwwnew.ictp.it/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="http://wwwnew.ictp.it/css/bootstrap-theme.css" />
+        <link rel="stylesheet" type="text/css" href="http://wwwnew.ictp.it/css/ictp.css" />
         <link rel="stylesheet" type="text/css" href="/css/ICTP/css/font-awesome.min.css" />                                                                 
         <style>.nav>li { float: left; }</style>
         
         
-        <script type="text/javascript" src="http://ictp3.promoscience.com/scripts/jquery.mobile.touch.min.custom.js"></script>
+        <script type="text/javascript" src="http://wwwnew.ictp.it/scripts/jquery.mobile.touch.min.custom.js"></script>
         
 
 
@@ -110,10 +110,12 @@ proxy = urllib2.ProxyHandler({'http': 'proxy.ictp.it:3128'})
 opener = urllib2.build_opener(proxy)
 urllib2.install_opener(opener)
 
-response = urllib2.urlopen("http://ictp3.promoscience.com/headercalendar.aspx")
-headers = response.info()
-data = response.read()
-#<img src="http://indico-int-2.ictp.it/css/ICTP/images/header_test.png"  style="display:block;"  />
+try:
+    response = urllib2.urlopen("http://wwwnew.ictp.it/headercalendar.aspx")
+    headers = response.info()
+    data = response.read()
+except:
+    data = '<img src="http://indico.ictp.it/css/ICTP/images/logo_ictp_v3_50th.png"  style="display:block;background-color: blue;"  />'
 %>
 
 
