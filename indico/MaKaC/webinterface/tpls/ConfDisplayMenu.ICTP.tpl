@@ -120,23 +120,24 @@
       <h3>${support_info.getCaption()}</h3>
       % if support_info.hasEmail():
       <div class="type1_box_content">
+        <ul>
         % for email in support_info.getEmail().split(','):
-          <ul>
           <li>
             <span class="icon icon-mail" aria-hidden="true"></span>
             <a href="mailto:${email}?subject=${event.getTitle() | h}"> ${email}</a>
           </li>
-          </ul>
+          % if support_info.hasTelephone():
+            <li>
+              <span class="icon icon-phone" aria-hidden="true"></span>
+              <a href="tel:${support_info.getTelephone().replace(' ', '')}"> ${support_info.getTelephone()}</a>
+            </li>
+          % endif
         % endfor
+        </ul>
+
       </div>
       % endif
 
-      % if support_info.hasTelephone():
-        <li>
-          <span class="icon icon-phone" aria-hidden="true"></span>
-          <a href="tel:${support_info.getTelephone().replace(' ', '')}"> ${support_info.getTelephone()}</a>
-        </li>
-      % endif
     </div>
     % endif
     

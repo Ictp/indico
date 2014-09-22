@@ -527,3 +527,5 @@ logo { display: none; }
 
 .contribItem ul li { list-style-type: none; }
 
+div.sessionBar .protectionBarRestricted { height: auto; }
+

@@ -84,6 +84,9 @@
         <link rel="stylesheet" type="text/css" href="http://wwwnew.ictp.it/css/bootstrap.min.css" />
         <link rel="stylesheet" type="text/css" href="http://wwwnew.ictp.it/css/bootstrap-theme.css" />
         <link rel="stylesheet" type="text/css" href="http://wwwnew.ictp.it/css/ictp.css" />
+        <link rel="stylesheet" type="text/css" href="http://wwwnew.ictp.it/css/ictp-md.css" />
+        <link rel="stylesheet" type="text/css" href="http://wwwnew.ictp.it/css/ictp-indico-xs-sm.css" />        
+        
         <link rel="stylesheet" type="text/css" href="/css/ICTP/css/font-awesome.min.css" />                                                                 
         <style>.nav>li { float: left; }</style>
         
