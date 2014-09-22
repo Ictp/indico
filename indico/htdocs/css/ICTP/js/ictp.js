@@ -602,9 +602,11 @@ $(function(){
         $("#menuLink_authorIndex").append('<li id="menuLink_participantsList" class="menuConfTitle"><a href="'+pl+'">Participants list</a></li>');
     }
 
-    // add PRACTICAL INFO
-    $("ul#outer").append('<li id="menuLink_Practical info" class="menuConfTitle"><a href="http://www.ictp.it/visit-ictp/pre-arrival-guide.aspx" target="_blank">Practical info</a></li>');
-
+    // add PRACTICAL INFO if no section "outside Trieste"
+    var section = $('body').attr("section");
+    if (section != '2l132') {
+        $("ul#outer").append('<li id="menuLink_Practical info" class="menuConfTitle"><a href="http://www.ictp.it/visit-ictp/pre-arrival-guide.aspx" target="_blank">Practical info</a></li>');
+    }
 
   
   

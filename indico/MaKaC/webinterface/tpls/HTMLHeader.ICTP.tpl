@@ -103,7 +103,11 @@
         
         
     </head>
-    <body data-user-id="${ user.getId() if user else 'null' }">
+    % if page._conf:
+    <body data-user-id="${ user.getId() if user else 'null' }" section="${page._conf.getOwner().getId()}">
+    % else:
+    <body data-user-id="${ user.getId() if user else 'null' }" section="${page._target.id}">
+    % endif
     
         <%
 import urllib2
