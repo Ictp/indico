@@ -671,7 +671,8 @@ class WConfDisplayFrame(wcomponents.WTemplated):
                           
         for mat in self._conf.getAllMaterialList():
             for res in mat.getResourceList():
-                if not(res.isProtected()):
+                #if not(res.isProtected()):
+                if 1:
                     try:
                         ftype = res.getFileType().lower()
                         fname = res.getName() or res.getFileName()
@@ -699,7 +700,8 @@ class WConfDisplayFrame(wcomponents.WTemplated):
         for mat in self._conf.getAllMaterialList():
             matName = mat.getTitle().lower()
             for res in mat.getResourceList():
-                if not(res.isProtected()):
+                #if not(res.isProtected()):
+                if 1:
                     try:
                         ftype = res.getFileType().lower()
                         fname = res.getName() or res.getFileName()
