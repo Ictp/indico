@@ -589,6 +589,7 @@ $(function(){
   
     $('#menuLink_timetable').find("a").text('Programme');
     $('#menuLink_authorIndex').find("a").text('Speakers');
+    $('#menuLink_authorIndex').find("a").attr("href", "speakers")
 
     // search for APPLICATION FORM 
     var af = $('a:contains("application form")').attr('href');
