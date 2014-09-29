@@ -586,10 +586,13 @@ $(function(){
 
   
   
-  
+    // change from Timetable to Programme
     $('#menuLink_timetable').find("a").text('Programme');
+    
+    
     $('#menuLink_authorIndex').find("a").text('Speakers');
-    $('#menuLink_authorIndex').find("a").attr("href", "speakers")
+    var auth = $('#menuLink_authorIndex').find("a");
+    auth.attr("href", auth.attr('href').replace('authors', 'speakers'));
 
     // search for APPLICATION FORM 
     var af = $('a:contains("application form")').attr('href');
