@@ -29,7 +29,7 @@ import urllib2
 
 
 try:
-    response = urllib2.urlopen("http://wwwnew.ictp.it/footercalendar.aspx")
+    response = urllib2.urlopen("http://www.ictp.it/footercalendar.aspx")
     headers = response.info()
     data = response.read()
 except:
