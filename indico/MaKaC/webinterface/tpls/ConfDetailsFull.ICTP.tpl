@@ -23,7 +23,7 @@
         % else:
             <div class="date_end">${_('Ends <span class="datetime">{0}</span>').format(dateInterval[2])}</div>
         % endif
-        <div class="timezone">${timezone}</div>
+        <div class="timezone">${conf.getTimezone()}</div>
       </div>
   </div>
 
