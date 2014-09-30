@@ -592,7 +592,9 @@ $(function(){
     
     $('#menuLink_authorIndex').find("a").text('Speakers');
     var auth = $('#menuLink_authorIndex').find("a");
-    auth.attr("href", auth.attr('href').replace('authors', 'speakers'));
+    if (auth.attr('href')) {
+        auth.attr("href", auth.attr('href').replace('authors', 'speakers'));
+    }
 
     // search for APPLICATION FORM 
     var af = $('a:contains("application form")').attr('href');
