@@ -1038,8 +1038,25 @@ type("AddBreakDialog", ["ChangeEditDialog"],
              colorPicker.setFixedPosition();
              var colorPickerComponent = ['Color', Html.div({style: {padding: '5px 0 10px 0'}}, colorPicker.getLink(null, 'Choose a color'))];
 
+
+
+             // ICTP customization: let select break title from a list             
+             this.titleEditor = new FlexibleSelect(
+                    {'Coffee break':'Coffee break','Lunch break':'Lunch break','Reception':'Reception','Dinner':'Dinner'}, 
+                    177
+             );
+             this.titleEditor.input =  new RealtimeTextBox({name: 'title',id: 'breakTitle',style:{border: 'none', width: pixels(177)}});
+             if (this.info.get('title') != '') {
+                this.titleEditor.input.set(this.info.get('title'));
+                self.info.set('title', this.info.get('title'));
+             }
+             self.parameterManager.add(this.titleEditor.input);
+             this.titleEditor.observe(function(value) { return self.info.set('title', value); });
+             this.titleEditor.input.observe(function(value) { return self.info.set('title', value); });
+
              var contentDiv = IndicoUtil.createFormFromMap([
-                 [$T('Title'), $B(self.parameterManager.add(Html.edit({id: 'breakTitle', autocomplete: 'off'})), this.info.accessor('title'))],
+                 //[$T('Title'), $B(self.parameterManager.add(Html.edit({id: 'breakTitle', autocomplete: 'off'})), this.info.accessor('title'))],
+                 [$T('Title'), this.titleEditor.draw()],
                  [$T('Description'), $B(Html.textarea({cols: 40, rows: 2}), this.info.accessor('description'))],
                  [$T('Place'), this.roomEditor.draw()],
                  [$T('Date'), this.conferenceDays],

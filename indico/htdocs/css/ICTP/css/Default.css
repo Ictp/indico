@@ -534,3 +534,5 @@ div.sessionBar .protectionBarRestricted { height: auto; }
 .timetableBlock.timetableSession.ui-draggable.ui-resizable.ui-droppable {
     max-width: 90% !important;
 }
+
+.printonly { display:none; }

@@ -10,3 +10,7 @@ div.meetingEventBody { padding-top: 0; }
 
 
 a:link:after, a:visited:after { content: "" !important; }  
+
+.printonly { display: inline; }
+#goToDayLink { display: none; }
+.header-links { float: right; }

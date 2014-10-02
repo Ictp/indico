@@ -65,6 +65,9 @@ var videoServiceInfo = {};
 
 
 <div class="meetingEventBody">
+
+<div class="conferencetitlelink blue printonly">${conf.getTitle()}</div>
+
     <div ><span class="fakeLink dropDownMenu" id="goToDayLink"><strong>Go to day</strong></span></div>
     <script type="text/javascript">
         var goToDayMenuDays = $D(${dict((getDate(item.getAdjustedStartDate(timezone)),prettyDate(item.getAdjustedStartDate(timezone))

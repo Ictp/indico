@@ -384,6 +384,7 @@ class DefaultMaterialFactory(MaterialFactory):
         return cls(name)
 
 
+
 class MaterialFactoryRegistry:
     """Keeps a list of material factories. When a new material type wants to be
         added one just needs to implement the corresponding factory and add the
@@ -394,7 +395,8 @@ class MaterialFactoryRegistry:
                   MinutesFactory._id: MinutesFactory, \
                   VideoFactory._id: VideoFactory, \
                   PosterFactory._id: PosterFactory, \
-                  ReviewingFactory._id: ReviewingFactory }
+                  ReviewingFactory._id: ReviewingFactory
+                }
 
     _allowedMaterials = {
         'simple_event': ["paper", "slides", "poster", "minutes", "agenda", "pictures",
@@ -406,7 +408,9 @@ class MaterialFactoryRegistry:
                     "pictures", "text", "more information", "document", "list of actions",
                     "drawings", "proceedings", "live broadcast", "notes", "summary"],
 
-        'conference': ["paper", "slides", "poster", "minutes", "notes", "summary"],
+        #'conference': ["paper", "slides", "poster", "minutes", "notes", "summary"],
+        # ICTP specific
+        'conference': ["paper", "slides", "notes", "summary", "Announcement", "Application form", "Group photo"],
 
         'category': ["paper", "slides", "poster", "minutes", "agenda", "video", "pictures",
                      "text", "more information", "document", "list of actions", "drawings",

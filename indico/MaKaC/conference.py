@@ -1076,6 +1076,7 @@ class Category(CommonObjectBase):
         sc._notify('created', self)
 
         self._addSubCategory(sc)
+        print "SELF=",self
         sc.setOrder(self.getSubCategoryList()[-1].getOrder() + 1)
 
         return sc
@@ -11204,7 +11205,6 @@ class Paper(BuiltinMaterial):
 
     def setId( self, newId ):
         return
-
 
 
 class Slides(BuiltinMaterial):
