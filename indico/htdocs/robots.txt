@@ -8,3 +8,12 @@ Disallow: /search.py
 Disallow: /scripts/export.py
 Disallow: /api
 Crawl-delay: 10
+
+# ICTP specific:
+Disallow: *.xml
+Disallow: */event/*/program.pdf
+Disallow: */user/register
+Disallow: /export/*
+Request-rate: 1/5
+Visit-time: 2000-0800
+

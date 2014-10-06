@@ -62,6 +62,9 @@ type("RoomBookingWidget", ["IWidget"],
          draw: function() {
 
              var rbActive = Indico.Settings.RoomBookingModuleActive;
+     
+             // ICTP: FORCING roomChooser to work as FlexibleSelect 
+             rbActive = true;
 
              this.inheritText = this.parentInfo?Html.span(
                  {},
@@ -125,13 +128,13 @@ type("RoomBookingWidget", ["IWidget"],
                                {'location': newLocation},
                                function(result, error) {
                                    self.loading = false;
+                                   
                                    if (!error) {
+                                       
                                        var dict = {};
-
                                        each(result, function(value) {
                                            dict[value[0]] = value[1];
-                                       });
-
+                                       }); 
                                        self.roomCache[newLocation] = dict;
                                        self.roomChooser.setOptionList(dict);
                                        self.roomChooser.setLoading(false);
@@ -164,12 +167,34 @@ type("RoomBookingWidget", ["IWidget"],
                  },
                  function(key, elem){
                      return self._favoriteDecorator(key, elem);
-                 });
+                 });                  
          }
          else {
              this.roomChooser = Html.input('text', {className: "roomTextField",
                                                     name: "_roomName"});
          }
+
+
+         // ICTP: FORCING roomChooser to work as FlexibleSelect with predefined vocabulary
+         rbActive = true;
+         var dict = {}
+         var avaRooms = ["LB - Budinich Lecture Hall",
+         "LB - Luigi Stasi Seminar Room", 
+         "LB - Oppenheimer Meeting Room",
+         "LB - Oppenheimer Meeting Room",
+         "LB - Lecture Room B",
+         "LB - Euler Lecture Hall",
+         "LB - Lecture Room D",
+         "LB - Lecture Room H"
+         ];
+
+         each(avaRooms, function(room) {
+            dict[room] = room
+         }); 
+         this.roomChooser = new FlexibleSelect(dict, 177);              
+
+
+
 
          this.addressArea = new RealtimeTextArea({});
          this.inheritCheckbox = Html.checkbox({});
