@@ -270,7 +270,9 @@ class IBreakMetadataFossil(IFossil):
     def getDescription(self):
         pass
         
-        
+    def getRoom(self):
+        """ Room (inside location) """
+    getRoom.convert = lambda r: r and r.getName()    
         
         
 
