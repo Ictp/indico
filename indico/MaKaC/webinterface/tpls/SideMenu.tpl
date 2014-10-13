@@ -36,7 +36,7 @@
                     <% liClass = "sideMenu_disabled " + item.getErrorMessage() %>
                 % endif
 
-                <li id="sideMenu_${ item.getTitle().replace(' ','')} " class="${ liClass }">
+                <li id="sideMenu_${item.getTitle().replace(' ','')}" class="${ liClass }">
                     % if item.isEnabled():
                         <a href="${ item.getURL() }">
                             ${ item.getTitle() }

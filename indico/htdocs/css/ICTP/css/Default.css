@@ -205,6 +205,12 @@ span.conferencetitlelink {
     display: none !important;
 }
 
+#sideMenu_Programme, #sideMenu_Registration, #sideMenu_PaperReviewing, #sideMenu_Abstracts, #sideMenu_Evaluation {
+    display: none !important;
+}
+
+
+
 div.timetableBlockTitle {
     font-weight: bold;
     font-size: 18px;

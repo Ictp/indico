@@ -856,7 +856,9 @@ type("FlexibleSelect", ["IWidget", "WatchAccessor"],
              return observer(this.get());
          },
          disable: function() {
-             this.container.dom.className = 'flexibleSelect disabled';
+             if (this.container) {
+                this.container.dom.className = 'flexibleSelect disabled';
+             }
              this.input.disable();
              this.disabled = true;
          },
