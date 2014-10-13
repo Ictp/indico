@@ -178,14 +178,19 @@ type("RoomBookingWidget", ["IWidget"],
          // ICTP: FORCING roomChooser to work as FlexibleSelect with predefined vocabulary
          rbActive = true;
          var dict = {}
-         var avaRooms = ["LB - Budinich Lecture Hall",
+         var avaRooms = [
+         "LB - Budinich Lecture Hall",
          "LB - Luigi Stasi Seminar Room", 
-         "LB - Oppenheimer Meeting Room",
          "LB - Oppenheimer Meeting Room",
          "LB - Lecture Room B",
          "LB - Euler Lecture Hall",
          "LB - Lecture Room D",
-         "LB - Lecture Room H"
+         "LB - Lecture Room H",
+         "AGH - Denardo Lecture Hall",
+         "AGH - Giambiagi Lecture Hall",
+         "AGH - Kastler Lecture Hall",
+         "AGH - Lundqvist Lecture Hall",
+         "GGH - SDU Lab/Seminar Room"         
          ];
 
          each(avaRooms, function(room) {
