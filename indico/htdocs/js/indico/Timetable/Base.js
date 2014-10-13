@@ -844,14 +844,25 @@ type("ManagementTimeTable",["TimeTable", "UndoMixin"], {
     },
 
     _allowCreateHere: function(elementType) {
+    
+        // ICTP: forcing SESSION usage:
         switch(elementType) {
         case 'Session':
             return (this.contextInfo._type == "Conference");
         case 'Break':
-            return (this.contextInfo._type == "Conference" ? true : (this.contextInfo.isPoster === false));
+            return (this.contextInfo._type == "Conference" ? false : (this.contextInfo.isPoster === false));
         case 'Contribution':
-            return true;
-        }
+            return (this.contextInfo._type == "Conference" ? false : true);
+        }    
+    
+//         switch(elementType) {
+//         case 'Session':
+//             return (this.contextInfo._type == "Conference");
+//         case 'Break':
+//             return (this.contextInfo._type == "Conference" ? true : (this.contextInfo.isPoster === false));
+//         case 'Contribution':
+//             return true;
+//         }
 
     },
 
