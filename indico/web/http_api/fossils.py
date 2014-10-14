@@ -224,7 +224,18 @@ class IConferenceMetadataFossil(_IncludeMaterialFossil, IFossil):
     def getSupportInfo(self):
         pass
     getSupportInfo.produce = lambda e: e and e.getSupportInfo().getEmail()
+
+    # ICTP
+    def getDeadline(self):
+        pass
     
+    # ICTP: added deadline extract from support info
+    def getDeadlineDate(self):
+        """ Deadline Date """
+        pass
+
+
+
     def getLocator(self):
         pass
     getLocator.convert = Conversion.url(urlHandlers.UHConferenceDisplay)

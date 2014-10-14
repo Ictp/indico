@@ -3240,6 +3240,33 @@ class Conference(CommonObjectBase, Locatable):
         ev = eval(r.encode('ascii', 'xmlcharrefreplace'))
         self.setRoles(ev)
 
+    # Ictp
+    def getDeadline( self ):
+        ci = self.getContactInfo()
+        rs = ci.find('<div id="deadline">**DEADLINE: ')
+        if rs != -1:
+            try:
+                r_start = rs + 31
+                r_end = ci.find('**</div>',r_start)
+                deadline = ci[r_start:r_end]
+                return deadline
+            except:
+                return None
+        else:
+            return None         
+
+    # ICTP: try to retrieve a deadline date
+    def getDeadlineDate( self ):
+        dd = None
+        d = self.getDeadline()
+        if d:
+            try:
+                d = d.replace('.','/').replace('-','/')
+                dd = datetime.strptime(d, '%d/%m/%Y')
+            except:
+                pass
+        return dd
+
 
     def appendChairmanText( self, newText ):
         self.setChairmanText( "%s, %s"%(self.getChairmanText(), newText.strip()) )
