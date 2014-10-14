@@ -39,7 +39,8 @@
     
 <tr>
     <td colspan="3">
-        <div class="sis">* - This field's value could be OVERWRITTEN from SIS data.</div>
+        <div class="sis">* - This field's value could be OVERWRITTEN by SIS data</div>
+        <div class="sis">** - This field is displayed in main ICTP website and part of the content is from SIS: BE CAREFUL</div>
     </td>
 </tr>
     

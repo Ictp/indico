@@ -97,7 +97,7 @@ roles = confObj.getRolesJS()
 % if evtType == 'conference':
 <tr>
     <td class="dataCaptionTD">
-        <span class="dataCaptionFormat">${ _("Additional info")}</span>
+        <span class="dataCaptionFormat sis">${ _("Additional info")}**</span>
     </td>
     <td class="blacktext">
         <span id="inPlaceEditAdditionalInfo">${contactInfo}</span>
