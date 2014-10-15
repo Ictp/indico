@@ -19,7 +19,7 @@ indico/ext/importer/ictp_xlsimporter
 indico/htdocs/css/ICTP/images/sponsor-logo
 
 # ICTP sponsors dictionary
-indico/util/ICTP_available_sponsors.py 
+indico/util/ICTP_available_sponsors.py
 
 # python packaging
 /dist

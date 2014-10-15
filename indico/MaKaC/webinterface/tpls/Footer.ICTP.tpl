@@ -24,20 +24,7 @@ else:
 % endif
 
 
-<%
-import urllib2
-
-
-try:
-    response = urllib2.urlopen("http://www.ictp.it/footercalendar.aspx")
-    headers = response.info()
-    data = response.read()
-except:
-    data = ''
-#<img src="http://indico.ictp.it/css/ICTP/images/logo_ictp_v3_50th.png"  style="display:block;"  />
-%>
-
- ${ data }
+<%include file="PromoscienceFooter.ICTP.tpl" />
 
 
 

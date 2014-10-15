@@ -115,27 +115,12 @@
     %>
     <body data-user-id="${ user.getId() if user else 'null' }" section="${section}">
     
-        <%
-import urllib2
 
-# external website: I must use proxy
-proxy = urllib2.ProxyHandler({'http': 'proxy.ictp.it:3128'})
-opener = urllib2.build_opener(proxy)
-urllib2.install_opener(opener)
-
-try:
-    response = urllib2.urlopen("http://www.ictp.it/headercalendar.aspx")
-    headers = response.info()
-    data = response.read()
-except:
-    data = '<img src="http://indico.ictp.it/css/ICTP/images/logo_ictp_v3_50th.png"  style="display:block;background-color: blue;"  />'
-%>
-
+<%include file="PromoscienceHeader.ICTP.tpl" />
 
 
         
 
-  ${ data }    
     
         ${ page._getWarningMessage() }
     % if analyticsActive and analyticsCodeLocation == "body":
