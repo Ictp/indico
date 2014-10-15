@@ -164,7 +164,8 @@
         var txt_val = document.conferenceCreationForm.keywords.value;
         var k = document.getElementById('keywordsToAdd');
         if (sel_val != '#') {
-            if (txt_val.indexOf(sel_val) == -1) {
+            
+            if (txt_val.split("\n").indexOf(sel_val) == -1) {
                 var r = createRadioElement(sel_val);
                 k.appendChild(r);
                 document.conferenceCreationForm.keywords.value+=sel_val+"\n";
