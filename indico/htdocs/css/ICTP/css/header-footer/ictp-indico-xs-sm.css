@@ -1,0 +1,36 @@
+﻿@media (max-width: 959px) { 
+    .header .header-logo{
+        width: auto;
+        height: 82px;
+        background-size: contain;
+    }
+
+    .header .main-menu {
+        height: auto;
+        width: 100%;
+    }
+
+    .header .header-slideshow .title{
+        font-size: 25px;
+        /*padding: 12px 15px 10px 15px;
+        height: 62px;*/
+    }
+
+    .header-links{
+        width: 170px;
+        margin-top: 10px;
+    }
+    .header .icon2,
+    .header .icon1 {        
+        background-position: 0 0;
+        margin: 0;
+    }
+    .page-header-container {
+        background: url(/img/headerBg.png) no-repeat top right;
+        background-size: 49% auto;
+    }
+}
+
+.navbar-inverse{
+	min-width: 800px;
+}

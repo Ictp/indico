@@ -81,17 +81,17 @@
         <link rel="stylesheet" type="text/css" href="/css/ICTP/css/Default.css" />
         <link rel="stylesheet" href="/css/ICTP/css/printer.css" type="text/css" media="print" />        
 
-        <link rel="stylesheet" type="text/css" href="http://www.ictp.it/css/bootstrap.min.css" />
-        <link rel="stylesheet" type="text/css" href="http://www.ictp.it/css/bootstrap-theme.css" />
-        <link rel="stylesheet" type="text/css" href="http://www.ictp.it/css/ictp.css" />
-        <link rel="stylesheet" type="text/css" href="http://www.ictp.it/css/ictp-md.css" />
-        <link rel="stylesheet" type="text/css" href="http://www.ictp.it/css/ictp-indico-xs-sm.css" />        
+        <link rel="stylesheet" type="text/css" href="/css/ICTP/css/header-footer/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="/css/ICTP/css/header-footer/bootstrap-theme.css" />
+        <link rel="stylesheet" type="text/css" href="/css/ICTP/css/header-footer/ictp.css" />
+        <link rel="stylesheet" type="text/css" href="/css/ICTP/css/header-footer/ictp-md.css" />
+        <link rel="stylesheet" type="text/css" href="/css/ICTP/css/header-footer/ictp-indico-xs-sm.css" />        
         
         <link rel="stylesheet" type="text/css" href="/css/ICTP/css/font-awesome.min.css" />                                                                 
         <style>.nav>li { float: left; }</style>
         
         
-        <script type="text/javascript" src="http://www.ictp.it/scripts/jquery.mobile.touch.min.custom.js"></script>
+        <script type="text/javascript" src="/css/ICTP/js/jquery.mobile.touch.min.custom.js"></script>
         
 
 
