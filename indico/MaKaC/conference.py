@@ -3466,10 +3466,17 @@ class Conference(CommonObjectBase, Locatable):
         if self.hasSession(session):
             for sc in session.getCoordinatorList():
                 self.removeSessionCoordinator(session,sc)
-
+            
             if deleteContributions:
+
                 for contrib in session.getContributionList():
                     contrib.delete()
+
+                # ICTP: deletin Contributions means also BREAKS.                    
+                for entry in session.getSchedule().getEntries() :
+                    if isinstance(entry,BreakTimeSchEntry):
+                        entry.delete()
+
 
             del self.sessions[session.getId()]
 

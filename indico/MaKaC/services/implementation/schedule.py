@@ -485,8 +485,10 @@ class ConferenceScheduleDeleteSession(ScheduleOperation, conferenceServices.Conf
         logInfo["subject"] = "Deleted session: %s"%session.getTitle()
         self._conf.getLogHandler().logAction(logInfo, log.ModuleNames.TIMETABLE)
 
-        self._conf.removeSession(session)
-
+        # ICTP: yes, also delete CONTRIBUTION
+        #self._conf.removeSession(session)
+        self._conf.removeSession(session, deleteContributions=True)
+        
 class ConferenceScheduleDeleteContribution(ScheduleOperation, conferenceServices.ConferenceScheduleModifBase):
 
     def _performOperation(self):
