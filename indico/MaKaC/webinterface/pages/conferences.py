@@ -1242,14 +1242,14 @@ class WPTPLConferenceDisplay(WPXSLConferenceDisplay, object):
             daily = {}
             day = None
             for e in vars["entries"]:
-                day = str(e.getStartDate())
+                day = e.getStartDate()
                 if day in daily.keys():                
-                    daily[day] = daily[day].append(e)
+                    daily[day].append(e)
                 else:
                     daily[day] = [e]
             for d in daily.keys():
                 sortedEntries.extend(self._sortBySubtitle(daily[d]))
-            var["entries"] = sortedEntries
+            vars["entries"] = sortedEntries
         except:
             pass
         
@@ -1257,21 +1257,22 @@ class WPTPLConferenceDisplay(WPXSLConferenceDisplay, object):
         
     # ICTP: use Sub-title for manual sorting: use #1, #2, #3 and so on...
     def _sortBySubtitle(self,entries):
+        if not entries: return []
         sortedEntries = entries   
         try:
-            sort = False
-            sorted = []
+            ictpSort = False
+            ictpSorted = []
             pos = 10000
             for e in sortedEntries:
                 if e.getTitle().find("#") != -1:
-                    sorted.append({'key':int(e.getTitle().replace("#",'')), 'entry': e})
-                    sort = True
+                    ictpSorted.append({'key':int(e.getTitle().replace("#",'')), 'entry': e})
+                    ictpSort = True
                 else:
-                    sorted.append({'key':pos, 'entry': e})
+                    ictpSorted.append({'key':pos, 'entry': e})
                     pos += 1
-            sorted.sort(key=lambda item:item["key"], reverse=False)  
-            if sort:
-                sortedEntries = [i["entry"] for i in  sorted]
+            ictpSorted.sort(key=lambda item:item["key"], reverse=False)  
+            if ictpSort:
+                sortedEntries = [i["entry"] for i in  ictpSorted]
         except:
             pass   
         return sortedEntries 
