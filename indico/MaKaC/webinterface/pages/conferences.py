@@ -1247,7 +1247,9 @@ class WPTPLConferenceDisplay(WPXSLConferenceDisplay, object):
                     daily[day].append(e)
                 else:
                     daily[day] = [e]
-            for d in daily.keys():
+            k = daily.keys()
+            k.sort()
+            for d in k:
                 sortedEntries.extend(self._sortBySubtitle(daily[d]))
             vars["entries"] = sortedEntries
         except:
