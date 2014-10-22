@@ -18,7 +18,7 @@
                             </div>
                             <div class="col-sm-6 col-xs-12 phone-and-email">
                                 <i class="fa fa-phone">&nbsp;</i>&nbsp;&nbsp;(+39) 040 2240 111<br />
-                                <i class="fa fa-envelope">&nbsp;</i>&nbsp;&nbsp;sci_info@ictp.it
+                                <i class="fa fa-envelope">&nbsp;</i>&nbsp;&nbsp;pio@ictp.it
                             </div>
                         </div>
                     </div>

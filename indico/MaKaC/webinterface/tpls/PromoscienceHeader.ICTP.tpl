@@ -101,30 +101,30 @@
 
 
 
-                <div class="row marginLg  main-menu-container">
+                <div class="row marginLg  main-menu-container hidden-print">
                     <ul class="list-inline main-menu">
-                            <li class="menu-item" data-ps-menu="menu-item" id="menu_2" >
-                                <a   href="http://www.ictp.it/scientific-calendar.aspx"   >
+                            <li class="menu-item"  id="menu_2">
+                                <a   data-ps-type="calendar"        href="http://www.ictp.it/scientific-calendar.aspx">
                                     Scientific Calendar                                 </a>
                             </li>
-                            <li class="menu-item" data-ps-menu="menu-item" id="menu_1" >
-                                <a >
+                            <li class="menu-item"   data-ps-menu="menu-item"        id="menu_1">
+                                <a  href="http://www.ictp.it/programmes.aspx">
                                     Programmes  <i class="fa fa-sort-down">&nbsp;</i>                                 </a>
                             </li>
-                            <li class="menu-item" data-ps-menu="menu-item" id="menu_0" >
-                                <a >
+                            <li class="menu-item"   data-ps-menu="menu-item"        id="menu_0">
+                                <a  href="http://www.ictp.it/research.aspx">
                                     Research  <i class="fa fa-sort-down">&nbsp;</i>                                 </a>
                             </li>
                     </ul>
                     <div class="menu-bottom-border"></div>
                     <div class="dropdown-menu-container">
-                            <div data-ps-dropdown="menu_1" data-ps-menu="menu-dropdown" class="dropdown-menu-ps ">
+                                <div data-ps-dropdown="menu_1" data-ps-menu="menu-dropdown" class="dropdown-menu-ps ">
                                         <div class="menu-dropdown-container">
 
                                                 <div class="five-columns-menu">
                                                     <ul class="first-menu-element">
                                                         <li>
-                                                            <a href="http://www.ictp.it/programmes/pre-phd-programme.aspx">Pre-PhD <br/> Programmes</a>
+                                                            <a href="http://www.ictp.it/programmes/pre-phd-programme.aspx">Pre-PhD <br /> Programmes</a>
                                                         </li>
                                                     </ul>
                                                     <ul>
@@ -144,7 +144,7 @@
                                                 <div class="five-columns-menu">
                                                     <ul class="first-menu-element">
                                                         <li>
-                                                            <a href="http://www.ictp.it/programmes/degree-programmes.aspx">Degree <br/> Programmes</a>
+                                                            <a href="http://www.ictp.it/programmes/degree-programmes.aspx">Degree <br /> Programmes</a>
                                                         </li>
                                                     </ul>
                                                     <ul>
@@ -184,7 +184,7 @@
                                                 <div class="five-columns-menu">
                                                     <ul class="first-menu-element">
                                                         <li>
-                                                            <a href="http://www.ictp.it/programmes/career-development.aspx">Career <br/> Development</a>
+                                                            <a href="http://www.ictp.it/programmes/career-development.aspx">Career <br /> Development</a>
                                                         </li>
                                                     </ul>
                                                     <ul>
@@ -204,7 +204,7 @@
                                                 <div class="five-columns-menu">
                                                     <ul class="first-menu-element">
                                                         <li>
-                                                            <a href="http://www.ictp.it/programmes/laboratory-opportunities.aspx">Laboratory <br/> Opportunities</a>
+                                                            <a href="http://www.ictp.it/programmes/laboratory-opportunities.aspx">Laboratory <br /> Opportunities</a>
                                                         </li>
                                                     </ul>
                                                     <ul>
@@ -229,7 +229,7 @@
                                                 <div class="five-columns-menu">
                                                     <ul class="first-menu-element">
                                                         <li>
-                                                            <a href="http://www.ictp.it/programmes/outreach-activities.aspx">Scientific <br/> Outreach</a>
+                                                            <a href="http://www.ictp.it/programmes/outreach-activities.aspx">Scientific <br /> Outreach</a>
                                                         </li>
                                                     </ul>
                                                     <ul>
@@ -252,42 +252,56 @@
                                                     </ul>
                                                 </div>
                                         </div>
-                            </div>
-                            <div data-ps-dropdown="menu_0" data-ps-menu="menu-dropdown" class="dropdown-menu-ps researchMenu">
-                                        <div class="row researchSectionItemsContainer">
-                                                <div class="col-sm-2"><a class="researchSectionItem" href="http://www.ictp.it/research/hecap.aspx">
-                                                    <h5>HECAP</h5>
-                                                    <p>High Energy, Cosmology and Astroparticle Physics</p>
-                                                </a></div>
-                                                <div class="col-sm-2"><a class="researchSectionItem" href="http://www.ictp.it/research/cmsp.aspx">
-                                                    <h5>CMSP</h5>
-                                                    <p>Condensed Matter and Statistical Physics</p>
-                                                </a></div>
-                                                <div class="col-sm-2"><a class="researchSectionItem" href="http://www.ictp.it/research/math.aspx">
-                                                    <h5>MATH</h5>
-                                                    <p>Mathematics</p>
-                                                </a></div>
-                                                <div class="col-sm-2"><a class="researchSectionItem" href="http://www.ictp.it/research/esp.aspx">
-                                                    <h5>ESP</h5>
-                                                    <p>Earth System Physics</p>
-                                                </a></div>
-                                                <div class="col-sm-2"><a class="researchSectionItem" href="http://www.ictp.it/research/ap.aspx">
-                                                    <h5>AP</h5>
-                                                    <p>Applied Physics</p>
-                                                </a></div>
-                                                <div class="col-sm-2"><a class="researchSectionItem" href="http://www.ictp.it/research/qls.aspx">
-                                                    <h5>QLS</h5>
-                                                    <p>Quantitative Life Sciences</p>
-                                                </a></div>
-                                                <div class="col-sm-2"><a class="researchSectionItem" href="http://www.ictp.it/research/new-areas.aspx">
-                                                    <h5>New Research Areas</h5>
-                                                    <p>New Research Areas</p>
-                                                </a></div>
-                                        </div>
-                            </div>
-                
+                                </div>
+                                <div data-ps-dropdown="menu_0" data-ps-menu="menu-dropdown" class="dropdown-menu-ps researchMenu">
+                                            <div class="row researchSectionItemsContainer">
+                                                    <div class="col-sm-2">
+                                                        <a class="researchSectionItem" href="http://www.ictp.it/research/hecap.aspx">
+                                                            <h5>HECAP</h5>
+                                                            <p>High Energy, Cosmology and Astroparticle Physics</p>
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <a class="researchSectionItem" href="http://www.ictp.it/research/cmsp.aspx">
+                                                            <h5>CMSP</h5>
+                                                            <p>Condensed Matter and Statistical Physics</p>
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <a class="researchSectionItem" href="http://www.ictp.it/research/math.aspx">
+                                                            <h5>MATH</h5>
+                                                            <p>Mathematics</p>
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <a class="researchSectionItem" href="http://www.ictp.it/research/esp.aspx">
+                                                            <h5>ESP</h5>
+                                                            <p>Earth System Physics</p>
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <a class="researchSectionItem" href="http://www.ictp.it/research/ap.aspx">
+                                                            <h5>AP</h5>
+                                                            <p>Applied Physics</p>
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <a class="researchSectionItem" href="http://www.ictp.it/research/qls.aspx">
+                                                            <h5>QLS</h5>
+                                                            <p>Quantitative Life Sciences</p>
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-sm-2">
+                                                        <a class="researchSectionItem" href="http://www.ictp.it/research/new-areas.aspx">
+                                                            <h5>New Research Areas</h5>
+                                                            <p>New Research Areas</p>
+                                                        </a>
+                                                    </div>
+                                            </div>
+                                </div>
+
                     </div>
-            </div>
+                </div>
 
             <!-- END FIRST Level MENU DESKTOP-->
         </div>

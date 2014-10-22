@@ -410,7 +410,7 @@ class MaterialFactoryRegistry:
 
         #'conference': ["paper", "slides", "poster", "minutes", "notes", "summary"],
         # ICTP specific
-        'conference': ["paper", "slides", "poster", "notes", "summary", "announcement", "application form", "group photo"],
+        'conference': ["paper", "slides", "poster", "notes","video", "summary", "announcement", "application form", "group photo"],
 
         'category': ["paper", "slides", "poster", "minutes", "agenda", "video", "pictures",
                      "text", "more information", "document", "list of actions", "drawings",
