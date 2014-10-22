@@ -1236,14 +1236,14 @@ class WPTPLConferenceDisplay(WPXSLConferenceDisplay, object):
         vars["currentUser"] = self._rh._aw.getUser()
         vars["reportNumberSystems"] = Config.getInstance().getReportNumberSystems()
         
-        # ICTP: check is manual sorting is needed
+        # ICTP: check if manual sorting is needed
         try:
             sortedEntries = []
             daily = {}
             day = None
             for e in vars["entries"]:
-                day = e.getStartDate()
-                if day in daily.keys():                
+                day = e.getStartDate().strftime("%Y%m%d")
+                if day in daily.keys():  
                     daily[day].append(e)
                 else:
                     daily[day] = [e]
@@ -1258,25 +1258,26 @@ class WPTPLConferenceDisplay(WPXSLConferenceDisplay, object):
     # ICTP: use Sub-title for manual sorting: use #1, #2, #3 and so on...
     def _sortBySubtitle(self,entries):
         if not entries: return []
-        sortedEntries = entries   
         try:
-            ictpSort = False
-            ictpSorted = []
-            pos = 10000
-            for e in sortedEntries:
+            ictpSorted = {}
+            pos = 10000            
+            for e in entries:
                 if e.getTitle().find("#") != -1:
-                    ictpSorted.append({'key':int(e.getTitle().replace("#",'')), 'entry': e})
-                    ictpSort = True
+                    p = int(e.getTitle().replace("#",''))
+                    ictpSorted[p] = e
                 else:
-                    ictpSorted.append({'key':pos, 'entry': e})
+                    ictpSorted[pos] = e
                     pos += 1
-            ictpSorted.sort(key=lambda item:item["key"], reverse=False)  
-            if ictpSort:
-                sortedEntries = [i["entry"] for i in  ictpSorted]
+            final = []
+            k = ictpSorted.keys()
+            k.sort()
+            for item in k:
+                final.append(ictpSorted[item])
+            return final
         except:
-            pass   
-        return sortedEntries 
-     
+            return entries
+        
+             
 
     def _getMaterialFiles(self, material):
         files = []
