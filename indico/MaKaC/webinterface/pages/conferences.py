@@ -1236,6 +1236,25 @@ class WPTPLConferenceDisplay(WPXSLConferenceDisplay, object):
         vars["currentUser"] = self._rh._aw.getUser()
         vars["reportNumberSystems"] = Config.getInstance().getReportNumberSystems()
         
+        # ICTP: use Sub-title for manual sorting: use #1, #2, #3 and so on...
+        try:
+            ictpSort = False
+            ictpSorted = []
+            pos = 10000
+            for e in vars["entries"]:
+                if e.getTitle().find("#") != -1:
+                    ictpSorted.append({'key':int(e.getTitle().replace("#",'')), 'entry': e})
+                    ictpSort = True
+                else:
+                    ictpSorted.append({'key':pos, 'entry': e})
+                    pos += 1
+            ictpSorted.sort(key=lambda item:item["key"], reverse=False)  
+            if ictpSort:
+                vars["entries"] = [i["entry"] for i in  ictpSorted]
+        except:
+            pass        
+
+        
         return vars
 
     def _getMaterialFiles(self, material):

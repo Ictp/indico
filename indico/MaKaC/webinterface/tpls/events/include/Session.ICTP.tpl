@@ -12,7 +12,8 @@
             ${getTime(item.getAdjustedStartDate(timezone))} - ${getTime(item.getAdjustedEndDate(timezone))}
         </span>
         <span class="${titleClass}">
-        % if item.getTitle() != "" and item.getTitle() != session.getTitle() and session.getTitle() != 'notitle':
+        
+        % if item.getTitle() != "" and item.getTitle() != session.getTitle() and session.getTitle() != 'notitle' and item.getTitle().find("#") == -1:
             ${session.getTitle()}: ${item.getTitle()}
         % elif session.getTitle() != 'notitle':
             ${session.getTitle()}
