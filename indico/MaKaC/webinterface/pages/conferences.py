@@ -5564,7 +5564,8 @@ class WConfSpeakerIndex(WConfDisplayBodyBase):
                     if participation is None:
                         continue
                     url = urlHandlers.UHContributionDisplay.getURL(participation)
-                res[index].append({'title': participation.getTitle(), 'url': str(url), 'materials': fossilize(participation.getAllMaterialList())})
+                # ICTP: add partecipation protection
+                res[index].append({'title': participation.getTitle(), 'url': str(url), 'isProtected': participation.isProtected(), 'materials': fossilize(participation.getAllMaterialList())})
         wvars["body_title"] = self._getTitle()
         wvars["items"] = res
         return wvars
