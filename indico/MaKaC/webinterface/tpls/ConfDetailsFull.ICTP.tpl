@@ -110,6 +110,11 @@ ${ actions }
       fg.fieldgrouping("setInfo", ${conf.getRolesJS()});
       fg.fieldgrouping("getStructuredInfo");     
 
+        // ICTP specific: move Secretary to last
+        var dts = $('#Secretary').nextUntil('dt')
+        $('#Secretary').appendTo('#rolesList');
+        dts.appendTo('#rolesList');
+
       $('.chair_list .nomail').qtip({
              content: {
                  text: $T("Login to see email address"),

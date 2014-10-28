@@ -311,7 +311,7 @@ var avatars = {};
         },
         
         getStructuredInfo: function() {
-            var html = "<dl>";
+            var html = '<dl id="rolesList">';
             for (var i = 0; i < this.info.length; i++) {
                 var child = [];
                 
@@ -322,7 +322,7 @@ var avatars = {};
                     if (str(val) != '') { child.push(val); }
                 }
                 if (child.length > 0) {
-                    html += "<dt>"+this.info[i].value+"</dt>";
+                    html += '<dt id="'+this.info[i].value+'">'+this.info[i].value+'</dt>';
                     html += "<dd>";
                     html += child.join(", ");
                     html += "</dd>";                                
