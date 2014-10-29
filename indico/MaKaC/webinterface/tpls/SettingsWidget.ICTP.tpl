@@ -18,6 +18,8 @@
     % if currentUser:
         <div class="settingsWidgetSection"><a href="${ urlHandlers.UHUserDashboard.getURL(currentUser) }">${ _("My profile") }</a></div>
         <div class="settingsWidgetSection"><a href="${ urlHandlers.UHUserPreferences.getURL(currentUser) }">${ _("My preferences") }</a></div>
+        
+        <div class="settingsWidgetSection"><a href="http://help.ictp.it/indico" target="_blank" class="server-admin">Help</a></div>            
         % if currentUser.isAdmin():
             <div class="settingsWidgetSection"><a href="#" class="login-as">${ _("Login as...") }</a></div>
             <div class="settingsWidgetSection"><a href="/admin" class="server-admin">Server admin</a></div>            
