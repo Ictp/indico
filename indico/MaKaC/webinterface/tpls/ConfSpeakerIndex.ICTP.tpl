@@ -5,39 +5,36 @@
 </%block>
 
 <%block name="content">
-
+    <div class="speakerIndexFiltersContainer">
+        <div>
+            <input type="text" id="filter_text" value="" placeholder="${ _('Search in speakers') }" />
+        </div>
+        <div class="speakerIndexFilteredText">
+            ${_("Displaying ")}<span style="font-weight:bold;" id="numberFiltered">${len(items)}</span>
+            <span id="numberFilteredText">${ _("speaker") if len(items) == 1 else _("speakers")}</span>
+            ${_("out of")}
+            <span style="font-weight:bold;">${len(items)}</span>
+        </div>
+    </div>
     <div class="speakerIndex index">
-        % for key, item in items.iteritems():        
-            <% 
-            # Shows only not protected Items
-            pItems=[item[0]]
-            for j in range(1, len(item)):
-                if not(item[j]['isProtected']):
-                    pItems.append(item[j])
-            %>    
-                
-            % if len(pItems) > 1:
-                <div class="speakerIndexItem item">
-                    <div style="padding-bottom: 10px">
-                        <span class="speakerIndexItemText text">${item[0]['fullName']}</span>
-                        % if item[0]['affiliation']:
-                            <span style="color: #888">(${item[0]['affiliation']})</span>
+        % for key, item in items.iteritems():
+            <div class="speakerIndexItem item">
+                <div style="padding-bottom: 10px">
+                    <span class="speakerIndexItemText text">${item[0]['fullName']}</span>
+                    % if item[0]['affiliation']:
+                        <span style="color: #888">(${item[0]['affiliation']})</span>
+                    % endif
+                </div>
+                % for i in range(1, len(item)):
+                    <div class="contribItem">
+                        <a href="${item[i]['url']}">${item[i]['title']}</a>
+                        % if item[i]['materials']:
+                            <img class="material_icon" title="${_('materials')}" src="${Config.getInstance().getBaseURL()}/images/material_folder.png" width=12 height=12 style="cursor: pointer;"/>
+                            <%include file="MaterialListPopup.tpl" args="materials=item[i]['materials']"/>
                         % endif
                     </div>
-                    
-                    % for i in range(1, len(pItems)):
-                        <div class="contribItem">
-                            <a href="${pItems[i]['url']}">${pItems[i]['title']}</a>
-                            % if pItems[i]['materials']:
-                                <img class="material_icon" title="${_('materials')}" src="${Config.getInstance().getBaseURL()}/images/material_folder.png" width=12 height=12 style="cursor: pointer;"/>
-                                <%include file="MaterialListPopup.tpl" args="materials=pItems[i]['materials']"/>
-                            % endif
-                        </div>
-                    % endfor
-                </div>
-                
-            % endif
-            
+                % endfor
+            </div>
         % endfor
     </div>
 </%block>

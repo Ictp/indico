@@ -5553,6 +5553,7 @@ class WConfSpeakerIndex(WConfDisplayBodyBase):
             except IndexError:
                 continue
             res[index].append({'fullName': speaker.getFullNameNoTitle(), 'affiliation': speaker.getAffiliation()})
+            hasPartecipations = False
             for speaker in pl:
                 if isinstance(speaker, conference.SubContribParticipation):
                     participation = speaker.getSubContrib()
@@ -5564,8 +5565,12 @@ class WConfSpeakerIndex(WConfDisplayBodyBase):
                     if participation is None:
                         continue
                     url = urlHandlers.UHContributionDisplay.getURL(participation)
-                # ICTP: add partecipation protection
-                res[index].append({'title': participation.getTitle(), 'url': str(url), 'isProtected': participation.isProtected(), 'materials': fossilize(participation.getAllMaterialList())})
+                # ICTP: add ONLY if user can VIEW it                
+                if participation.canView(self._rh._aw):
+                    res[index].append({'title': participation.getTitle(), 'url': str(url),'materials': fossilize(participation.getAllMaterialList())})
+                    hasPartecipations = True
+            # Remove Speaker name if no Contrib visibile
+            if not hasPartecipations: res.pop(index)
         wvars["body_title"] = self._getTitle()
         wvars["items"] = res
         return wvars
