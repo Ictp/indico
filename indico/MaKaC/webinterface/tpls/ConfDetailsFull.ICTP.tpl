@@ -11,14 +11,13 @@
       <span  title="${_("Date/Time")}" class="icon icon-time" aria-hidden="true"></span>
       <div class="text">
         
-        
-        % if 0:
+        % if conf.getOwner().getOwner().getId() == '2l133':
             <div class="date_start">${_('Starts <span class="datetime">{0} {1}</span>').format(dateInterval[0], dateInterval[1])}</div>
         % else:
             <div class="date_start">${_('Starts <span class="datetime">{0}</span>').format(dateInterval[0])}</div>
         % endif
         
-        % if 0:
+        % if conf.getOwner().getOwner().getId() == '2l133':
             <div class="date_end">${_('Ends <span class="datetime">{0} {1}</span>').format(dateInterval[2], dateInterval[3])}</div>
         % else:
             <div class="date_end">${_('Ends <span class="datetime">{0}</span>').format(dateInterval[2])}</div>
