@@ -3206,7 +3206,14 @@ class Conference(CommonObjectBase, Locatable):
     # Ictp                        
     def getRolesJS( self ):
         """ return roles as string """
-        r = unicode(str(self.getRoles()).replace('True','true').replace('False','false'), "UTF-8")        
+        # conerting ' in child values to HTML code
+        gr = self.getRoles()
+        if gr:
+            for r in gr:
+                for c in r['child']:
+                    if c.has_key('familyName'):
+                        c['familyName'] = c['familyName'].replace("'","&#39;")
+        r = unicode(str(gr).replace('True','true').replace('False','false'), "UTF-8")        
         return r.encode('ascii', 'xmlcharrefreplace')
 
 
@@ -3238,6 +3245,7 @@ class Conference(CommonObjectBase, Locatable):
         """ save roles as string """
         r = unicode(roles.replace('true','True').replace('false','False'), "UTF-8")       
         ev = eval(r.encode('ascii', 'xmlcharrefreplace'))
+        print "STO SALVANDO:",ev, "___TIPO=", type(ev).__name__
         self.setRoles(ev)
 
     # Ictp
