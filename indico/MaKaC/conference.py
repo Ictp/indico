@@ -3245,7 +3245,6 @@ class Conference(CommonObjectBase, Locatable):
         """ save roles as string """
         r = unicode(roles.replace('true','True').replace('false','False'), "UTF-8")       
         ev = eval(r.encode('ascii', 'xmlcharrefreplace'))
-        print "STO SALVANDO:",ev, "___TIPO=", type(ev).__name__
         self.setRoles(ev)
 
     # Ictp
@@ -10906,7 +10905,10 @@ class Material(CommonObjectBase):
         self.notifyModification()
 
     def getTitle( self ):
-        return self.title
+        # ICTP: all titles should have same uppercase format
+        return self.title.title()
+        #return self.title
+
 
     @Updates (['MaKaC.conference.Material',
                  'MaKaC.conference.Minutes',
