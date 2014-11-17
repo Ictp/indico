@@ -179,18 +179,18 @@ type("RoomBookingWidget", ["IWidget"],
          rbActive = true;
          var dict = {}
          var avaRooms = [
-         "LB - Budinich Lecture Hall",
-         "LB - Luigi Stasi Seminar Room", 
-         "LB - Oppenheimer Meeting Room",
-         "LB - Lecture Room B",
-         "LB - Euler Lecture Hall",
-         "LB - Lecture Room D",
-         "LB - Lecture Room H",
-         "AGH - Denardo Lecture Hall",
-         "AGH - Giambiagi Lecture Hall",
-         "AGH - Kastler Lecture Hall",
-         "AGH - Lundqvist Lecture Hall",
-         "GGH - SDU Lab/Seminar Room"         
+             "Leonardo Building - Budinich Lecture Hall",
+             "Leonardo Building - Luigi Stasi Seminar Room", 
+             "Leonardo Building - Oppenheimer Meeting Room",
+             "Leonardo Building - Lecture Room B",
+             "Leonardo Building - Euler Lecture Hall",
+             "Leonardo Building - Lecture Room D",
+             "Leonardo Building - Lecture Room H",
+             "Adriatico Guest House - Denardo Lecture Hall",
+             "Adriatico Guest House - Giambiagi Lecture Hall",
+             "Adriatico Guest House - Kastler Lecture Hall",
+             "Adriatico Guest House - Lundqvist Lecture Hall",
+             "Galileo Guest House - SDU Lab/Seminar Room"         
          ];
 
          each(avaRooms, function(room) {

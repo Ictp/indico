@@ -129,12 +129,12 @@
                                                     </ul>
                                                     <ul>
                                                             <li>
-                                                                <a href="http://www.ictp.it/programmes/pre-phd-programme.aspx#anchor_1156">
+                                                                <a href="http://diploma.ictp.it">
                                                                     ICTP Postgraduate Diploma Programme
                                                                 </a>
                                                             </li>
                                                             <li>
-                                                                <a href="http://www.ictp.it/programmes/pre-phd-programme.aspx#anchor_1120">
+                                                                <a href=" /programmes/step.aspx">
                                                                     ICTP/IAEA Sandwich Training Education Programme
                                                                 </a>
                                                             </li>
@@ -149,32 +149,32 @@
                                                     </ul>
                                                     <ul>
                                                             <li>
-                                                                <a href="http://www.ictp.it/programmes/degree-programmes.aspx#anchor_2342">
+                                                                <a href="/programmes/ictp-sissa-phd-description.aspx">
                                                                     Joint ICTP/SISSA PhD Programme in Physics and Mathematics
                                                                 </a>
                                                             </li>
                                                             <li>
-                                                                <a href="http://www.ictp.it/programmes/degree-programmes.aspx#anchor_1861">
+                                                                <a href="http://phdfluidmechanics.appspot.com/">
                                                                     Joint PhD Programme, Earth Science and Fluid Mechanics 
                                                                 </a>
                                                             </li>
                                                             <li>
-                                                                <a href="http://www.ictp.it/programmes/degree-programmes.aspx#anchor_1836">
+                                                                <a href="/programmes/joint-laurea-description.aspx">
                                                                     Joint Laurea Magistralis in Physics
                                                                 </a>
                                                             </li>
                                                             <li>
-                                                                <a href="http://www.ictp.it/programmes/degree-programmes.aspx#anchor_12815">
+                                                                <a href="/programmes/joint-ictpcollegio-carlo-alberto-description.aspx">
                                                                     Joint ICTP/Collegio Carlo Alberto Program in Economics 
                                                                 </a>
                                                             </li>
                                                             <li>
-                                                                <a href="http://www.ictp.it/programmes/degree-programmes.aspx#anchor_13750">
+                                                                <a href="/programmes/complex-systems.aspx">
                                                                     International Master, Physics of Complex Systems
                                                                 </a>
                                                             </li>
                                                             <li>
-                                                                <a href="http://www.ictp.it/programmes/degree-programmes.aspx#anchor_15446">
+                                                                <a href="/programmes/mmp.aspx">
                                                                     Masters in Medical Physics
                                                                 </a>
                                                             </li>
@@ -209,17 +209,17 @@
                                                     </ul>
                                                     <ul>
                                                             <li>
-                                                                <a href="http://www.ictp.it/programmes/laboratory-opportunities.aspx#anchor_1854">
+                                                                <a href="/tril.aspx">
                                                                     Training and Research in Italian Laboratories
                                                                 </a>
                                                             </li>
                                                             <li>
-                                                                <a href="http://www.ictp.it/programmes/laboratory-opportunities.aspx#anchor_1855">
+                                                                <a href="http://www.elettra.trieste.it/userarea/ictp-elettra-users-programme.html ">
                                                                     ICTP-ELETTRA Users Programme
                                                                 </a>
                                                             </li>
                                                             <li>
-                                                                <a href="http://www.ictp.it/programmes/laboratory-opportunities.aspx#anchor_13743">
+                                                                <a href="/programmes/ictp-labs.aspx">
                                                                     ICTP Laboratories
                                                                 </a>
                                                             </li>
@@ -238,7 +238,7 @@
                                                                     <a href="http://www.ictp.it/programmes/outreach-activities/office-of-external-activities.aspx">Office of External Activities</a>
                                                                 </li>
                                                                 <li>
-                                                                    <a href="http://www.ictp.it/programmes/outreach-activities/ictp-in-brazil.aspx">ICTP in Brazil</a>
+                                                                    <a href="http://www.ictp.it/programmes/outreach-activities/ictp-partner-institutes.aspx">ICTP Partner Institutes</a>
                                                                 </li>
                                                                 <li>
                                                                     <a href="http://www.ictp.it/programmes/outreach-activities/ictp-in-africa.aspx">ICTP in Africa</a>
