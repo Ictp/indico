@@ -108,8 +108,8 @@
         try:
             if hasattr(page,'_conf') and page._conf:
                 section=page._conf.getOwner().getId()
-            if hasattr(page,'_target'):
-                section=page._target.id
+            #if hasattr(page,'_target'):
+            #    section=page._target.id
         except:
             pass
     %>
