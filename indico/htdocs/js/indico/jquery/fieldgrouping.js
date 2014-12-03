@@ -284,6 +284,12 @@ var avatars = {};
             }
         },
 
+        _nologo: function(strCode){
+           var html = $(strCode.bold()); 
+           html.find('logo').remove();
+           return html.html();
+        },
+
         getManagedInfo: function() {
             // Return a JSON Info with fixed Ids
             this._updateAvatars(this);
@@ -321,7 +327,9 @@ var avatars = {};
                     if ('firstName' in echild[j]) { val = val + " " + echild[j].firstName; }
                     if (str(val) != '') { child.push(val); }
                 }
-                if (child.length > 0) {
+                // ICTP Specific: do not show label if no text except <nologo> tags
+                var nologo_content = this._nologo(child.join(""));
+                if (child.length > 0 && nologo_content != '') {
                     html += '<dt id="'+this.info[i].value+'">'+this.info[i].value+'</dt>';
                     html += "<dd>";
                     html += child.join(", ");
