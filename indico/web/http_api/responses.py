@@ -71,6 +71,16 @@ class HTTPAPIResult(Fossilizable):
         return len(self._results)
 
     def getResults(self):
+
+        # ICTP: custom case Conference PASCOS
+        res = []
+        for r in self._results:        
+            if r['url'].find('.ictp.it/event/a14275/') != -1:
+            #if r['url'].find('.ictp.it/event/a13203/') != -1:
+                r['url'] = 'http://pascos2015.ictp.it'
+            res.append(r)
+        return res
+        
         return self._results
 
     def getComplete(self):
