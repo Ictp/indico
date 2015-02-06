@@ -59,6 +59,9 @@ containsCategories = len(categ.getSubCategoryList()) > 0
     % if isRootCategory or materials or managers:
     <div class="category-sidebar">
         % if isRootCategory:
+        
+        
+        
             % if isNewsActive:
                 <h2 class="icon-bullhorn">
                     ${_("News")}

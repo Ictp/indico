@@ -696,7 +696,7 @@ class WConfDisplayFrame(wcomponents.WTemplated):
         if not os.path.isdir(photosDir):
             os.makedirs(photosDir)   
              
-        photo = None
+        photo = []
         for mat in self._conf.getAllMaterialList():
             matName = mat.getTitle().lower()
             for res in mat.getResourceList():
@@ -709,12 +709,15 @@ class WConfDisplayFrame(wcomponents.WTemplated):
                         fileURL = str(urlHandlers.UHFileAccess.getURL(res))
                         if ftype == 'jpg':
                             if matName.find('photo') != -1 or matName.find('picture') != -1 or matName.find('group') != -1:                                
-                                cachedFilePath = photosDir + "/photo_" + str(self._conf.getId())  
-                                photo = {  "name":fname , 
+                                if len(photo) == 0:
+	                                cachedFilePath = photosDir + "/photo_" + str(self._conf.getId())
+                                else:
+									cachedFilePath = photosDir + "/photo_"+str(len(photo)) + str(self._conf.getId())	                                
+                                photo.append({  "name":fname , 
                                              "url": fileURL,
                                              "folderurl": fileURL+'/../',
                                              "data":self.getCachedImage(cachedFilePath,fpath,'jpeg','245')
-                                }                                      
+                                })                                      
                     except Exception as e:
                         pass
         p["photo"] = photo
