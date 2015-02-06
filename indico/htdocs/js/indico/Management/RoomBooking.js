@@ -186,10 +186,13 @@ type("RoomBookingWidget", ["IWidget"],
              "Leonardo Building - Euler Lecture Hall",
              "Leonardo Building - Lecture Room D",
              "Leonardo Building - Lecture Room H",
+             "Leonardo Building - Lab",
              "Adriatico Guest House - Denardo Lecture Hall",
              "Adriatico Guest House - Giambiagi Lecture Hall",
              "Adriatico Guest House - Kastler Lecture Hall",
              "Adriatico Guest House - Lundqvist Lecture Hall",
+             "Adriatico Guest House - Eklund Informatics Laboratory",
+             "Adriatico Guest House - Informatics Laboratory",
              "Galileo Guest House - SDU Lab/Seminar Room"         
          ];
 
