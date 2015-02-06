@@ -145,15 +145,15 @@
     
     
     % if photo:
-        <ul class="poster_box">
-        	% for p in photo:
+    	% for p in photo:
+        <ul class="poster_box">       	
             <li>
                 <a href="${p['url']}">
                     <img src="data:image/jpg;base64,${p['data']}" title="${p['name']}" alt="${p['name']}" />
                 </a>
             </li>
-            % endfor
         </ul>
+        % endfor        
     % endif      
     
     

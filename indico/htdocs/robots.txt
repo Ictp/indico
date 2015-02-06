@@ -7,6 +7,10 @@ Disallow: /categOverview.py
 Disallow: /search.py
 Disallow: /scripts/export.py
 Disallow: /api
+
+# Do not index Pascos event
+Disallow: /event/a14275
+
 Crawl-delay: 10
 # ICTP specific:
 Disallow: *.xml

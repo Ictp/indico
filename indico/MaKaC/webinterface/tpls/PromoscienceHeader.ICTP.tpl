@@ -178,6 +178,11 @@
                                                                     Masters in Medical Physics
                                                                 </a>
                                                             </li>
+                                                            <li>
+                                                                <a href="http://www.mhpc.it/">
+                                                                    Masters in High Performance Computing
+                                                                </a>
+                                                            </li>
 
                                                     </ul>
                                                 </div>
