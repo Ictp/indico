@@ -464,17 +464,21 @@ class WConfDisplayFrame(wcomponents.WTemplated):
 
         
     def getSponsorsDict(sposors_array):
-        plugin = PluginsHolder().getPluginType('ictp_addons').getPlugin("sponsor_management")
-        sponsors_array = plugin.getOptions()["sponsors"].getValue()        
-        # convert array to dict
         dict_sponsors = {}
-        for s in sponsors_array:
-            dict_sponsors[s['name']] = {
-                'url':s['structure'],
-                'country':s['country'],
-                'title':s['title'],
-                'logo':s['logo']
-                }
+        try:
+            plugin = PluginsHolder().getPluginType('ictp_addons').getPlugin("sponsor_management")
+            sponsors_array = plugin.getOptions()["sponsors"].getValue()        
+            # convert array to dict
+        
+            for s in sponsors_array:
+                dict_sponsors[s['name']] = {
+                    'url':s['structure'],
+                    'country':s['country'],
+                    'title':s['title'],
+                    'logo':s['logo']
+                    }
+        except:
+            pass            
         return dict_sponsors   
 
 

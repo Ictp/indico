@@ -159,8 +159,8 @@
                                                                 </a>
                                                             </li>
                                                             <li>
-                                                                <a href="/programmes/joint-laurea-description.aspx">
-                                                                    Joint Laurea Magistralis in Physics
+                                                                <a href="http://www.ictp.it/programmes/joint-masters-in-physics.aspx">
+                                                                    Joint Masters in Physics
                                                                 </a>
                                                             </li>
                                                             <li>
