@@ -23,6 +23,25 @@ from MaKaC.plugins import PluginsHolder
 from MaKaC.webinterface.user import UserListModificationBase, UserModificationBase
 from MaKaC.webinterface.rh.base import RoomBookingDBMixin
 
+# Ictp:
+from indico.core.config import Config
+import os, logging
+from MaKaC.common.contextManager import ContextManager
+# file for appending changes
+changeLog = "/opt/indico/log/changes.log"
+# create LOGGER
+logger = logging.getLogger(__name__)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger.setLevel(logging.DEBUG)
+logFilePath = "/opt/indico/log/crons.log"
+handler = logging.handlers.RotatingFileHandler(filename = logFilePath, maxBytes=1000000, backupCount = 100)
+handler.setFormatter(formatter)
+handler.setLevel(logging.DEBUG)
+logger.addHandler(handler)
+
+
+
+
 
 class PluginOptionsBase (AdminService):
 
@@ -122,18 +141,40 @@ class PluginOptionsAddLink ( PluginOptionsBase ):
 
     def _checkParams(self):
         PluginOptionsBase._checkParams(self)
-        self._linkName = self._params.get('name', None)
-        self._linkStructure = self._params.get('structure', None)
+        # ICTP: get ALL available parameters
+        #self._linkName = self._params.get('name', None)
+        #self._linkStructure = self._params.get('structure', None)
+        for p in self._params.keys():
+        	setattr(self, '_link'+p.capitalize(), self._params.get(p, None))        
 
     def _getAnswer(self):
-        links = self._targetOption.getValue()
+        links = self._targetOption.getValue()     
         for link in links:
-            if link['name'] == self._linkName:
-                return {'success': False, 'table': links}
-        links.append({'name': self._linkName, 'structure': self._linkStructure})
+        	if link['name'] == self._linkName:
+        		return {'success': False, 'table': links}
+
+        # ICTP: append ALL available properties
+        # links.append({'name': self._linkName, 'structure': self._linkStructure})
+        dict = {}
+        for p in dir(self):
+        	if p.startswith('_link'):
+        	    val = p.replace('_link','').lower()
+        	    dict[val] = getattr(self,p)
+        if dict.has_key('optionname') and dict['optionname'] == 'ictp_addons.sponsor_management.sponsors':
+            user = ContextManager.get("currentUser")
+            logger.info("Added Sponsor: "+dict['title']+" by "+user.getName()+" ("+user.email+")")
+        links.append(dict)
+
         self._targetOption.setValue(self._targetOption.getValue())
         self._targetOption._notifyModification()
         return {'success': True, 'table': links}
+        
+        
+
+                
+         
+
+     
 
 class PluginOptionsRemoveLink ( PluginOptionsBase ):
 
@@ -143,9 +184,24 @@ class PluginOptionsRemoveLink ( PluginOptionsBase ):
 
     def _getAnswer(self):
         links = self._targetOption.getValue()
+        htdocsDir = Config.getInstance().getHtdocsDir()
+        logoDir = "/css/ICTP/images/sponsor-logo/"
         for link in links:
             if link['name'] == self._linkName:
                 links.remove(link)
+                if link.has_key('logo') and link['logo']:
+                    # remove logo from FS                   
+                    filePath = htdocsDir + logoDir + link['logo'] 
+                    try:
+                        os.remove(filePath)
+                    except OSError:
+                        pass
+                if link.has_key('optionname') and link['optionname'] == 'ictp_addons.sponsor_management.sponsors':
+                    user = ContextManager.get("currentUser")
+                    logger.info("Removed Sponsor: "+link['title']+" by "+user.getName()+" ("+user.email+")")
+                    
+                    
+                    
         self._targetOption._notifyModification()
         return {'success': True, 'table': links}
 

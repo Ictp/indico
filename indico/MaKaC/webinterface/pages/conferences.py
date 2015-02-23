@@ -82,18 +82,17 @@ from MaKaC.user import AvatarHolder
 from MaKaC.webinterface.general import WebFactory
 from MaKaC.common.TemplateExec import render
 
+from MaKaC.plugins.base import PluginsHolder
+
+
 # ICTP: added for generating Poster on the fly
 import base64
 from wand.image import Image, Color
 import re
-# Import available_sponsors dictionary
-try:
-    from indico.util.ICTP_available_sponsors import available_sponsors, custom_replace, custom_add, ocirne_dictionary
-except:
-    available_sponsors = {}
-    custom_replace = {}
-    custom_add = {}
-    ocirne_dictionary = {}
+
+try: from indico.core import db
+except: from MaKaC.common import db
+
 
 
 
@@ -463,6 +462,20 @@ class WConfDisplayFrame(wcomponents.WTemplated):
         self._aw = aw
         self._conf = conf
 
+        
+    def getSponsorsDict(sposors_array):
+        plugin = PluginsHolder().getPluginType('ictp_addons').getPlugin("sponsor_management")
+        sponsors_array = plugin.getOptions()["sponsors"].getValue()        
+        # convert array to dict
+        dict_sponsors = {}
+        for s in sponsors_array:
+            dict_sponsors[s['name']] = {
+                'url':s['structure'],
+                'country':s['country'],
+                'title':s['title'],
+                'logo':s['logo']
+                }
+        return dict_sponsors   
 
 
     def getHTML( self, menu, body, params ):
@@ -486,31 +499,32 @@ class WConfDisplayFrame(wcomponents.WTemplated):
         return None    
     
     # Ictp
-    def getSponsorData(self, key):
-        img = None
-        title = ''
-        url = ''
-        record = available_sponsors[key]
-        if record.has_key('title'): title = record["title"]
-        if record.has_key('url'): url = record["url"]
-        img = self.getLogoPath(key)
-        # check for specific date-related logos info
-        if record.has_key('logos'):
-            htdocsDir = Config.getInstance().getHtdocsDir()
-            today = int(time.strftime("%Y%m%d"))
-            for logo in record['logos']:
-                try:
-                    sdate = int(logo['sdate'])
-                    edate = int(logo['edate'])
-                    fname = str(logo['filename'])
-                    if sdate <= today and edate >=today:
-                        new_img = htdocsDir + "/css/ICTP/images/sponsor-logo/" + fname   
-                        if os.path.isfile(new_img): img = new_img
-                except:
-                    pass
-                
-            
-        return img, title, url
+#     def getSponsorData(self, key):
+#         img = None
+#         title = ''
+#         url = ''
+#         dict_sponsors = self.getSponsorsDict()
+#         record = dict_sponsors[key]
+#         if record.has_key('title'): title = record["title"]
+#         if record.has_key('url'): url = record["url"]
+#         img = self.getLogoPath(key)
+#         # check for specific date-related logos info
+#         if record.has_key('logos'):
+#             htdocsDir = Config.getInstance().getHtdocsDir()
+#             today = int(time.strftime("%Y%m%d"))
+#             for logo in record['logos']:
+#                 try:
+#                     sdate = int(logo['sdate'])
+#                     edate = int(logo['edate'])
+#                     fname = str(logo['filename'])
+#                     if sdate <= today and edate >=today:
+#                         new_img = htdocsDir + "/css/ICTP/images/sponsor-logo/" + fname   
+#                         if os.path.isfile(new_img): img = new_img
+#                 except:
+#                     pass
+#                 
+#             
+#         return img, title, url
         
 
           
@@ -548,7 +562,8 @@ class WConfDisplayFrame(wcomponents.WTemplated):
     def getFromNewVocab(self, sp):
         htdocsDir = Config.getInstance().getHtdocsDir()
         vocab = {}
-        pos = 0
+        pos = 0               
+        dict_sponsors = self.getSponsorsDict()
         for elem in sp:
             pattern = r'<logo>(.*?)</logo>'
             rex = re.findall(pattern, elem['familyName'], re.DOTALL)
@@ -556,70 +571,75 @@ class WConfDisplayFrame(wcomponents.WTemplated):
             for g in rex:
                 text = g.lower().strip()
                 # check if extracted key exists in vocabulary
-                if text in ocirne_dictionary.keys():
-                    pos += 1
-                    el = ocirne_dictionary[text]
-                    img = None
-                    url = None
-
-                    if el.has_key('logo'):
-                        img = self.resizeImage(htdocsDir + "/css/ICTP/images/sponsor-logo/" + el['logo'],'170')                        
-
-                    if el.has_key('url'): url = el['url']
-
-                    vocab[pos] = {
-                                "data": img,
-                                "title": el['title'],
-                                "url": url
-                    }
+                try:               
+                    if text in dict_sponsors.keys():
+                        pos += 1
+                        el = dict_sponsors[text]
+                        img = None
+                        url = None
+                        if el.has_key('logo') and el['logo']:
+                            img = self.resizeImage(htdocsDir + "/css/ICTP/images/sponsor-logo/" + el['logo'],'170')                        
+                        if el.has_key('url') and el['url']: url = el['url']
+                        vocab[pos] = {
+                                    "data": img,
+                                    "title": el['title'],
+                                    "url": url
+                        }
+                except:
+                    pass
         return vocab
 
 
     # Ictp: get Sponsors - Cosponsosrs
     def getSponsors(self, sp):
         dd = {}
+        print "sp=",sp
+        print "pos=",str(sp).lower().find('<logo>')
         confId = str(self._conf.getId())
         htdocsDir = Config.getInstance().getHtdocsDir()
         if str(sp).lower().find('<logo>') > -1:
             # new vocabulary:
             dd = self.getFromNewVocab(sp)
-        else:
-            for elem in sp:
-                for av in available_sponsors.keys(): 
-                    pos = str(elem["familyName"]).lower().find(av)                  
-                    if pos != -1:
-                        img, title, url = self.getSponsorData(av)
-                        # check if in custom REPLACE cases                    
-                        if confId in custom_replace.keys():                                        
-                            cconf = custom_replace[confId]
-                            if av in cconf.keys():
-                                v = cconf[av]
-                            
-                                img = htdocsDir + "/css/ICTP/images/sponsor-logo/" + v['filename']
-                                title = v['title']
-                                url = v['url']
-                            
-                    
-                        if img: img = self.resizeImage(img,'170')
-                        dd[pos] = {
-                                "data": img,
-                                'title': title,
-                                'url': url
-                        }
-                    
-                # check for custom ADD cases
-                if confId in custom_add.keys():
-                    i = 100000     
-                    for logo in custom_add[confId]:
-                        i += 1
-                        img = htdocsDir + "/css/ICTP/images/sponsor-logo/" + logo['filename']
-                        if img: img = self.resizeImage(img,'170')
-                        dd[i] = {
-                            "data": img,
-                            'title': logo['title'],
-                            'url': logo['url']
-                        }
-
+            print "***** DD=",dd
+# OLD way of getting sponsors: REMOVED            
+#         else:
+#             dict_sponsors = self.getSponsorsDict()
+#             for elem in sp:
+#                 for av in dict_sponsors.keys(): 
+#                     pos = str(elem["familyName"]).lower().find(av)                  
+#                     if pos != -1:
+#                         img, title, url = self.getSponsorData(av)
+#                         # check if in custom REPLACE cases                    
+#                         if confId in custom_replace.keys():                                        
+#                             cconf = custom_replace[confId]
+#                             if av in cconf.keys():
+#                                 v = cconf[av]
+#                             
+#                                 img = htdocsDir + "/css/ICTP/images/sponsor-logo/" + v['filename']
+#                                 title = v['title']
+#                                 url = v['url']
+#                             
+#                     
+#                         if img: img = self.resizeImage(img,'170')
+#                         dd[pos] = {
+#                                 "data": img,
+#                                 'title': title,
+#                                 'url': url
+#                         }
+#                     
+#                 # check for custom ADD cases
+#                 if confId in custom_add.keys():
+#                     i = 100000     
+#                     for logo in custom_add[confId]:
+#                         i += 1
+#                         img = htdocsDir + "/css/ICTP/images/sponsor-logo/" + logo['filename']
+#                         if img: img = self.resizeImage(img,'170')
+#                         dd[i] = {
+#                             "data": img,
+#                             'title': logo['title'],
+#                             'url': logo['url']
+#                         }
+# 
         return dd
 
 
