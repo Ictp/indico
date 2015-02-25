@@ -597,14 +597,11 @@ class WConfDisplayFrame(wcomponents.WTemplated):
     # Ictp: get Sponsors - Cosponsosrs
     def getSponsors(self, sp):
         dd = {}
-        print "sp=",sp
-        print "pos=",str(sp).lower().find('<logo>')
         confId = str(self._conf.getId())
         htdocsDir = Config.getInstance().getHtdocsDir()
         if str(sp).lower().find('<logo>') > -1:
             # new vocabulary:
             dd = self.getFromNewVocab(sp)
-            print "***** DD=",dd
 # OLD way of getting sponsors: REMOVED            
 #         else:
 #             dict_sponsors = self.getSponsorsDict()

@@ -86,8 +86,10 @@
                     </script>
                 % elif option.getType() == "links":
                     <div id="links${name}" style="margin-bottom: 10px;">
-                      <div id="linksContainer${name}" style="margin-bottom: 10px;"></div>
+                      
                     </div>
+                    <div id="linksContainer${name}" style="margin-bottom: 10px;"></div>
+                    
                     <script type="text/javascript">
                         var addLinkText = $T('Add new link');
                         var noLinksMsg = $T('No links created yet. Click in Add new link if you want to do so!');
@@ -149,22 +151,35 @@
 												params['title'] = link.title;
 												params['logo'] = link.logo;
 											% endif 	
-                                            var killProgress = IndicoUI.Dialogs.Util.progress($T("Removing link..."));
-                                            indicoRequest(
-                                                    'plugins.removeLink',
-                                                params,
-                                                function(result,error) {
-                                                    if (!error){
-                                                        killProgress();
-                                                        self.close();
-                                                        renderLinkTable(result.table);
+											
+											var cPopup = new ConfirmPopupWithPM('Confirm', '<div>Are you sure you want to delete this entry? ',
+                                                    function(value){
+                                                        if(value){
+                                                                    var killProgress = IndicoUI.Dialogs.Util.progress($T("Removing entry..."));
+                                                                    indicoRequest(
+                                                                        'plugins.removeLink',
+                                                                        params,
+                                                                        function(result,error) {
+                                                                            if (!error){
+                                                                                killProgress();
+                                                                                cPopup.close();
+                                                                                renderLinkTable(result.table);
+                                                                            }
+                                                                            else{
+                                                                                killProgress();
+                                                                                IndicoUtil.errorReport(error);
+                                                                            }
+                                                                        }
+                                                                    );
+                                                        }
                                                     }
-                                                    else{
-                                                        killProgress();
-                                                        IndicoUtil.errorReport(error);
-                                                    }
-                                                }
                                             );
+											cPopup.open();
+                                            
+                                            
+                                            
+                                            
+                                            
                                         }, IndicoUI.Buttons.removeButton()));
                                         % if option.getSubType() == 'sponsors':
 										    var logoThumb = 'No image';
@@ -198,8 +213,8 @@
                         };
 
                         var optVal = ${ option.getValue() };
-                        renderLinkTable(optVal);
                         var addButton = Html.input("button", {style:{marginTop: pixels(5)}}, addLinkText);
+                        renderLinkTable(optVal);
 
                         addButton.observeClick(function() {
                             var errorLabel=Html.label({style:{'float': 'right', display: 'none'}, className: " invalid"}, $T('Name already in use'));
@@ -329,9 +344,11 @@
                         
                         
                         $E('links${name}').append(addButton);
+                        
                         $E('links${name}').append(loadDefaultButton);
                         
                         $E('links${name}').append(exportLink);
+                        
                         
                         
                         
@@ -844,6 +861,5 @@
     };                    
                     
                     
-
                      
 </script>

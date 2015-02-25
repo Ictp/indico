@@ -163,7 +163,8 @@ class PluginOptionsAddLink ( PluginOptionsBase ):
         if dict.has_key('optionname') and dict['optionname'] == 'ictp_addons.sponsor_management.sponsors':
             user = ContextManager.get("currentUser")
             logger.info("Added Sponsor: "+dict['title']+" by "+user.getName()+" ("+user.email+")")
-        links.append(dict)
+        #links.append(dict)
+        links.insert(0,dict)
 
         self._targetOption.setValue(self._targetOption.getValue())
         self._targetOption._notifyModification()
