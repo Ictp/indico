@@ -34,12 +34,17 @@ var videoServiceInfo = {};
 
 
 
+          % if conf.getId() == 'a14254':
             <li id="menuLink_authorIndex" class="menuConfTitle">
-              <a href="authors">Speakers</a>
-
-            <ul class="inner">
-            </ul>
+              <a href="https://www-amdis.iaea.org/Workshops/ICTP2015/">Speakers</a>            
           </li>
+          % else:
+            <li id="menuLink_authorIndex" class="menuConfTitle">
+              <a href="authors">Speakers</a>            
+          </li>
+          % endif
+          
+          
     </ul>
     
     % if materials:
