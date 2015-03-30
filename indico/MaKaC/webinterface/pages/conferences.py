@@ -728,12 +728,16 @@ class WConfDisplayFrame(wcomponents.WTemplated):
                         fname = res.getName() or res.getFileName()
                         fpath = res.getFilePath()
                         fileURL = str(urlHandlers.UHFileAccess.getURL(res))
+                        print "matname=",matName
+                        print "fname=",fname
                         if ftype == 'jpg':
-                            if matName.find('photo') != -1 or matName.find('picture') != -1 or matName.find('group') != -1:                                
-                                if len(photo) == 0:
-	                                cachedFilePath = photosDir + "/photo_" + str(self._conf.getId())
-                                else:
-									cachedFilePath = photosDir + "/photo_"+str(len(photo)) + str(self._conf.getId())	                                
+                            if matName.find('photo') != -1 or matName.find('picture') != -1 or matName.find('group') != -1: 
+                                confId = str(self._conf.getId())                               
+#                                 if len(photo) == 0:
+# 	                                cachedFilePath = photosDir + "/photo_" + confId
+#                                 else:
+# 									cachedFilePath = photosDir + "/photo_" + confId + str(fname) 	                                
+                                cachedFilePath = photosDir + "/photo_" + confId + "_" + str(fname)
                                 photo.append({  "name":fname , 
                                              "url": fileURL,
                                              "folderurl": fileURL+'/../',
