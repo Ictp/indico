@@ -829,7 +829,7 @@ div#UISearchBox {
     float: right;
 }
 
-div.meetingEventBody { display: table-cell; padding: 10px 0px 20px 20px; }
+div.meetingEventBody { display: table-cell; padding: 10px 0px 20px 20px; border: none !important;}
 
 
 .materialGroup { max-width: 200px; }
