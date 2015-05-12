@@ -1262,7 +1262,9 @@ p.nextDeadlineDate{
 
 .footer .contact-footer-link{
     color: #FFF;
-    font-size: 14px
+    font-size: 14px;
+    display: block;
+    margin-bottom: 5px;
 }
 
 .footer .ictp-details a{

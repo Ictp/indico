@@ -22,7 +22,7 @@
 
                     </li>
                     <li>
- <img src="/img/intranet.png" />                         <a  href="http://portal.ictp.it">Intranet</a>
+ <img src="/img/intranet.png" />                         <a  href="http://portal.ictp.it/old ">Intranet</a>
 
                     </li>
                     <li>
@@ -84,11 +84,11 @@
                 <div class="col-xs-8">
                     <div class="row">
                         <div class="col-xs-12 header-links-container">
-                            <div class="header-links">
-                                <a class="icon2 pull-right" href="http://www.iaea.org/">&nbsp;</a>
+                            <div class="header-links">                                
                                 <a class="icon1 pull-right" href="http://www.unesco.org">&nbsp;</a>
-                                <img class="visible-print icon2link" alt="IAEA logo printable" src="/img/icon2.png" />
-                                <img class="visible-print icon1link" alt="UNESCO logo printable" src="/img/icon1.png" />                                
+								<a class="icon2 pull-right" href="http://www.iaea.org/">&nbsp;</a>                                
+                                <img class="visible-print icon1link" alt="UNESCO logo printable" src="/img/icon1.png" />
+								<img class="visible-print icon2link" alt="IAEA logo printable" src="/img/icon2.png" />
                                 <div class="clearZero"></div>
                             </div>
                         </div>
@@ -129,7 +129,7 @@
                                                     </ul>
                                                     <ul>
                                                             <li>
-                                                                <a href="http://diploma.ictp.it">
+                                                                <a href="http://diploma.ictp.it/">
                                                                     ICTP Postgraduate Diploma Programme
                                                                 </a>
                                                             </li>
