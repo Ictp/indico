@@ -58,9 +58,10 @@
                 <li><a href="http://www.ictp.it/rss/news.aspx" target="_blank"><i class="fa fa-rss"></i></a></li>
             </ul>
             <ul class="nav navbar-nav quicklinksNavbar">
-                    <li><a href="http://www.ictp.it/support-ictp.aspx">Support ICTP</a></li>
-                                    <li><a href="http://www.ictp.it/about-ictp.aspx">About ICTP</a></li>
+                    <li><a href="http://www.ictp.it/about-ictp.aspx">About ICTP</a></li>
                                     <li><a href="http://www.ictp.it/visit-ictp.aspx">Visit ICTP</a></li>
+                                    <li><a href="http://www.ictp.it/support-ictp.aspx">Support ICTP</a></li>
+                                    <li><a href="http://www.ictp.it/ictp-for-women.aspx">ICTP for Women</a></li>
                 <li><a id="expandQuicklinksMenu" href="#"><i class="fa fa-th"></i></a></li>
                 <li class="searchMenuContainer"><input type="search" data-ps-search-link="http://www.ictp.it/search.aspx" data-ps-type="ps-google-input" placeholder="Search..." /></li>
                 <li class="searchMenuButton"><a data-ps-type="ps-google-search" id="expandSearchMenu" href="#"><i class="fa fa-search"></i></a></li>
@@ -194,13 +195,23 @@
                                                     </ul>
                                                     <ul>
                                                             <li>
+                                                                <a href="http://www.ictp.it/programmes/career-development.aspx#anchor_1158">
+                                                                    Associates Scheme
+                                                                </a>
+                                                            </li>
+                                                            <li>
                                                                 <a href="http://www.ictp.it/programmes/career-development.aspx#anchor_1837">
                                                                     Federation Scheme
                                                                 </a>
                                                             </li>
                                                             <li>
-                                                                <a href="http://www.ictp.it/programmes/career-development.aspx#anchor_1158">
-                                                                    Associates Scheme
+                                                                <a href="http://www.ictp.it/programmes/career-development.aspx#anchor_19132">
+                                                                    OFID Postgraduate Fellowships 
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="http://www.ictp.it/programmes/career-development.aspx#anchor_19150">
+                                                                    The Kuwait Programme at ICTP
                                                                 </a>
                                                             </li>
 
@@ -253,6 +264,9 @@
                                                                 </li>
                                                                 <li>
                                                                     <a href="http://www.ictp.it/programmes/outreach-activities/african-review-of-physics.aspx">African Review of Physics</a>
+                                                                </li>
+                                                                <li>
+                                                                    <a href="http://www.ictp.it/programmes/outreach-activities/physics-without-frontiers.aspx">Physics Without Frontiers</a>
                                                                 </li>
                                                     </ul>
                                                 </div>

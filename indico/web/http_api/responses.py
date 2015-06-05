@@ -75,8 +75,7 @@ class HTTPAPIResult(Fossilizable):
         # ICTP: custom case Conference PASCOS
         res = []
         for r in self._results:        
-            if r['url'].find('.ictp.it/event/a14275/') != -1:
-            #if r['url'].find('.ictp.it/event/a13203/') != -1:
+            if r['url'].find('indico.ictp.it/event/a14275/') != -1 and r['url'].find('/timetable') == -1:
                 r['url'] = 'http://pascos2015.ictp.it'
             res.append(r)
         return res
