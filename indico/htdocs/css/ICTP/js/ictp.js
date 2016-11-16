@@ -611,7 +611,7 @@ $(function(){
     // add PRACTICAL INFO if no section "outside Trieste"
     var section = $('body').attr("section");
     if (section != '2l132') {
-        $("ul#outer").append('<li id="menuLink_Practical info" class="menuConfTitle"><a href="http://www.ictp.it/visit-ictp/pre-arrival-guide.aspx" target="_blank">Practical info</a></li>');
+        $("ul#outer").append('<li id="menuLink_Practical info" class="menuConfTitle"><a href="http://www.ictp.it/visit-ictp.aspx" target="_blank">Practical info</a></li>');
     }
 
   
