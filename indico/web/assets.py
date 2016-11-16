@@ -200,7 +200,7 @@ class DebugLevelFilter(Filter):
         return self.name, self.required_level, debug
 
     def output(self, in_, out, **kw):
-        if self.required_level == self.env.debug:
+        if not(hasattr(self, 'env')) or self.required_level == self.env.debug:
             out.write(in_.read())
 
 angular = Bundle(

@@ -599,13 +599,13 @@ $(function(){
     // search for APPLICATION FORM 
     var af = $('a:contains("application form")').attr('href');
     if (af) {
-        $("#menuLink_authorIndex").append('<li id="menuLink_applyHere" class="menuConfTitle"><a href="'+af+'">Apply here</a></li>');
+        $('li[id="menuLink_How to participate"]').append('<li id="menuLink_applyHere" class="menuConfTitle"><a href="'+af+'">Apply here</a></li>');
     }
 
     // search for PARTICIPANT LIST
     var pl = $('a:contains("participant")').attr('href');
     if (pl) {
-        $("#menuLink_authorIndex").append('<li id="menuLink_participantsList" class="menuConfTitle"><a href="'+pl+'">Participants list</a></li>');
+        $('li[id="menuLink_How to participate"]').append('<li id="menuLink_participantsList" class="menuConfTitle"><a href="'+pl+'">Participants list</a></li>');
     }
 
     // add PRACTICAL INFO if no section "outside Trieste"

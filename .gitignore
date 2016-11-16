@@ -55,3 +55,9 @@ node_modules
 .noseids
 indico/tests/report/*.txt
 test.txt
+
+indico/ext/exporter
+
+indico/ext/ictp_addons
+
+indico/MaKaC/common/MaKaCConfig.py
