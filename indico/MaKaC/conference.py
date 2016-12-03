@@ -5051,6 +5051,14 @@ class Conference(CommonObjectBase, Locatable):
     def setPosterTemplateManager(self, posterTemplateManager):
         self.__posterTemplateManager = posterTemplateManager
 
+    def getSmr(self):
+        kws = self.getKeywords().replace('\r','').split('\n')
+        for k in kws:
+            if k.startswith("smr"):
+                return k.replace("smr","")
+        return ""
+
+
 class DefaultConference(Conference):
     """ 'default' conference, which stores the
      default templates for posters and badges

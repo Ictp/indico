@@ -61,3 +61,6 @@ indico/ext/exporter
 indico/ext/ictp_addons
 
 indico/MaKaC/common/MaKaCConfig.py
+
+start_indico.py
+

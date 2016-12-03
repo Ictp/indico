@@ -4,7 +4,6 @@
 </div>
 
 <div class="conferenceDetails">
-  <div itemprop="description" class="description ${'nohtml' if not description_html else ''}">${description}</div>
 
   <div class="grid">
   <div class="info_line date">
@@ -22,7 +21,7 @@
         % else:
             <div class="date_end">${_('Ends <span class="datetime">{0}</span>').format(dateInterval[2])}</div>
         % endif
-        <div class="timezone">${conf.getTimezone()}</div>
+        <div class="timezone">${conf.getTimezone().replace('Europe/Rome','Central European Time')}</div>
       </div>
   </div>
 
@@ -40,6 +39,8 @@
       % endif
     </div>
   % endif
+
+  <div itemprop="description" class="description ${'nohtml' if not description_html else ''}">${description}</div>
 
   % if chairs:
   <div class="info_line chairs clear">

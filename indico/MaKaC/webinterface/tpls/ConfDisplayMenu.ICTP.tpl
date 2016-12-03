@@ -57,7 +57,7 @@
                  % if link.getType() == "extern":
                    target="${link.getDisplayTarget()}"
                  % endif
-              >${link.getCaption()}</a>
+              >${link.getCaption().replace('Timetable','Programme')}</a>
 
             <ul class="inner">
             % for sublink in link.getEnabledLinkList():

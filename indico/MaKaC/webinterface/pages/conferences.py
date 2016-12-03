@@ -53,7 +53,7 @@ from MaKaC.common.output import outputGenerator
 from MaKaC.webinterface.general import strfFileSize
 from MaKaC.webinterface.common.timezones import TimezoneRegistry
 from MaKaC.PDFinterface.base import PDFSizes
-from pytz import timezone
+from pytz import timezone, utc
 from MaKaC.common.timezoneUtils import nowutc, DisplayTZ
 from MaKaC.badgeDesignConf import BadgeDesignConfiguration
 from MaKaC.posterDesignConf import PosterDesignConfiguration
@@ -812,6 +812,31 @@ class WConfDisplayMenu(wcomponents.WTemplated):
 
     def __init__(self, menu):
         wcomponents.WTemplated.__init__(self)
+        conf = menu._conf
+        # If in ICTP Activities...
+        if conf.getOwner().getId() in ['2l131','2l132', '1']:
+            smr = conf.getSmr()
+            # Create Apply Here link
+            link_title = "Apply here"
+            link_URL = "https://e-applications.ictp.it/applicant/login/"+smr
+            link = displayMgr.ExternLink(name = link_title, URL = link_URL)
+            link.setCaption(link_title)
+            link.setDisplayTarget("_blank")
+            link.setParent(menu)
+            confend = conf.getAdjustedEndDate()
+            today = utc.localize(datetime.now())
+            # Only Conf with smr can have Apply here link
+            if smr:
+                # If conference not expired
+                if confend > today:
+                    captions = (o.getCaption() for o in menu.getEnabledLinkList())
+                    if link.getCaption() not in captions:
+                        menu.addLink(link)
+                else:
+                    # Conf expired, remove link
+                    for m in menu.getEnabledLinkList():
+                        if m.getCaption() == link.getCaption() and confend <= today:
+                            menu.removeLink(m)
         self._menu = menu
 
 
