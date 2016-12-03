@@ -814,7 +814,7 @@ class WConfDisplayMenu(wcomponents.WTemplated):
         wcomponents.WTemplated.__init__(self)
         conf = menu._conf
         # If in ICTP Activities...
-        if conf.getOwner().getId() in ['2l131','2l132', '1']:
+        if conf.getOwner() and conf.getOwner().getId() in ['2l131','2l132', '1']:
             smr = conf.getSmr()
             # Create Apply Here link
             link_title = "Apply here"
