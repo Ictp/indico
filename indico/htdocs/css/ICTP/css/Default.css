@@ -199,8 +199,8 @@ span.conferencetitlelink {
     padding-bottom: 30px;
 }
 
-.conferenceDetails .info_line {
-    padding-bottom: 1em;
+.conferenceDetails .description {
+    padding-top: 1em;
 }
 
 /* NASCONDO PROGRAMME ed altre pagine */
