@@ -40,8 +40,14 @@
     </div>
   % endif
 
-  <div itemprop="description" class="description ${'nohtml' if not description_html else ''}">${description}</div>
+  </div>
 
+
+  <div class="grid">
+    <div itemprop="description" class="description ${'nohtml' if not description_html else ''}">${description}</div>
+  </div>
+
+  <div class="grid">
   % if chairs:
   <div class="info_line chairs clear">
       <span  title="${_("Chairpersons")}" class="icon icon-chair" aria-hidden="true"></span>
