@@ -830,7 +830,7 @@ class WConfDisplayMenu(wcomponents.WTemplated):
                 # If conference not expired
                 if confend > today:
                     captions = (o.getCaption() for o in menu.getEnabledLinkList())
-                    if link.getCaption() not in captions:
+                    if link.getCaption() not in captions and not('NOAPPLY' in conf.getKeywords().split('\n')):
                         menu.addLink(link)
                 else:
                     # Conf expired, remove link
