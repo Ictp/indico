@@ -64,3 +64,7 @@ indico/MaKaC/common/MaKaCConfig.py
 
 start_indico.py
 
+
+indico/ext/exporter
+
+indico/MaKaC/common/MaKaCConfig.py
