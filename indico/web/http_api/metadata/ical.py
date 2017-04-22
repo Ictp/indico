@@ -53,12 +53,12 @@ ical.cal.types_factory['recur'] = vRecur
 
 def serialize_event(cal, fossil, now, id_prefix="indico-event"):
     event = ical.Event()
-    event.add('uid', '%s-%s@cern.ch' % (id_prefix, fossil['id']))
+    event.add('uid', '%s-%s@ictp.it' % (id_prefix, fossil['id']))
     event.add('dtstamp', now)
     event.add('dtstart', getAdjustedDate(fossil['startDate'], None, "UTC"))
     event.add('dtend', getAdjustedDate(fossil['endDate'], None, "UTC"))
     event.add('url', fossil['url'])
-    event.add('summary', fossil['title'].decode('utf-8'))
+    event.add('summary', fossil['title'].decode('utf-8').replace('\r', ''))
     loc = fossil['location'] or ''
     if loc:
         loc = loc.decode('utf-8')
