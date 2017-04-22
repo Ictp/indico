@@ -53,18 +53,18 @@ ical.cal.types_factory['recur'] = vRecur
 
 def serialize_event(cal, fossil, now, id_prefix="indico-event"):
     event = ical.Event()
-    event.set('uid', '%s-%s@cern.ch' % (id_prefix, fossil['id']))
-    event.set('dtstamp', now)
-    event.set('dtstart', getAdjustedDate(fossil['startDate'], None, "UTC"))
-    event.set('dtend', getAdjustedDate(fossil['endDate'], None, "UTC"))
-    event.set('url', fossil['url'])
-    event.set('summary', fossil['title'].decode('utf-8'))
+    event.add('uid', '%s-%s@cern.ch' % (id_prefix, fossil['id']))
+    event.add('dtstamp', now)
+    event.add('dtstart', getAdjustedDate(fossil['startDate'], None, "UTC"))
+    event.add('dtend', getAdjustedDate(fossil['endDate'], None, "UTC"))
+    event.add('url', fossil['url'])
+    event.add('summary', fossil['title'].decode('utf-8'))
     loc = fossil['location'] or ''
     if loc:
         loc = loc.decode('utf-8')
     if fossil['room']:
         loc += ' ' + fossil['room'].decode('utf-8')
-    event.set('location', loc)
+    event.add('location', loc)
     description = ""
     if fossil.has_key("speakers"):
         speakerList = []
@@ -79,7 +79,7 @@ def serialize_event(cal, fossil, now, id_prefix="indico-event"):
         description += html.fromstring(desc_text.decode('utf-8')).text_content() + '\n\n'+ fossil['url']
     else:
         description += fossil['url']
-    event.set('description', description)
+    event.add('description', description)
     cal.add_component(event)
 
 
@@ -100,19 +100,19 @@ def serialize_repeatability(startDT, endDT, repType):
 
 def serialize_reservation(cal, fossil, now):
     event = ical.Event()
-    event.set('uid', 'indico-resv-%s@cern.ch' % fossil['id'])
-    event.set('dtstamp', now)
-    event.set('dtstart', getAdjustedDate(fossil['startDT'], None, "UTC"))
-    event.set('dtend', getAdjustedDate(datetime.datetime.combine(fossil['startDT'].date(), fossil['endDT'].timetz()), None, "UTC"))
-    event.set('url', fossil['bookingUrl'])
-    event.set('summary', fossil['reason'])
-    event.set('location', fossil['location'].decode('utf-8') + ': ' + fossil['room']['fullName'].decode('utf-8'))
-    event.set('description', fossil['reason'].decode('utf-8') + '\n\n' + fossil['bookingUrl'])
+    event.add('uid', 'indico-resv-%s@cern.ch' % fossil['id'])
+    event.add('dtstamp', now)
+    event.add('dtstart', getAdjustedDate(fossil['startDT'], None, "UTC"))
+    event.add('dtend', getAdjustedDate(datetime.datetime.combine(fossil['startDT'].date(), fossil['endDT'].timetz()), None, "UTC"))
+    event.add('url', fossil['bookingUrl'])
+    event.add('summary', fossil['reason'])
+    event.add('location', fossil['location'].decode('utf-8') + ': ' + fossil['room']['fullName'].decode('utf-8'))
+    event.add('description', fossil['reason'].decode('utf-8') + '\n\n' + fossil['bookingUrl'])
     rrule = None
     if fossil['repeatability'] is not None:
         rrule = serialize_repeatability(fossil['startDT'], fossil['endDT'], RepeatabilityEnum.shortname2rep[fossil['repeatability']])
     if rrule:
-        event.set('rrule', rrule)
+        event.add('rrule', rrule)
     cal.add_component(event)
 
 
@@ -170,8 +170,8 @@ class ICalSerializer(Serializer):
             results = [results]
 
         cal = ical.Calendar()
-        cal.set('version', '2.0')
-        cal.set('prodid', '-//CERN//INDICO//EN')
+        cal.add('version', '2.0')
+        cal.add('prodid', '-//CERN//INDICO//EN')
         now = nowutc()
         for fossil in results:
             mapper = ICalSerializer._mappers.get(fossil['_fossil'])
