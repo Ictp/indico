@@ -10914,8 +10914,8 @@ class Material(CommonObjectBase):
 
     def getTitle( self ):
         # ICTP: all titles should have same uppercase format
-        return self.title.title()
-        #return self.title
+        #return self.title.title()
+        return self.title
 
 
     @Updates (['MaKaC.conference.Material',
