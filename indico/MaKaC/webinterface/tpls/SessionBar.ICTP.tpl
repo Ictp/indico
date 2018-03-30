@@ -25,11 +25,11 @@ protection = getProtection(target) if target else None
                 });
                 </script>
             % endif
-            % if currentUser:
+
                 <li id="timezoneSelector">
                     <%include file="TimezoneSelector.tpl"/>
                 </li>
-            % endif
+
             % if currentUser:
                 <%include file="SettingsWidget.ICTP.tpl" args="Languages = Languages"/>
             % else:

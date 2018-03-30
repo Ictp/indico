@@ -330,7 +330,7 @@ width: 840px !important;
 #upToCategoryButton { display: none; }
 #nextEventButton { display: none; }
 #lastEventButton { display: none; }
-#timezoneSelector { display: none; }
+/*#timezoneSelector { display: none; }*/
 #languageSelector { display: none; }
 #menuLink_contributionList { display: none !important; }
 
